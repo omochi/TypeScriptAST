@@ -15,6 +15,11 @@ extension ASTNode {
         let printer = ASTPrinter()
         return printer.print(self)
     }
+
+    public var asType: (any TSType)? { self as? any TSType }
+    public var asExpr: (any TSExpr)? { self as? any TSExpr }
+    public var asStmt: (any TSStmt)? { self as? any TSStmt }
+    public var asDecl: (any TSDecl)? { self as? any TSDecl }
 }
 
 

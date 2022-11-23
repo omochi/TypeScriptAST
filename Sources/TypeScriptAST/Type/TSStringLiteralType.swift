@@ -3,8 +3,8 @@ public final class TSStringLiteralType: _TSType {
         self.value = value
     }
 
-    public internal(set) unowned var parent: (any ASTNode)?
-    func _setParent(_ newValue: (any ASTNode)?) {
+    public private(set) unowned var parent: (any ASTNode)?
+    internal func _setParent(_ newValue: (any ASTNode)?) {
         parent = newValue
     }
 

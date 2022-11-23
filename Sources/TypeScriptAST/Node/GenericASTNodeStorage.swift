@@ -44,7 +44,7 @@ public struct GenericASTNodeOptionalStorage<Box: ASTNodeBoxProtocol> {
     }
 
     @available(*, unavailable)
-    public var wrappedValue: Value? {
+    public var wrappedValue: Value {
         get { fatalError() }
         set { fatalError() }
     }
@@ -121,9 +121,18 @@ public struct GenericASTNodeArrayStorage<Box: ASTNodeBoxProtocol> {
 
 public typealias ASTNodeStorage<Value: ASTNode> = GenericASTNodeStorage<ASTNodeIdentityBox<Value>>
 public typealias AnyTSTypeStorage = GenericASTNodeStorage<AnyTSTypeASTNodeBox>
+public typealias AnyTSExprStorage = GenericASTNodeStorage<AnyTSExprASTNodeBox>
+public typealias AnyTSStmtStorage = GenericASTNodeStorage<AnyTSStmtASTNodeBox>
+public typealias AnyTSDeclStorage = GenericASTNodeStorage<AnyTSDeclASTNodeBox>
 
 public typealias ASTNodeOptionalStorage<Value: ASTNode> = GenericASTNodeOptionalStorage<ASTNodeIdentityBox<Value>>
 public typealias AnyTSTypeOptionalStorage = GenericASTNodeOptionalStorage<AnyTSTypeASTNodeBox>
+public typealias AnyTSExprOptionalStorage = GenericASTNodeOptionalStorage<AnyTSExprASTNodeBox>
+public typealias AnyTSStmtOptionalStorage = GenericASTNodeOptionalStorage<AnyTSStmtASTNodeBox>
+public typealias AnyTSDeclOptionalStorage = GenericASTNodeOptionalStorage<AnyTSDeclASTNodeBox>
 
 public typealias ASTNodeArrayStorage<Value: ASTNode> = GenericASTNodeArrayStorage<ASTNodeIdentityBox<Value>>
 public typealias AnyTSTypeArrayStorage = GenericASTNodeArrayStorage<AnyTSTypeASTNodeBox>
+public typealias AnyTSExprArrayStorage = GenericASTNodeArrayStorage<AnyTSExprASTNodeBox>
+public typealias AnyTSStmtArrayStorage = GenericASTNodeArrayStorage<AnyTSStmtASTNodeBox>
+public typealias AnyTSDeclArrayStorage = GenericASTNodeArrayStorage<AnyTSDeclASTNodeBox>

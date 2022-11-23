@@ -1,7 +1,7 @@
 import XCTest
 import TypeScriptAST
 
-final class PrintTypeTests: XCTestCase {
+final class PrintTypeTests: PrintTestsBase {
     func testNamed() throws {
         assertPrint(TSNamedType(name: "A"), "A")
 
@@ -199,15 +199,12 @@ final class PrintTypeTests: XCTestCase {
             ) => void
             """
         )
-
     }
 
-    func assertPrint(
-        _ node: any ASTNode,
-        _ expected: String,
-        file: StaticString = #file,
-        line: UInt = #line
-    ) {
-        XCTAssertEqual(node.print(), expected, file: file, line: line)
+    func testCustom() throws {
+        assertPrint(
+            TSCustomType(text: "aaa", symbols: []),
+            "aaa"
+        )
     }
 }

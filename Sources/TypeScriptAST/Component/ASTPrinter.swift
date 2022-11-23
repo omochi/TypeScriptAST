@@ -1,8 +1,9 @@
 public final class ASTPrinter: ASTVisitor {
     public enum ScopeKind {
         case topLevel
-        case function
+        case namespace
         case `class`
+        case function
         case interface
     }
 
@@ -49,10 +50,17 @@ public final class ASTPrinter: ASTVisitor {
         return printer.output
     }
 
-    private func openBracket(_ text: String) {
+    private func openBracket(
+        scope: ScopeKind? = nil,
+        space: String? = nil,
+        _ text: String
+    ) {
         pushContext()
-        printer.write(text)
+        printer.write(space: space, text)
         context.isInBrackets = true
+        if let scope {
+            context.scope = scope
+        }
     }
 
     private func closeBracket(_ text: String) {
@@ -61,8 +69,46 @@ public final class ASTPrinter: ASTVisitor {
         popContext()
     }
 
+    private func wantsNewlineBetweenSiblingDecl(decl: any TSDecl) -> Bool {
+        switch decl {
+//        case .class:
+//            return true
+//        case .field:
+//            return false
+        case is TSImportDecl:
+            return false
+//        case .interface:
+//            return true
+            // method
+        case is TSFunctionDecl:
+//        case is TSMethodDecl:
+            switch context.scope {
+            case .interface:
+                return false
+            default:
+                return true
+            }
+        case is TSNamespaceDecl:
+            return true
+        case is TSTypeDecl:
+            return true
+        case is TSVarDecl:
+            switch context.scope {
+            case .topLevel, .namespace:
+                return true
+            default:
+                return false
+            }
+//        case .custom:
+//            return true
+        default:
+            return true
+        }
+    }
+
     private func write<T>(
         array: [T],
+        sideSpace: Bool = false,
         separator: String = "",
         multilineMode: MultilineMode = .automatic,
         writeElement: (T) -> Void
@@ -83,15 +129,23 @@ public final class ASTPrinter: ASTVisitor {
         }
 
         for (index, element) in array.enumerated() {
+            if sideSpace, index == 0, !isMultiline {
+                printer.write(space: " ")
+            }
             if index > 0 {
                 printer.write(space: " ")
             }
+
             writeElement(element)
 
             if index < array.count - 1 {
                 printer.write(separator)
                 if isMultiline {
                     printer.writeNewline()
+                }
+            } else {
+                if sideSpace, !isMultiline {
+                    printer.write(space: " ")
                 }
             }
         }
@@ -101,14 +155,84 @@ public final class ASTPrinter: ASTVisitor {
         }
     }
 
+    private func write(blockElements elements: [any ASTNode]) {
+        if elements.isEmpty { return }
+        if context.isInBrackets {
+            printer.push()
+        }
+
+        for (index, element) in elements.enumerated() {
+            if index > 0,
+               let prevDecl = elements[index - 1].asDecl,
+               let decl = element.asDecl
+            {
+                let isSame = type(of: prevDecl) == type(of: decl)
+                if !isSame || wantsNewlineBetweenSiblingDecl(decl: decl) {
+                    printer.writeNewline()
+                }
+            }
+
+            visit(element)
+
+            if index < elements.count - 1 {
+                printer.writeNewline()
+            }
+        }
+
+        if context.isInBrackets {
+            printer.pop()
+        }
+    }
+
+    private func write(modifiers: [TSDeclModifier]) {
+        write(array: modifiers, multilineMode: .oneline) {
+            printer.write($0.rawValue)
+        }
+    }
+
     private func write(genericArgs: [any TSType]) {
         if genericArgs.isEmpty { return }
-
         openBracket("<")
-        write(array: genericArgs, separator: ",", multilineMode: .oneline) {
+        write(array: genericArgs, separator: ",") {
             visit($0)
         }
         closeBracket(">")
+    }
+
+    private func write(genericParams: [String]) {
+        if genericParams.isEmpty { return }
+        openBracket("<")
+        write(array: genericParams, separator: ",") {
+            printer.write($0)
+        }
+        closeBracket(">")
+    }
+
+    public func visit(importDecl: TSImportDecl) {
+        printer.write("import ")
+        openBracket("{")
+        write(array: importDecl.names, sideSpace: true, separator: ",") {
+            printer.write($0)
+        }
+        closeBracket("}")
+        printer.write(" from \"\(importDecl.from)\";", newline: true)
+    }
+
+    public func visit(namespaceDecl: TSNamespaceDecl) {
+        write(modifiers: namespaceDecl.modifiers)
+        printer.write(space: " ", "namespace \(namespaceDecl.name)")
+        openBracket(scope: .namespace, space: " ", "{")
+        write(blockElements: namespaceDecl.decls)
+        closeBracket("}")
+    }
+
+    public func visit(typeDecl: TSTypeDecl) {
+        write(modifiers: typeDecl.modifiers)
+        printer.write(space: " ", "type \(typeDecl.name)")
+        write(genericParams: typeDecl.genericParams)
+        printer.write(" = ")
+        visit(typeDecl.type)
+        printer.write(";")
     }
 
     public func visit(arrayType: TSArrayType) {
@@ -127,6 +251,10 @@ public final class ASTPrinter: ASTVisitor {
             closeBracket(")")
         }
         printer.write("[]")
+    }
+
+    public func visit(customType: TSCustomType) {
+        printer.write(customType.text)
     }
 
     public func visit(dictionaryType: TSDictionaryType) {

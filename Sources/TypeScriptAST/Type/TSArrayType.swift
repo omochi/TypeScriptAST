@@ -3,10 +3,10 @@ public final class TSArrayType: _TSType {
         self.element = element
     }
 
-    public internal(set) unowned var parent: ASTNode?
-    func _setParent(_ newValue: (ASTNode)?) {
+    public private(set) unowned var parent: ASTNode?
+    internal func _setParent(_ newValue: (ASTNode)?) {
         parent = newValue
     }
 
-    @AnyTSTypeStorage var element: any TSType
+    @AnyTSTypeStorage public var element: any TSType
 }

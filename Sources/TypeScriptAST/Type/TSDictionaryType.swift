@@ -3,10 +3,10 @@ public final class TSDictionaryType: _TSType {
         self.value = value
     }
 
-    public internal(set) unowned var parent: ASTNode?
-    func _setParent(_ newValue: (ASTNode)?) {
+    public private(set) unowned var parent: ASTNode?
+    internal func _setParent(_ newValue: (ASTNode)?) {
         parent = newValue
     }
 
-    @AnyTSTypeStorage var value: any TSType
+    @AnyTSTypeStorage public var value: any TSType
 }
