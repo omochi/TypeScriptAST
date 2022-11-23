@@ -8,24 +8,33 @@ final class BasicTests: XCTestCase {
             name: "t",
             genericArgs: .init([b])
         )
-        let args0 = t.genericArgs
 
-        XCTAssertIdentical(args0.parent, t)
-        XCTAssertIdentical(args0[safe: 0], b)
-        XCTAssertIdentical(b.parent, args0)
+        XCTAssertIdentical(b.parent, t)
 
         let n = TSNamedType.number
-        t.genericArgs.elements.append(n)
-        XCTAssertIdentical(n.parent, args0)
+        t.genericArgs.append(n)
+        XCTAssertIdentical(n.parent, t)
 
         let s = TSNamedType.string
-        args0[1] = s
-        XCTAssertNil(n.parent)
-        XCTAssertIdentical(s.parent, args0)
+        t.genericArgs[0] = s
+        XCTAssertNil(b.parent)
+        XCTAssertIdentical(s.parent, t)
 
-        let args1 = TSGenericArgList()
-        t.genericArgs = args1
-        XCTAssertNil(args0.parent)
-        XCTAssertIdentical(args1.parent, t)
+        t.genericArgs = []
+        XCTAssertNil(n.parent)
+        XCTAssertNil(s.parent)
+    }
+
+    func testPrintType() throws {
+        let atu = TSNamedType(
+            name: "A",
+            genericArgs: [TSNamedType(name: "T"), TSNamedType(name: "U")]
+        )
+        XCTAssertEqual(atu.print(), "A<T, U>")
+
+        let na = TSArrayType(element: TSNamedType.number)
+        XCTAssertEqual(na.print(), "number[]")
+
+        
     }
 }

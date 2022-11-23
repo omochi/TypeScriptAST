@@ -1,10 +1,8 @@
-public final class TSNamedType: _TSType {
+public final class TSUnionType: _TSType {
     public init(
-        name: String,
-        genericArgs: [any TSType] = []
+        _ elements: [any TSType]
     ) {
-        self.name = name
-        self.genericArgs = genericArgs
+        self.elements = elements
     }
 
     public internal(set) unowned var parent: (any ASTNode)?
@@ -12,8 +10,7 @@ public final class TSNamedType: _TSType {
         parent = newValue
     }
 
-    public var name: String
-    @AnyTSTypeArrayStorage public var genericArgs: [any TSType]
+    @AnyTSTypeArrayStorage public var elements: [any TSType]
 
     public static var null: TSNamedType { TSNamedType(name: "null") }
     public static var undefined: TSNamedType { TSNamedType(name: "undefined") }
