@@ -1,8 +1,8 @@
 import XCTest
 import TypeScriptAST
 
-final class PrintTests: XCTestCase {
-    func testNamedType() throws {
+final class PrintTypeTests: XCTestCase {
+    func testNamed() throws {
         assertPrint(TSNamedType(name: "A"), "A")
 
         assertPrint(
@@ -11,58 +11,6 @@ final class PrintTests: XCTestCase {
                 genericArgs: [TSNamedType(name: "T"), TSNamedType(name: "U")]
             ),
             "A<T, U>"
-        )
-    }
-
-    func testUnionType() throws {
-        assertPrint(
-            TSUnionType([
-                TSNamedType(name: "A"),
-                TSNamedType(name: "B")
-            ]),
-            "A | B"
-        )
-
-        assertPrint(
-            TSUnionType([
-                TSNamedType(name: "A"),
-                TSNamedType(name: "B"),
-                TSNamedType(name: "C")
-            ]),
-            "A | B | C"
-        )
-        assertPrint(
-            TSUnionType([
-                TSNamedType(name: "A"),
-                TSNamedType(name: "B"),
-                TSNamedType(name: "C"),
-                TSNamedType(name: "D")
-            ]),
-            """
-
-                A |
-                B |
-                C |
-                D
-
-            """
-        )
-
-        assertPrint(
-            TSArrayType(element: TSUnionType([
-                TSNamedType(name: "A"),
-                TSNamedType(name: "B"),
-                TSNamedType(name: "C"),
-                TSNamedType(name: "D")
-            ])),
-            """
-            (
-                A |
-                B |
-                C |
-                D
-            )[]
-            """
         )
 
         assertPrint(
@@ -89,16 +37,97 @@ final class PrintTests: XCTestCase {
         )
     }
 
-    func testArrayType() throws {
+    func testUnion() throws {
+        assertPrint(
+            TSUnionType([
+                TSNamedType(name: "A"),
+                TSNamedType(name: "B")
+            ]),
+            "A | B"
+        )
+
+        assertPrint(
+            TSUnionType([
+                TSNamedType(name: "A"),
+                TSNamedType(name: "B"),
+                TSNamedType(name: "C")
+            ]),
+            "A | B | C"
+        )
+        assertPrint(
+            TSUnionType([
+                TSNamedType(name: "A"),
+                TSNamedType(name: "B"),
+                TSNamedType(name: "C"),
+                TSNamedType(name: "D")
+            ]),
+            """
+            A |
+            B |
+            C |
+            D
+            """
+        )
+
+        assertPrint(
+            TSUnionType([
+                TSRecordType([
+                    .init(name: "kind", type: TSStringLiteralType("a")),
+                    .init(name: "a", type: TSRecordType([
+                        .init(name: "x", type: TSNamedType.number)
+                    ]))
+                ]),
+                TSRecordType([
+                    .init(name: "kind", type: TSStringLiteralType("b")),
+                    .init(name: "b", type: TSRecordType([
+                        .init(name: "x", type: TSNamedType.string)
+                    ]))
+                ])
+            ]),
+            """
+            {
+                kind: "a";
+                a: {
+                    x: number;
+                };
+            } | {
+                kind: "b";
+                b: {
+                    x: string;
+                };
+            }
+            """
+        )
+
+    }
+
+    func testArray() throws {
         assertPrint(TSArrayType(element: TSNamedType.number), "number[]")
 
         assertPrint(
             TSArrayType(element: TSNamedType.number.orNull),
             "(number | null)[]"
         )
+
+        assertPrint(
+            TSArrayType(element: TSUnionType([
+                TSNamedType(name: "A"),
+                TSNamedType(name: "B"),
+                TSNamedType(name: "C"),
+                TSNamedType(name: "D")
+            ])),
+            """
+            (
+                A |
+                B |
+                C |
+                D
+            )[]
+            """
+        )
     }
 
-    func testStringLiteralType() throws {
+    func testStringLiteral() throws {
         assertPrint(TSStringLiteralType("aaa"),
             """
             "aaa"
@@ -106,21 +135,21 @@ final class PrintTests: XCTestCase {
         )
     }
 
-    func testNestedType() throws {
+    func testNested() throws {
         assertPrint(
             TSNestedType(namespace: "A", type: TSNamedType(name: "B")),
             "A.B"
         )
     }
 
-    func testDictionaryType() throws {
+    func testDictionary() throws {
         assertPrint(
             TSDictionaryType(value: TSNamedType(name: "A")),
             "{ [key: string]: A; }"
         )
     }
 
-    func testRecordType() throws {
+    func testRecord() throws {
         assertPrint(TSRecordType([]), "{}")
 
         assertPrint(
@@ -137,7 +166,7 @@ final class PrintTests: XCTestCase {
         )
     }
 
-    func testFunctionType() throws {
+    func testFunction() throws {
         assertPrint(TSFunctionType(params: [], result: TSNamedType.void), "() => void")
 
         assertPrint(

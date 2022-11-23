@@ -12,18 +12,53 @@ public final class ASTPrinter: ASTVisitor {
         case automatic
     }
 
+    private struct Context {
+        var scope: ScopeKind
+        var isInBrackets: Bool
+    }
+
     public init(scope: ScopeKind = .topLevel) {
-        self.scope = scope
+        self.contextStack = [
+            Context(
+                scope: scope,
+                isInBrackets: false
+            )
+        ]
     }
 
     private var printer: PrettyPrinter!
-    public var scope: ScopeKind
     public var onelineCount: Int = 3
+
+    private var contextStack: [Context]
+    private var context: Context {
+        get { contextStack.last! }
+        set {
+            contextStack[contextStack.count - 1] = newValue
+        }
+    }
+    private func pushContext() {
+        contextStack.append(context)
+    }
+    private func popContext() {
+        contextStack.removeLast()
+    }
 
     public func print(_ node: any ASTNode) -> String {
         printer = PrettyPrinter()
         visit(node)
         return printer.output
+    }
+
+    private func openBracket(_ text: String) {
+        pushContext()
+        printer.write(text)
+        context.isInBrackets = true
+    }
+
+    private func closeBracket(_ text: String) {
+        printer.write(text)
+        context.isInBrackets = false
+        popContext()
     }
 
     private func write<T>(
@@ -43,7 +78,7 @@ public final class ASTPrinter: ASTVisitor {
             }
         }()
 
-        if isMultiline {
+        if isMultiline, context.isInBrackets {
             printer.push()
         }
 
@@ -61,7 +96,7 @@ public final class ASTPrinter: ASTVisitor {
             }
         }
 
-        if isMultiline {
+        if isMultiline, context.isInBrackets {
             printer.pop()
         }
     }
@@ -69,11 +104,11 @@ public final class ASTPrinter: ASTVisitor {
     private func write(genericArgs: [any TSType]) {
         if genericArgs.isEmpty { return }
 
-        printer.write("<")
+        openBracket("<")
         write(array: genericArgs, separator: ",", multilineMode: .oneline) {
             visit($0)
         }
-        printer.write(">")
+        closeBracket(">")
     }
 
     public func visit(arrayType: TSArrayType) {
@@ -85,11 +120,11 @@ public final class ASTPrinter: ASTVisitor {
         }()
 
         if paren {
-            printer.write("(")
+            openBracket("(")
         }
         visit(arrayType.element)
         if paren {
-            printer.write(")")
+            closeBracket(")")
         }
         printer.write("[]")
     }
@@ -107,11 +142,11 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     private func write(params: [TSFunctionType.Param]) {
-        printer.write("(")
+        openBracket("(")
         write(array: params, separator: ",") {
             write(param: $0)
         }
-        printer.write(")")
+        closeBracket(")")
     }
 
     private func write(param: TSFunctionType.Param) {
@@ -134,11 +169,11 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public func visit(recordType: TSRecordType) {
-        printer.write("{")
+        openBracket("{")
         write(array: recordType.fields, multilineMode: .multiline) {
             write(field: $0)
         }
-        printer.write("}")
+        closeBracket("}")
     }
 
     private func write(field: TSRecordType.Field) {
