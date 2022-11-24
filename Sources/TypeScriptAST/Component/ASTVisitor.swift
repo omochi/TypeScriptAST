@@ -30,7 +30,7 @@ public protocol ASTVisitor {
     func visit(dictionary: TSDictionaryType)
     func visit(function: TSFunctionType)
     func visit(ident: TSIdentType)
-    func visit(nested: TSNestedType)
+    func visit(member: TSMemberType)
     func visit(record: TSRecordType)
     func visit(stringLiteral: TSStringLiteralType)
     func visit(union: TSUnionType)
@@ -83,8 +83,8 @@ extension ASTVisitor {
             visit(function: x)
         case let x as TSIdentType:
             visit(ident: x)
-        case let x as TSNestedType:
-            visit(nested: x)
+        case let x as TSMemberType:
+            visit(member: x)
         case let x as TSRecordType:
             visit(record: x)
         case let x as TSStringLiteralType:
@@ -125,7 +125,7 @@ extension ASTVisitor {
     public func visit(dictionary: TSDictionaryType) { visit(type: dictionary) }
     public func visit(function: TSFunctionType) { visit(type: function) }
     public func visit(ident: TSIdentType) { visit(type: ident) }
-    public func visit(nested: TSNestedType) { visit(type: nested) }
+    public func visit(member: TSMemberType) { visit(type: member) }
     public func visit(record: TSRecordType) { visit(type: record) }
     public func visit(stringLiteral: TSStringLiteralType) { visit(type: stringLiteral) }
     public func visit(union: TSUnionType) { visit(type: union) }

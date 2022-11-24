@@ -135,10 +135,24 @@ final class PrintTypeTests: PrintTestsBase {
         )
     }
 
-    func testNested() throws {
+    func testMember() throws {
         assertPrint(
-            TSNestedType(namespace: "A", type: TSIdentType(name: "B")),
+            TSMemberType(
+                base: TSIdentType(name: "A"),
+                name: TSIdentType(name: "B")
+            ),
             "A.B"
+        )
+
+        assertPrint(
+            TSMemberType(
+                base: TSMemberType(
+                    base: TSIdentType(name: "A"),
+                    name: TSIdentType(name: "B")
+                ),
+                name: TSIdentType(name: "C", genericArgs: [TSIdentType(name: "T")])
+            ),
+            "A.B.C<T>"
         )
     }
 

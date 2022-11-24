@@ -465,10 +465,10 @@ public final class ASTPrinter: ASTVisitor {
         write(genericArgs: ident.genericArgs)
     }
 
-    public func visit(nested: TSNestedType) {
-        printer.write(nested.namespace)
+    public func visit(member: TSMemberType) {
+        visit(member.base)
         printer.write(".")
-        visit(nested.type)
+        visit(member.name)
     }
 
     public func visit(record: TSRecordType) {

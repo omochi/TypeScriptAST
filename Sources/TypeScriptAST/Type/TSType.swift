@@ -10,7 +10,7 @@ extension TSType {
     public var asDictionary: TSDictionaryType? { self as? TSDictionaryType }
     public var asFunction: TSFunctionType? { self as? TSFunctionType }
     public var asIdent: TSIdentType? { self as? TSIdentType }
-    public var asNested: TSNestedType? { self as? TSNestedType }
+    public var asMember: TSMemberType? { self as? TSMemberType }
     public var asRecord: TSRecordType? { self as? TSRecordType }
     public var asStringLiteral: TSStringLiteralType? { self as? TSStringLiteralType }
     public var asUnion: TSUnionType? { self as? TSUnionType }
