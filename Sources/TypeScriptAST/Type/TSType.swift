@@ -5,14 +5,6 @@ public protocol TSType: ASTNode {
 internal protocol _TSType: _ASTNode & TSType {}
 
 extension TSType {
-    public var orNull: TSUnionType {
-        TSUnionType([self, TSNamedType.null])
-    }
-
-    public var orUndefined: TSUnionType {
-        TSUnionType([self, TSNamedType.undefined])
-    }
-
     public var asArray: TSArrayType? { self as? TSArrayType }
     public var asCustom: TSCustomType? { self as? TSCustomType }
     public var asDictionary: TSDictionaryType? { self as? TSDictionaryType }

@@ -1,11 +1,15 @@
-public final class TSNamespaceDecl: _TSDecl {
+public final class TSInterfaceDecl: _TSDecl {
     public init(
         modifiers: [TSDeclModifier] = [],
         name: String,
+        genericParams: [String] = [],
+        extends: [TSNamedType] = [],
         block: TSBlockStmt
     ) {
         self.modifiers = modifiers
         self.name = name
+        self.genericParams = genericParams
+        self.extends = extends
         self.block = block
     }
 
@@ -16,5 +20,7 @@ public final class TSNamespaceDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
+    public var genericParams: [String]
+    @ASTNodeArrayStorage public var extends: [TSNamedType]
     @ASTNodeStorage public var block: TSBlockStmt
 }

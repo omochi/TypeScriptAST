@@ -69,19 +69,18 @@ public final class ASTPrinter: ASTVisitor {
         popContext()
     }
 
-    private func wantsNewlineBetweenSiblingDecl(decl: any TSDecl) -> Bool {
+    private func printsNewlineBetweenSibling(decl: any TSDecl) -> Bool {
         switch decl {
-//        case .class:
-//            return true
-//        case .field:
-//            return false
+        case is TSClassDecl:
+            return true
+        case is TSFieldDecl:
+            return false
         case is TSImportDecl:
             return false
-//        case .interface:
-//            return true
-            // method
-        case is TSFunctionDecl:
-//        case is TSMethodDecl:
+        case is TSInterfaceDecl:
+            return true
+        case is TSFunctionDecl,
+            is TSMethodDecl:
             switch context.scope {
             case .interface:
                 return false
@@ -167,7 +166,7 @@ public final class ASTPrinter: ASTVisitor {
                let decl = element.asDecl
             {
                 let isSame = type(of: prevDecl) == type(of: decl)
-                if !isSame || wantsNewlineBetweenSiblingDecl(decl: decl) {
+                if !isSame || printsNewlineBetweenSibling(decl: decl) {
                     printer.writeNewline()
                 }
             }
@@ -208,36 +207,163 @@ public final class ASTPrinter: ASTVisitor {
         closeBracket(">")
     }
 
-    public func visit(importDecl: TSImportDecl) {
-        printer.write("import ")
-        openBracket("{")
-        write(array: importDecl.names, sideSpace: true, separator: ",") {
-            printer.write($0)
+    public func visit(class: TSClassDecl) {
+        write(modifiers: `class`.modifiers)
+        printer.write(space: " ", "class \(`class`.name)")
+        write(genericParams: `class`.genericParams)
+        if let extends = `class`.extends {
+            printer.write(" extends ")
+            visit(extends)
         }
-        closeBracket("}")
-        printer.write(" from \"\(importDecl.from)\";", newline: true)
+        if !`class`.implements.isEmpty {
+            printer.write(" implements ")
+            write(array: `class`.implements, separator: ",") {
+                visit($0)
+            }
+        }
+        printer.write(space: " ")
+        write(block: `class`.block, scope: .class)
     }
 
-    public func visit(namespaceDecl: TSNamespaceDecl) {
-        write(modifiers: namespaceDecl.modifiers)
-        printer.write(space: " ", "namespace \(namespaceDecl.name)")
-        openBracket(scope: .namespace, space: " ", "{")
-        write(blockElements: namespaceDecl.decls)
-        closeBracket("}")
-    }
-
-    public func visit(typeDecl: TSTypeDecl) {
-        write(modifiers: typeDecl.modifiers)
-        printer.write(space: " ", "type \(typeDecl.name)")
-        write(genericParams: typeDecl.genericParams)
-        printer.write(" = ")
-        visit(typeDecl.type)
+    public func visit(field: TSFieldDecl) {
+        write(modifiers: field.modifiers)
+        printer.write(space: " ", field.name)
+        if field.isOptional {
+            printer.write("?: ")
+        } else {
+            printer.write(": ")
+        }
+        visit(field.type)
         printer.write(";")
     }
 
-    public func visit(arrayType: TSArrayType) {
+    public func visit(function: TSFunctionDecl) {
+        write(modifiers: function.modifiers)
+        printer.write(space: " ", "function \(function.name)")
+        write(genericParams: function.genericParams)
+        write(params: function.params)
+        if let result = function.result {
+            printer.write(": ")
+            visit(result)
+        }
+        printer.write(space: " ")
+        write(block: function.body, scope: .function)
+    }
+
+    private func write(params: [TSFunctionDecl.Param]) {
+        openBracket("(")
+        write(array: params, separator: ",") {
+            write(param: $0)
+        }
+        closeBracket(")")
+    }
+
+    private func write(param: TSFunctionDecl.Param) {
+        printer.write(param.name)
+        if let type = param.type {
+            printer.write(": ")
+            visit(type)
+        }
+    }
+
+    public func visit(interface: TSInterfaceDecl) {
+        write(modifiers: interface.modifiers)
+        printer.write(space: " ", "interface \(interface.name)")
+        write(genericParams: interface.genericParams)
+        if !interface.extends.isEmpty {
+            printer.write(" extends ")
+            write(array: interface.extends, separator: ",") {
+                visit($0)
+            }
+        }
+        printer.write(space: " ")
+        write(block: interface.block, scope: .interface)
+    }
+
+    public func visit(import: TSImportDecl) {
+        printer.write("import ")
+        openBracket("{")
+        write(array: `import`.names, sideSpace: true, separator: ",") {
+            printer.write($0)
+        }
+        closeBracket("}")
+        printer.write(" from \"\(`import`.from)\";")
+    }
+
+    public func visit(method: TSMethodDecl) {
+        write(modifiers: method.modifiers)
+        printer.write(space: " ", method.name)
+        write(genericParams: method.genericParams)
+        write(params: method.params)
+        if let result = method.result {
+            printer.write(": ")
+            visit(result)
+        }
+        if let block = method.block {
+            printer.write(space: " ")
+            write(block: block)
+        } else {
+            printer.write(";")
+        }
+    }
+
+    public func visit(namespace: TSNamespaceDecl) {
+        write(modifiers: namespace.modifiers)
+        printer.write(space: " ", "namespace \(namespace.name) ")
+        write(block: namespace.block, scope: .namespace)
+    }
+
+    public func visit(type: TSTypeDecl) {
+        write(modifiers: type.modifiers)
+        printer.write(space: " ", "type \(type.name)")
+        write(genericParams: type.genericParams)
+        printer.write(" = ")
+        visit(type.type)
+        printer.write(";")
+    }
+
+    public func visit(`var`: TSVarDecl) {
+        write(modifiers: `var`.modifiers)
+        printer.write(space: " ", "\(`var`.kind) \(`var`.name)")
+        if let type = `var`.type {
+            printer.write(": ")
+            visit(type)
+        }
+        if let initializer = `var`.initializer {
+            printer.write(space: " ", "= ")
+            visit(initializer)
+        }
+        printer.write(";")
+    }
+
+    public func visit(numberLiteral: TSNumberLiteralExpr) {
+        printer.write(numberLiteral.text)
+    }
+
+    private func write(block: TSBlockStmt, scope: ScopeKind? = nil) {
+        pushContext()
+        if let scope {
+            context.scope = scope
+        }
+        visit(block)
+        popContext()
+    }
+
+    public func visit(block: TSBlockStmt) {
+        openBracket("{")
+        write(blockElements: block.elements)
+        closeBracket("}")
+    }
+
+    public func visit(return: TSReturnStmt) {
+        printer.write("return ")
+        visit(`return`.expr)
+        printer.write(";")
+    }
+
+    public func visit(array: TSArrayType) {
         let paren: Bool = {
-            switch arrayType.element {
+            switch array.element {
             case is TSUnionType: return true
             default: return false
             }
@@ -246,27 +372,27 @@ public final class ASTPrinter: ASTVisitor {
         if paren {
             openBracket("(")
         }
-        visit(arrayType.element)
+        visit(array.element)
         if paren {
             closeBracket(")")
         }
         printer.write("[]")
     }
 
-    public func visit(customType: TSCustomType) {
-        printer.write(customType.text)
+    public func visit(custom: TSCustomType) {
+        printer.write(custom.text)
     }
 
-    public func visit(dictionaryType: TSDictionaryType) {
+    public func visit(dictionary: TSDictionaryType) {
         printer.write("{ [key: string]: ")
-        visit(dictionaryType.value)
+        visit(dictionary.value)
         printer.write("; }")
     }
 
-    public func visit(functionType: TSFunctionType) {
-        write(params: functionType.params)
+    public func visit(function: TSFunctionType) {
+        write(params: function.params)
         printer.write(" => ")
-        visit(functionType.result)
+        visit(function.result)
     }
 
     private func write(params: [TSFunctionType.Param]) {
@@ -285,20 +411,20 @@ public final class ASTPrinter: ASTVisitor {
         }
     }
 
-    public func visit(namedType: TSNamedType) {
-        printer.write(namedType.name)
-        write(genericArgs: namedType.genericArgs)
+    public func visit(named: TSNamedType) {
+        printer.write(named.name)
+        write(genericArgs: named.genericArgs)
     }
 
-    public func visit(nestedType: TSNestedType) {
-        printer.write(nestedType.namespace)
+    public func visit(nested: TSNestedType) {
+        printer.write(nested.namespace)
         printer.write(".")
-        visit(nestedType.type)
+        visit(nested.type)
     }
 
-    public func visit(recordType: TSRecordType) {
+    public func visit(record: TSRecordType) {
         openBracket("{")
-        write(array: recordType.fields, multilineMode: .multiline) {
+        write(array: record.fields, multilineMode: .multiline) {
             write(field: $0)
         }
         closeBracket("}")
@@ -315,14 +441,14 @@ public final class ASTPrinter: ASTVisitor {
         printer.write(";")
     }
 
-    public func visit(stringLiteralType: TSStringLiteralType) {
+    public func visit(stringLiteral: TSStringLiteralType) {
         printer.write("\"")
-        printer.write(stringLiteralType.value)
+        printer.write(stringLiteral.value)
         printer.write("\"")
     }
 
-    public func visit(unionType: TSUnionType) {
-        write(array: unionType.elements, separator: " |") {
+    public func visit(union: TSUnionType) {
+        write(array: union.elements, separator: " |") {
             visit($0)
         }
     }

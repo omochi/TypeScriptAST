@@ -105,7 +105,7 @@ final class PrintTypeTests: PrintTestsBase {
         assertPrint(TSArrayType(element: TSNamedType.number), "number[]")
 
         assertPrint(
-            TSArrayType(element: TSNamedType.number.orNull),
+            TSArrayType(element: TSUnionType([TSNamedType.number, TSNamedType.null])),
             "(number | null)[]"
         )
 

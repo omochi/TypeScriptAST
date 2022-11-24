@@ -1,31 +1,18 @@
-public final class TSFunctionDecl: _TSDecl {
-    public struct Param {
-        public var name: String
-        public var type: (any TSType)?
-
-        public init(
-            name: String,
-            type: (any TSType)?
-        ) {
-            self.name = name
-            self.type = type
-        }
-    }
-
+public final class TSMethodDecl: _TSDecl {
     public init(
         modifiers: [TSDeclModifier] = [],
         name: String,
         genericParams: [String] = [],
-        params: [Param],
+        params: [TSFunctionDecl.Param],
         result: (any TSType)? = nil,
-        body: TSBlockStmt
+        block: TSBlockStmt? = nil
     ) {
         self.modifiers = modifiers
         self.name = name
         self.genericParams = genericParams
-        self._params = params
+        self.params = params
         self.result = result
-        self.body = body
+        self.block = block
     }
 
     public private(set) unowned var parent: ASTNode?
@@ -36,7 +23,7 @@ public final class TSFunctionDecl: _TSDecl {
     public var modifiers: [TSDeclModifier]
     public var name: String
     public var genericParams: [String]
-    public var params: [Param] {
+    public var params: [TSFunctionDecl.Param] {
         get { _params }
         set {
             for param in _params {
@@ -48,7 +35,8 @@ public final class TSFunctionDecl: _TSDecl {
             }
         }
     }
-    private var _params: [Param] = []
+    private var _params: [TSFunctionDecl.Param] = []
+
     @AnyTSTypeOptionalStorage public var result: (any TSType)?
-    @ASTNodeStorage public var body: TSBlockStmt
+    @ASTNodeOptionalStorage public var block: TSBlockStmt?
 }

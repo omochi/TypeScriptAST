@@ -3,7 +3,6 @@ public final class PrettyPrinter {
 
     public private(set) var output: String = ""
     public private(set) var isStartOfLine: Bool = true
-    public private(set) var line: Int = 1
     private var depth: Int = 0
 
     public func write(space: String? = nil, _ text: String, newline: Bool = false) {
@@ -37,7 +36,6 @@ public final class PrettyPrinter {
     public func writeNewline() {
         output += "\n"
         isStartOfLine = true
-        line += 1
     }
 
     public func push(newline: Bool = true) {

@@ -120,18 +120,21 @@ public struct GenericASTNodeArrayStorage<Box: ASTNodeBoxProtocol> {
 }
 
 public typealias ASTNodeStorage<Value: ASTNode> = GenericASTNodeStorage<ASTNodeIdentityBox<Value>>
+public typealias AnyASTNodeStorage = GenericASTNodeStorage<AnyASTNodeASTNodeBox>
 public typealias AnyTSTypeStorage = GenericASTNodeStorage<AnyTSTypeASTNodeBox>
 public typealias AnyTSExprStorage = GenericASTNodeStorage<AnyTSExprASTNodeBox>
 public typealias AnyTSStmtStorage = GenericASTNodeStorage<AnyTSStmtASTNodeBox>
 public typealias AnyTSDeclStorage = GenericASTNodeStorage<AnyTSDeclASTNodeBox>
 
 public typealias ASTNodeOptionalStorage<Value: ASTNode> = GenericASTNodeOptionalStorage<ASTNodeIdentityBox<Value>>
+public typealias AnyASTNodeOptionalStorage = GenericASTNodeOptionalStorage<AnyASTNodeASTNodeBox>
 public typealias AnyTSTypeOptionalStorage = GenericASTNodeOptionalStorage<AnyTSTypeASTNodeBox>
 public typealias AnyTSExprOptionalStorage = GenericASTNodeOptionalStorage<AnyTSExprASTNodeBox>
 public typealias AnyTSStmtOptionalStorage = GenericASTNodeOptionalStorage<AnyTSStmtASTNodeBox>
 public typealias AnyTSDeclOptionalStorage = GenericASTNodeOptionalStorage<AnyTSDeclASTNodeBox>
 
 public typealias ASTNodeArrayStorage<Value: ASTNode> = GenericASTNodeArrayStorage<ASTNodeIdentityBox<Value>>
+public typealias AnyASTNodeArrayStorage = GenericASTNodeArrayStorage<AnyASTNodeASTNodeBox>
 public typealias AnyTSTypeArrayStorage = GenericASTNodeArrayStorage<AnyTSTypeASTNodeBox>
 public typealias AnyTSExprArrayStorage = GenericASTNodeArrayStorage<AnyTSExprASTNodeBox>
 public typealias AnyTSStmtArrayStorage = GenericASTNodeArrayStorage<AnyTSStmtASTNodeBox>

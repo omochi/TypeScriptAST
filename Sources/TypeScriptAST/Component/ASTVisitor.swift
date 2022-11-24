@@ -2,75 +2,111 @@ public protocol ASTVisitor {
     func visit(_ node: any ASTNode)
 
     func visit(decl: any TSDecl)
-    func visit(functionDecl: TSFunctionDecl)
-    func visit(importDecl: TSImportDecl)
-    func visit(namespaceDecl: TSNamespaceDecl)
-    func visit(typeDecl: TSTypeDecl)
-    func visit(varDecl: TSVarDecl)
+    func visit(class: TSClassDecl)
+    func visit(field: TSFieldDecl)
+    func visit(function: TSFunctionDecl)
+    func visit(import: TSImportDecl)
+    func visit(interface: TSInterfaceDecl)
+    func visit(method: TSMethodDecl)
+    func visit(namespace: TSNamespaceDecl)
+    func visit(type: TSTypeDecl)
+    func visit(`var`: TSVarDecl)
+
+    func visit(expr: any TSExpr)
+    func visit(numberLiteral: TSNumberLiteralExpr)
+
+    func visit(stmt: any TSStmt)
+    func visit(block: TSBlockStmt)
+    func visit(return: TSReturnStmt)
 
     func visit(type: any TSType)
-    func visit(arrayType: TSArrayType)
-    func visit(customType: TSCustomType)
-    func visit(dictionaryType: TSDictionaryType)
-    func visit(functionType: TSFunctionType)
-    func visit(namedType: TSNamedType)
-    func visit(nestedType: TSNestedType)
-    func visit(recordType: TSRecordType)
-    func visit(stringLiteralType: TSStringLiteralType)
-    func visit(unionType: TSUnionType)
+    func visit(array: TSArrayType)
+    func visit(custom: TSCustomType)
+    func visit(dictionary: TSDictionaryType)
+    func visit(function: TSFunctionType)
+    func visit(named: TSNamedType)
+    func visit(nested: TSNestedType)
+    func visit(record: TSRecordType)
+    func visit(stringLiteral: TSStringLiteralType)
+    func visit(union: TSUnionType)
 }
 
 extension ASTVisitor {
     public func visit(_ node: any ASTNode) {
         switch node {
+        case let x as TSClassDecl:
+            visit(class: x)
+        case let x as TSFieldDecl:
+            visit(field: x)
         case let x as TSFunctionDecl:
-            visit(functionDecl: x)
+            visit(function: x)
         case let x as TSImportDecl:
-            visit(importDecl: x)
+            visit(import: x)
+        case let x as TSInterfaceDecl:
+            visit(interface: x)
+        case let x as TSMethodDecl:
+            visit(method: x)
         case let x as TSNamespaceDecl:
-            visit(namespaceDecl: x)
+            visit(namespace: x)
         case let x as TSTypeDecl:
-            visit(typeDecl: x)
+            visit(type: x)
         case let x as TSVarDecl:
-            visit(varDecl: x)
+            visit(var: x)
+        case let x as TSNumberLiteralExpr:
+            visit(numberLiteral: x)
+        case let x as TSBlockStmt:
+            visit(block: x)
+        case let x as TSReturnStmt:
+            visit(return: x)
         case let x as TSArrayType:
-            visit(arrayType: x)
+            visit(array: x)
         case let x as TSCustomType:
-            visit(customType: x)
+            visit(custom: x)
         case let x as TSDictionaryType:
-            visit(dictionaryType: x)
+            visit(dictionary: x)
         case let x as TSFunctionType:
-            visit(functionType: x)
+            visit(function: x)
         case let x as TSNamedType:
-            visit(namedType: x)
+            visit(named: x)
         case let x as TSNestedType:
-            visit(nestedType: x)
+            visit(nested: x)
         case let x as TSRecordType:
-            visit(recordType: x)
+            visit(record: x)
         case let x as TSStringLiteralType:
-            visit(stringLiteralType: x)
+            visit(stringLiteral: x)
         case let x as TSUnionType:
-            visit(unionType: x)
+            visit(union: x)
         default:
             break
         }
     }
 
     public func visit(decl: any TSDecl) {}
-    public func visit(functionDecl: TSFunctionDecl) { visit(decl: functionDecl) }
-    public func visit(importDecl: TSImportDecl) { visit(decl: importDecl) }
-    public func visit(namespaceDecl: TSNamespaceDecl) { visit(decl: namespaceDecl) }
-    public func visit(typeDecl: TSTypeDecl) { visit(decl: typeDecl) }
-    public func visit(varDecl: TSVarDecl) { visit(decl: varDecl) }
+    public func visit(class: TSClassDecl) { visit(decl: `class`) }
+    public func visit(field: TSFieldDecl) { visit(decl: field) }
+    public func visit(function: TSFunctionDecl) { visit(decl: function) }
+    public func visit(import: TSImportDecl) { visit(decl: `import`) }
+    public func visit(interface: TSInterfaceDecl) { visit(decl: interface) }
+    public func visit(method: TSMethodDecl) { visit(decl: method) }
+    public func visit(namespace: TSNamespaceDecl) { visit(decl: namespace) }
+    public func visit(type: TSTypeDecl) { visit(decl: type) }
+    public func visit(`var`: TSVarDecl) { visit(decl: `var`) }
+
+    public func visit(expr: any TSExpr) {}
+    public func visit(numberLiteral: TSNumberLiteralExpr) { visit(expr: numberLiteral) }
+
+    public func visit(stmt: any TSStmt) {}
+    public func visit(block: TSBlockStmt) { visit(stmt: block) }
+    public func visit(return: TSReturnStmt) { visit(stmt: `return`) }
 
     public func visit(type: any TSType) {}
-    public func visit(arrayType: TSArrayType) { visit(type: arrayType) }
-    public func visit(customType: TSCustomType) { visit(type: customType) }
-    public func visit(dictionaryType: TSDictionaryType) { visit(type: dictionaryType) }
-    public func visit(functionType: TSFunctionType) { visit(type: functionType) }
-    public func visit(namedType: TSNamedType) { visit(type: namedType) }
-    public func visit(nestedType: TSNestedType) { visit(type: nestedType) }
-    public func visit(recordType: TSRecordType) { visit(type: recordType) }
-    public func visit(stringLiteralType: TSStringLiteralType) { visit(type: stringLiteralType) }
-    public func visit(unionType: TSUnionType) { visit(type: unionType) }
+    public func visit(array: TSArrayType) { visit(type: array) }
+    public func visit(custom: TSCustomType) { visit(type: custom) }
+    public func visit(dictionary: TSDictionaryType) { visit(type: dictionary) }
+    public func visit(function: TSFunctionType) { visit(type: function) }
+    public func visit(named: TSNamedType) { visit(type: named) }
+    public func visit(nested: TSNestedType) { visit(type: nested) }
+    public func visit(record: TSRecordType) { visit(type: record) }
+    public func visit(stringLiteral: TSStringLiteralType) { visit(type: stringLiteral) }
+    public func visit(union: TSUnionType) { visit(type: union) }
 }
