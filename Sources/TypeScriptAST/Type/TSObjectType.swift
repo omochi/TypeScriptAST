@@ -2,7 +2,7 @@ public final class TSObjectType: _TSType {
     public struct Field {
         public init(
             name: String,
-            type: TSType,
+            type: any TSType,
             isOptional: Bool = false
         ) {
             self.name = name
