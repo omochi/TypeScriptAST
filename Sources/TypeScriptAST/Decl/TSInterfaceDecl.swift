@@ -13,8 +13,8 @@ public final class TSInterfaceDecl: _TSDecl {
         self.block = block
     }
 
-    public private(set) unowned var parent: ASTNode?
-    internal func _setParent(_ newValue: (ASTNode)?) {
+    public private(set) unowned var parent: (any ASTNode)?
+    internal func _setParent(_ newValue: (any ASTNode)?) {
         parent = newValue
     }
 

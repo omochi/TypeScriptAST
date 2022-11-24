@@ -2,14 +2,17 @@ public final class TSFunctionType: _TSType {
     public struct Param {
         public init(
             name: String,
-            type: (any TSType)?
+            type: (any TSType)? = nil,
+            isOptional: Bool = false
         ) {
             self.name = name
             self.type = type
+            self.isOptional = isOptional
         }
 
         public var name: String
         public var type: (any TSType)?
+        public var isOptional: Bool
     }
 
     public init(

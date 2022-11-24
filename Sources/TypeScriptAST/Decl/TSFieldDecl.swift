@@ -11,8 +11,8 @@ public final class TSFieldDecl: _TSDecl {
         self.type = type
     }
 
-    public private(set) unowned var parent: ASTNode?
-    internal func _setParent(_ newValue: (ASTNode)?) {
+    public private(set) unowned var parent: (any ASTNode)?
+    internal func _setParent(_ newValue: (any ASTNode)?) {
         parent = newValue
     }
 

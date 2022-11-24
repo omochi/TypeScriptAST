@@ -1,16 +1,12 @@
-public final class TSFunctionDecl: _TSDecl {
+public final class TSClosureExpr: _TSExpr {
     public init(
-        modifiers: [TSDeclModifier] = [],
-        name: String,
-        genericParams: [String] = [],
+        hasParen: Bool = true,
         params: [TSFunctionType.Param],
         result: (any TSType)? = nil,
-        body: TSBlockStmt
+        body: any TSStmt
     ) {
-        self.modifiers = modifiers
-        self.name = name
-        self.genericParams = genericParams
-        self._params = params
+        self.hasParen = hasParen
+        self.params = params
         self.result = result
         self.body = body
     }
@@ -20,9 +16,7 @@ public final class TSFunctionDecl: _TSDecl {
         parent = newValue
     }
 
-    public var modifiers: [TSDeclModifier]
-    public var name: String
-    public var genericParams: [String]
+    public var hasParen: Bool
     public var params: [TSFunctionType.Param] {
         get { _params }
         set {
@@ -37,5 +31,5 @@ public final class TSFunctionDecl: _TSDecl {
     }
     private var _params: [TSFunctionType.Param] = []
     @AnyTSTypeOptionalStorage public var result: (any TSType)?
-    @ASTNodeStorage public var body: TSBlockStmt
+    @AnyTSStmtStorage public var body: any TSStmt
 }

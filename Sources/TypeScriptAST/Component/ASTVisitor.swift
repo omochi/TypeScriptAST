@@ -1,5 +1,5 @@
 public protocol ASTVisitor {
-    func visit(_ node: any ASTNode)
+    func walk(_ node: any ASTNode)
 
     func visit(class: TSClassDecl)
     func visit(field: TSFieldDecl)
@@ -12,12 +12,17 @@ public protocol ASTVisitor {
     func visit(type: TSTypeDecl)
     func visit(`var`: TSVarDecl)
 
+    func visit(array: TSArrayExpr)
     func visit(as: TSAsExpr)
+    func visit(await: TSAwaitExpr)
     func visit(call: TSCallExpr)
+    func visit(closure: TSClosureExpr)
+    func visit(custom: TSCustomExpr)
     func visit(ident: TSIdentExpr)
     func visit(infixOperator: TSInfixOperatorExpr)
     func visit(new: TSNewExpr)
     func visit(numberLiteral: TSNumberLiteralExpr)
+    func visit(object: TSObjectExpr)
     func visit(paren: TSParenExpr)
     func visit(prefixOperator: TSPrefixOperatorExpr)
     func visit(stringLiteral: TSStringLiteralExpr)
@@ -34,82 +39,53 @@ public protocol ASTVisitor {
     func visit(function: TSFunctionType)
     func visit(ident: TSIdentType)
     func visit(member: TSMemberType)
-    func visit(record: TSRecordType)
+    func visit(object: TSObjectType)
     func visit(stringLiteral: TSStringLiteralType)
     func visit(union: TSUnionType)
 }
 
 extension ASTVisitor {
-    public func visit(_ node: any ASTNode) {
+    public func walk(_ node: any ASTNode) {
         switch node {
-        case let x as TSClassDecl:
-            visit(class: x)
-        case let x as TSFieldDecl:
-            visit(field: x)
-        case let x as TSFunctionDecl:
-            visit(function: x)
-        case let x as TSImportDecl:
-            visit(import: x)
-        case let x as TSInterfaceDecl:
-            visit(interface: x)
-        case let x as TSMethodDecl:
-            visit(method: x)
-        case let x as TSNamespaceDecl:
-            visit(namespace: x)
-        case let x as TSSourceFile:
-            visit(sourceFile: x)
-        case let x as TSTypeDecl:
-            visit(type: x)
-        case let x as TSVarDecl:
-            visit(var: x)
-        case let x as TSAsExpr:
-            visit(as: x)
-        case let x as TSCallExpr:
-            visit(call: x)
-        case let x as TSIdentExpr:
-            visit(ident: x)
-        case let x as TSInfixOperatorExpr:
-            visit(infixOperator: x)
-        case let x as TSNewExpr:
-            visit(new: x)
-        case let x as TSNumberLiteralExpr:
-            visit(numberLiteral: x)
-        case let x as TSParenExpr:
-            visit(paren: x)
-        case let x as TSPrefixOperatorExpr:
-            visit(prefixOperator: x)
-        case let x as TSStringLiteralExpr:
-            visit(stringLiteral: x)
-        case let x as TSBlockStmt:
-            visit(block: x)
-        case let x as TSForInStmt:
-            visit(forIn: x)
-        case let x as TSIfStmt:
-            visit(if: x)
-        case let x as TSReturnStmt:
-            visit(return: x)
-        case let x as TSThrowStmt:
-            visit(throw: x)
-        case let x as TSArrayType:
-            visit(array: x)
-        case let x as TSCustomType:
-            visit(custom: x)
-        case let x as TSDictionaryType:
-            visit(dictionary: x)
-        case let x as TSFunctionType:
-            visit(function: x)
-        case let x as TSIdentType:
-            visit(ident: x)
-        case let x as TSMemberType:
-            visit(member: x)
-        case let x as TSRecordType:
-            visit(record: x)
-        case let x as TSStringLiteralType:
-            visit(stringLiteral: x)
-        case let x as TSUnionType:
-            visit(union: x)
-        default:
-            break
+        case let x as TSClassDecl: visit(class: x)
+        case let x as TSFieldDecl: visit(field: x)
+        case let x as TSFunctionDecl: visit(function: x)
+        case let x as TSImportDecl: visit(import: x)
+        case let x as TSInterfaceDecl: visit(interface: x)
+        case let x as TSMethodDecl: visit(method: x)
+        case let x as TSNamespaceDecl: visit(namespace: x)
+        case let x as TSSourceFile: visit(sourceFile: x)
+        case let x as TSTypeDecl: visit(type: x)
+        case let x as TSVarDecl: visit(var: x)
+        case let x as TSArrayExpr: visit(array: x)
+        case let x as TSAsExpr: visit(as: x)
+        case let x as TSAwaitExpr: visit(await: x)
+        case let x as TSCallExpr: visit(call: x)
+        case let x as TSClosureExpr: visit(closure: x)
+        case let x as TSCustomExpr: visit(custom: x)
+        case let x as TSIdentExpr: visit(ident: x)
+        case let x as TSInfixOperatorExpr: visit(infixOperator: x)
+        case let x as TSNewExpr: visit(new: x)
+        case let x as TSNumberLiteralExpr: visit(numberLiteral: x)
+        case let x as TSObjectExpr: visit(object: x)
+        case let x as TSParenExpr: visit(paren: x)
+        case let x as TSPrefixOperatorExpr: visit(prefixOperator: x)
+        case let x as TSStringLiteralExpr: visit(stringLiteral: x)
+        case let x as TSBlockStmt: visit(block: x)
+        case let x as TSForInStmt: visit(forIn: x)
+        case let x as TSIfStmt: visit(if: x)
+        case let x as TSReturnStmt: visit(return: x)
+        case let x as TSThrowStmt: visit(throw: x)
+        case let x as TSArrayType: visit(array: x)
+        case let x as TSCustomType: visit(custom: x)
+        case let x as TSDictionaryType: visit(dictionary: x)
+        case let x as TSFunctionType: visit(function: x)
+        case let x as TSIdentType: visit(ident: x)
+        case let x as TSMemberType: visit(member: x)
+        case let x as TSObjectType: visit(object: x)
+        case let x as TSStringLiteralType: visit(stringLiteral: x)
+        case let x as TSUnionType: visit(union: x)
+        default: break
         }
     }
 
@@ -124,12 +100,17 @@ extension ASTVisitor {
     public func visit(type: TSTypeDecl) {}
     public func visit(`var`: TSVarDecl) {}
 
+    public func visit(array: TSArrayExpr) {}
     public func visit(as: TSAsExpr) {}
+    public func visit(await: TSAwaitExpr) {}
     public func visit(call: TSCallExpr) {}
+    public func visit(closure: TSClosureExpr) {}
+    public func visit(custom: TSCustomExpr) {}
     public func visit(ident: TSIdentExpr) {}
     public func visit(infixOperator: TSInfixOperatorExpr) {}
     public func visit(new: TSNewExpr) {}
     public func visit(numberLiteral: TSNumberLiteralExpr) {}
+    public func visit(object: TSObjectExpr) {}
     public func visit(paren: TSParenExpr) {}
     public func visit(prefixOperator: TSPrefixOperatorExpr) {}
     public func visit(stringLiteral: TSStringLiteralExpr) {}
@@ -146,7 +127,7 @@ extension ASTVisitor {
     public func visit(function: TSFunctionType) {}
     public func visit(ident: TSIdentType) {}
     public func visit(member: TSMemberType) {}
-    public func visit(record: TSRecordType) {}
+    public func visit(object: TSObjectType) {}
     public func visit(stringLiteral: TSStringLiteralType) {}
     public func visit(union: TSUnionType) {}
 }

@@ -1,5 +1,5 @@
 public protocol ASTNode: AnyObject {
-    var parent: ASTNode? { get }
+    var parent: (any ASTNode)? { get }
 }
 
 internal protocol _ASTNode: ASTNode {

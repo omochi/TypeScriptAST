@@ -48,7 +48,7 @@ public final class ASTPrinter: ASTVisitor {
 
     public func print(_ node: any ASTNode) -> String {
         printer = PrettyPrinter()
-        visit(node)
+        walk(node)
         return printer.output
     }
 
@@ -193,7 +193,7 @@ public final class ASTPrinter: ASTVisitor {
                 }
             }
 
-            visit(element)
+            walk(element)
 
             if index < elements.count - 1 {
                 printer.writeNewline()
@@ -215,7 +215,7 @@ public final class ASTPrinter: ASTVisitor {
         if genericArgs.isEmpty { return }
         openBracket("<")
         write(array: genericArgs, separator: ",") {
-            visit($0)
+            walk($0)
         }
         closeBracket(">")
     }
@@ -237,12 +237,12 @@ public final class ASTPrinter: ASTVisitor {
         write(genericParams: `class`.genericParams)
         if let extends = `class`.extends {
             printer.write(" extends ")
-            visit(extends)
+            walk(extends)
         }
         if !`class`.implements.isEmpty {
             printer.write(" implements ")
             write(array: `class`.implements, separator: ",") {
-                visit($0)
+                walk($0)
             }
         }
         printer.write(space: " ")
@@ -257,7 +257,7 @@ public final class ASTPrinter: ASTVisitor {
         } else {
             printer.write(": ")
         }
-        visit(field.type)
+        walk(field.type)
         printer.write(";")
     }
 
@@ -268,26 +268,10 @@ public final class ASTPrinter: ASTVisitor {
         write(params: function.params)
         if let result = function.result {
             printer.write(": ")
-            visit(result)
+            walk(result)
         }
         printer.write(space: " ")
         write(block: function.body, scope: .function)
-    }
-
-    private func write(params: [TSFunctionDecl.Param]) {
-        openBracket("(")
-        write(array: params, separator: ",") {
-            write(param: $0)
-        }
-        closeBracket(")")
-    }
-
-    private func write(param: TSFunctionDecl.Param) {
-        printer.write(param.name)
-        if let type = param.type {
-            printer.write(": ")
-            visit(type)
-        }
     }
 
     public func visit(interface: TSInterfaceDecl) {
@@ -297,7 +281,7 @@ public final class ASTPrinter: ASTVisitor {
         if !interface.extends.isEmpty {
             printer.write(" extends ")
             write(array: interface.extends, separator: ",") {
-                visit($0)
+                walk($0)
             }
         }
         printer.write(space: " ")
@@ -321,7 +305,7 @@ public final class ASTPrinter: ASTVisitor {
         write(params: method.params)
         if let result = method.result {
             printer.write(": ")
-            visit(result)
+            walk(result)
         }
         if let block = method.block {
             printer.write(space: " ")
@@ -350,7 +334,7 @@ public final class ASTPrinter: ASTVisitor {
         printer.write(space: " ", "type \(type.name)")
         write(genericParams: type.genericParams)
         printer.write(" = ")
-        visit(type.type)
+        walk(type.type)
         printer.write(";")
     }
 
@@ -359,32 +343,59 @@ public final class ASTPrinter: ASTVisitor {
         printer.write(space: " ", "\(`var`.kind) \(`var`.name)")
         if let type = `var`.type {
             printer.write(": ")
-            visit(type)
+            walk(type)
         }
         if let initializer = `var`.initializer {
             printer.write(space: " ", "= ")
-            visit(initializer)
+            walk(initializer)
         }
         printer.write(";")
     }
 
     // MARK: - expr
 
+    public func visit(array: TSArrayExpr) {
+        openBracket("[")
+        write(array: array.elements, separator: ",") {
+            walk($0)
+        }
+        closeBracket("]")
+    }
+
     public func visit(as: TSAsExpr) {
-        visit(`as`.expr)
+        walk(`as`.expr)
         printer.write(" as ")
-        visit(`as`.type)
+        walk(`as`.type)
+    }
+
+    public func visit(await: TSAwaitExpr) {
+        printer.write("await ")
+        walk(`await`.expr)
     }
 
     public func visit(call: TSCallExpr) {
-        visit(call.callee)
+        walk(call.callee)
         write(args: call.args)
+    }
+
+    public func visit(closure: TSClosureExpr) {
+        write(params: closure.params, paren: closure.hasParen)
+        if let result = closure.result {
+            printer.write(": ")
+            walk(result)
+        }
+        printer.write(" => ")
+        walk(closure.body)
+    }
+
+    public func visit(custom: TSCustomExpr) {
+        printer.write(custom.text)
     }
 
     private func write(args: [any TSExpr]) {
         openBracket("(")
         write(array: args, separator: ",") {
-            visit($0)
+            walk($0)
         }
         closeBracket(")")
     }
@@ -394,14 +405,14 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public func visit(infixOperator: TSInfixOperatorExpr) {
-        visit(infixOperator.lhs)
+        walk(infixOperator.lhs)
         printer.write(" \(infixOperator.operator) ")
-        visit(infixOperator.rhs)
+        walk(infixOperator.rhs)
     }
 
     public func visit(new: TSNewExpr) {
         printer.write("new ")
-        visit(new.callee)
+        walk(new.callee)
         write(args: new.args)
     }
 
@@ -409,15 +420,29 @@ public final class ASTPrinter: ASTVisitor {
         printer.write(numberLiteral.text)
     }
 
+    public func visit(object: TSObjectExpr) {
+        openBracket("{")
+        write(array: object.fields, separator: ",", multilineMode: .multiline) {
+            write(field: $0)
+        }
+        closeBracket("}")
+    }
+
+    private func write(field: TSObjectExpr.Field) {
+        printer.write(field.name)
+        printer.write(": ")
+        walk(field.value)
+    }
+
     public func visit(paren: TSParenExpr) {
         printer.write("(")
-        visit(paren.expr)
+        walk(paren.expr)
         printer.write(")")
     }
 
     public func visit(prefixOperator: TSPrefixOperatorExpr) {
         printer.write("\(prefixOperator.operator) ")
-        visit(prefixOperator.expr)
+        walk(prefixOperator.expr)
     }
 
     public func visit(stringLiteral: TSStringLiteralExpr) {
@@ -433,7 +458,7 @@ public final class ASTPrinter: ASTVisitor {
         if let scope {
             context.scope = scope
         }
-        visit(block)
+        walk(block)
         popContext()
     }
 
@@ -445,35 +470,35 @@ public final class ASTPrinter: ASTVisitor {
 
     public func visit(forIn: TSForInStmt) {
         printer.write("for (\(forIn.kind) \(forIn.name) \(forIn.operator) ")
-        visit(forIn.expr)
+        walk(forIn.expr)
         printer.write(") ")
-        visit(forIn.body)
+        walk(forIn.body)
     }
 
     public func visit(if: TSIfStmt) {
         printer.write("if (")
-        visit(`if`.condition)
+        walk(`if`.condition)
         printer.write(") ")
-        visit(`if`.then)
+        walk(`if`.then)
         if let `else` = `if`.else {
             if !(`if`.then is TSBlockStmt) {
                 printer.writeNewline()
             }
 
             printer.write(space: " ", "else ")
-            visit(`else`)
+            walk(`else`)
         }
     }
 
     public func visit(return: TSReturnStmt) {
         printer.write("return ")
-        visit(`return`.expr)
+        walk(`return`.expr)
         printer.write(";")
     }
 
     public func visit(throw: TSThrowStmt) {
         printer.write("throw ")
-        visit(`throw`.expr)
+        walk(`throw`.expr)
         printer.write(";")
     }
 
@@ -490,7 +515,7 @@ public final class ASTPrinter: ASTVisitor {
         if paren {
             openBracket("(")
         }
-        visit(array.element)
+        walk(array.element)
         if paren {
             closeBracket(")")
         }
@@ -503,29 +528,37 @@ public final class ASTPrinter: ASTVisitor {
 
     public func visit(dictionary: TSDictionaryType) {
         printer.write("{ [key: string]: ")
-        visit(dictionary.value)
+        walk(dictionary.value)
         printer.write("; }")
     }
 
     public func visit(function: TSFunctionType) {
         write(params: function.params)
         printer.write(" => ")
-        visit(function.result)
+        walk(function.result)
     }
 
-    private func write(params: [TSFunctionType.Param]) {
-        openBracket("(")
+    private func write(params: [TSFunctionType.Param], paren: Bool = true) {
+        if paren {
+            openBracket("(")
+        }
         write(array: params, separator: ",") {
             write(param: $0)
         }
-        closeBracket(")")
+        if paren {
+            closeBracket(")")
+        }
     }
 
     private func write(param: TSFunctionType.Param) {
         printer.write(param.name)
         if let type = param.type {
-            printer.write(": ")
-            visit(type)
+            if param.isOptional {
+                printer.write("?: ")
+            } else {
+                printer.write(": ")
+            }
+            walk(type)
         }
     }
 
@@ -535,27 +568,27 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public func visit(member: TSMemberType) {
-        visit(member.base)
+        walk(member.base)
         printer.write(".")
-        visit(member.name)
+        walk(member.name)
     }
 
-    public func visit(record: TSRecordType) {
+    public func visit(object: TSObjectType) {
         openBracket("{")
-        write(array: record.fields, multilineMode: .multiline) {
+        write(array: object.fields, multilineMode: .multiline) {
             write(field: $0)
         }
         closeBracket("}")
     }
 
-    private func write(field: TSRecordType.Field) {
+    private func write(field: TSObjectType.Field) {
         printer.write(field.name)
         if field.isOptional {
             printer.write("?: ")
         } else {
             printer.write(": ")
         }
-        visit(field.type)
+        walk(field.type)
         printer.write(";")
     }
 
@@ -567,7 +600,7 @@ public final class ASTPrinter: ASTVisitor {
 
     public func visit(union: TSUnionType) {
         write(array: union.elements, separator: " |") {
-            visit($0)
+            walk($0)
         }
     }
 }

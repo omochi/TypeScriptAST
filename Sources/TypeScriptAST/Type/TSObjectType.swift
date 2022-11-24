@@ -1,4 +1,4 @@
-public final class TSRecordType: _TSType {
+public final class TSObjectType: _TSType {
     public struct Field {
         public init(
             name: String,

@@ -3,8 +3,8 @@ public final class TSNumberLiteralExpr: _TSExpr {
         self.text = text
     }
 
-    public private(set) unowned var parent: ASTNode?
-    internal func _setParent(_ newValue: (ASTNode)?) {
+    public private(set) unowned var parent: (any ASTNode)?
+    internal func _setParent(_ newValue: (any ASTNode)?) {
         parent = newValue
     }
 

@@ -11,7 +11,7 @@ extension TSType {
     public var asFunction: TSFunctionType? { self as? TSFunctionType }
     public var asIdent: TSIdentType? { self as? TSIdentType }
     public var asMember: TSMemberType? { self as? TSMemberType }
-    public var asRecord: TSRecordType? { self as? TSRecordType }
+    public var asObject: TSObjectType? { self as? TSObjectType }
     public var asStringLiteral: TSStringLiteralType? { self as? TSStringLiteralType }
     public var asUnion: TSUnionType? { self as? TSUnionType }
 }

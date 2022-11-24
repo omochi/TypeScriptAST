@@ -18,8 +18,8 @@ public final class TSForInStmt: _TSStmt {
         self.body = body
     }
 
-    public private(set) unowned var parent: ASTNode?
-    internal func _setParent(_ newValue: (ASTNode)?) {
+    public private(set) unowned var parent: (any ASTNode)?
+    internal func _setParent(_ newValue: (any ASTNode)?) {
         parent = newValue
     }
 

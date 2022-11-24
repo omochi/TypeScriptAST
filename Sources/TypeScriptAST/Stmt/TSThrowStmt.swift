@@ -3,8 +3,8 @@ public final class TSThrowStmt: _TSStmt {
         self.expr = expr
     }
 
-    public private(set) unowned var parent: ASTNode?
-    internal func _setParent(_ newValue: (ASTNode)?) {
+    public private(set) unowned var parent: (any ASTNode)?
+    internal func _setParent(_ newValue: (any ASTNode)?) {
         parent = newValue
     }
 

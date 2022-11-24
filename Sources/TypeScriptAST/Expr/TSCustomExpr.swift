@@ -1,6 +1,7 @@
-public final class TSStringLiteralExpr: _TSExpr {
-    public init(_ text: String) {
+public final class TSCustomExpr: _TSExpr {
+    public init(text: String, symbols: [String] = []) {
         self.text = text
+        self.symbols = symbols
     }
 
     public private(set) unowned var parent: (any ASTNode)?
@@ -9,4 +10,5 @@ public final class TSStringLiteralExpr: _TSExpr {
     }
 
     public var text: String
+    public var symbols: [String]
 }

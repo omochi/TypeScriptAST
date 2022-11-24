@@ -1,5 +1,7 @@
-public final class TSSourceFile: _TSDecl {
-    public init(_ elements: [any ASTNode]) {
+public final class TSArrayExpr: _TSExpr {
+    public init(
+        _ elements: [any TSExpr]
+    ) {
         self.elements = elements
     }
 
@@ -8,5 +10,5 @@ public final class TSSourceFile: _TSDecl {
         parent = newValue
     }
 
-    @AnyASTNodeArrayStorage public var elements: [any ASTNode]
+    @AnyTSExprArrayStorage public var elements: [any TSExpr]
 }

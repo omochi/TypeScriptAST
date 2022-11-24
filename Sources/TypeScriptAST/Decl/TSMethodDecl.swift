@@ -3,7 +3,7 @@ public final class TSMethodDecl: _TSDecl {
         modifiers: [TSDeclModifier] = [],
         name: String,
         genericParams: [String] = [],
-        params: [TSFunctionDecl.Param],
+        params: [TSFunctionType.Param],
         result: (any TSType)? = nil,
         block: TSBlockStmt? = nil
     ) {
@@ -15,15 +15,15 @@ public final class TSMethodDecl: _TSDecl {
         self.block = block
     }
 
-    public private(set) unowned var parent: ASTNode?
-    internal func _setParent(_ newValue: (ASTNode)?) {
+    public private(set) unowned var parent: (any ASTNode)?
+    internal func _setParent(_ newValue: (any ASTNode)?) {
         parent = newValue
     }
 
     public var modifiers: [TSDeclModifier]
     public var name: String
     public var genericParams: [String]
-    public var params: [TSFunctionDecl.Param] {
+    public var params: [TSFunctionType.Param] {
         get { _params }
         set {
             for param in _params {
@@ -35,7 +35,7 @@ public final class TSMethodDecl: _TSDecl {
             }
         }
     }
-    private var _params: [TSFunctionDecl.Param] = []
+    private var _params: [TSFunctionType.Param] = []
 
     @AnyTSTypeOptionalStorage public var result: (any TSType)?
     @ASTNodeOptionalStorage public var block: TSBlockStmt?

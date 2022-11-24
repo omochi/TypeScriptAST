@@ -3,27 +3,27 @@ import TypeScriptAST
 
 final class PrintTypeTests: PrintTestsBase {
     func testNamed() throws {
-        assertPrint(TSIdentType(name: "A"), "A")
+        assertPrint(TSIdentType("A"), "A")
 
         assertPrint(
             TSIdentType(
-                name: "A",
-                genericArgs: [TSIdentType(name: "T"), TSIdentType(name: "U")]
+                "A",
+                genericArgs: [TSIdentType("T"), TSIdentType("U")]
             ),
             "A<T, U>"
         )
 
         assertPrint(
             TSIdentType(
-                name: "S",
+                "S",
                 genericArgs: [
-                    TSArrayType(element: TSUnionType([
-                        TSIdentType(name: "A"),
-                        TSIdentType(name: "B"),
-                        TSIdentType(name: "C"),
-                        TSIdentType(name: "D")
+                    TSArrayType(TSUnionType([
+                        TSIdentType("A"),
+                        TSIdentType("B"),
+                        TSIdentType("C"),
+                        TSIdentType("D")
                     ])),
-                    TSIdentType(name: "U")
+                    TSIdentType("U")
                 ]
             ),
             """
@@ -40,26 +40,26 @@ final class PrintTypeTests: PrintTestsBase {
     func testUnion() throws {
         assertPrint(
             TSUnionType([
-                TSIdentType(name: "A"),
-                TSIdentType(name: "B")
+                TSIdentType("A"),
+                TSIdentType("B")
             ]),
             "A | B"
         )
 
         assertPrint(
             TSUnionType([
-                TSIdentType(name: "A"),
-                TSIdentType(name: "B"),
-                TSIdentType(name: "C")
+                TSIdentType("A"),
+                TSIdentType("B"),
+                TSIdentType("C")
             ]),
             "A | B | C"
         )
         assertPrint(
             TSUnionType([
-                TSIdentType(name: "A"),
-                TSIdentType(name: "B"),
-                TSIdentType(name: "C"),
-                TSIdentType(name: "D")
+                TSIdentType("A"),
+                TSIdentType("B"),
+                TSIdentType("C"),
+                TSIdentType("D")
             ]),
             """
             A |
@@ -71,15 +71,15 @@ final class PrintTypeTests: PrintTestsBase {
 
         assertPrint(
             TSUnionType([
-                TSRecordType([
+                TSObjectType([
                     .init(name: "kind", type: TSStringLiteralType("a")),
-                    .init(name: "a", type: TSRecordType([
+                    .init(name: "a", type: TSObjectType([
                         .init(name: "x", type: TSIdentType.number)
                     ]))
                 ]),
-                TSRecordType([
+                TSObjectType([
                     .init(name: "kind", type: TSStringLiteralType("b")),
-                    .init(name: "b", type: TSRecordType([
+                    .init(name: "b", type: TSObjectType([
                         .init(name: "x", type: TSIdentType.string)
                     ]))
                 ])
@@ -102,19 +102,19 @@ final class PrintTypeTests: PrintTestsBase {
     }
 
     func testArray() throws {
-        assertPrint(TSArrayType(element: TSIdentType.number), "number[]")
+        assertPrint(TSArrayType(TSIdentType.number), "number[]")
 
         assertPrint(
-            TSArrayType(element: TSUnionType([TSIdentType.number, TSIdentType.null])),
+            TSArrayType(TSUnionType([TSIdentType.number, TSIdentType.null])),
             "(number | null)[]"
         )
 
         assertPrint(
-            TSArrayType(element: TSUnionType([
-                TSIdentType(name: "A"),
-                TSIdentType(name: "B"),
-                TSIdentType(name: "C"),
-                TSIdentType(name: "D")
+            TSArrayType(TSUnionType([
+                TSIdentType("A"),
+                TSIdentType("B"),
+                TSIdentType("C"),
+                TSIdentType("D")
             ])),
             """
             (
@@ -138,8 +138,8 @@ final class PrintTypeTests: PrintTestsBase {
     func testMember() throws {
         assertPrint(
             TSMemberType(
-                base: TSIdentType(name: "A"),
-                name: TSIdentType(name: "B")
+                base: TSIdentType("A"),
+                name: TSIdentType("B")
             ),
             "A.B"
         )
@@ -147,10 +147,10 @@ final class PrintTypeTests: PrintTestsBase {
         assertPrint(
             TSMemberType(
                 base: TSMemberType(
-                    base: TSIdentType(name: "A"),
-                    name: TSIdentType(name: "B")
+                    base: TSIdentType("A"),
+                    name: TSIdentType("B")
                 ),
-                name: TSIdentType(name: "C", genericArgs: [TSIdentType(name: "T")])
+                name: TSIdentType("C", genericArgs: [TSIdentType("T")])
             ),
             "A.B.C<T>"
         )
@@ -158,18 +158,18 @@ final class PrintTypeTests: PrintTestsBase {
 
     func testDictionary() throws {
         assertPrint(
-            TSDictionaryType(value: TSIdentType(name: "A")),
+            TSDictionaryType(value: TSIdentType("A")),
             "{ [key: string]: A; }"
         )
     }
 
     func testRecord() throws {
-        assertPrint(TSRecordType([]), "{}")
+        assertPrint(TSObjectType([]), "{}")
 
         assertPrint(
-            TSRecordType([
-                .init(name: "a", type: TSIdentType(name: "A")),
-                .init(name: "b", type: TSIdentType(name: "B"), isOptional: true)
+            TSObjectType([
+                .init(name: "a", type: TSIdentType("A")),
+                .init(name: "b", type: TSIdentType("B"), isOptional: true)
             ]),
             """
             {
@@ -186,8 +186,8 @@ final class PrintTypeTests: PrintTestsBase {
         assertPrint(
             TSFunctionType(
                 params: [
-                    .init(name: "a", type: TSIdentType(name: "A")),
-                    .init(name: "b", type: TSIdentType(name: "B"))
+                    .init(name: "a", type: TSIdentType("A")),
+                    .init(name: "b", type: TSIdentType("B"))
                 ],
                 result: TSIdentType.void
             ),
@@ -197,10 +197,10 @@ final class PrintTypeTests: PrintTestsBase {
         assertPrint(
             TSFunctionType(
                 params: [
-                    .init(name: "a", type: TSIdentType(name: "A")),
-                    .init(name: "b", type: TSIdentType(name: "B")),
-                    .init(name: "c", type: TSIdentType(name: "C")),
-                    .init(name: "d", type: TSIdentType(name: "D"))
+                    .init(name: "a", type: TSIdentType("A")),
+                    .init(name: "b", type: TSIdentType("B")),
+                    .init(name: "c", type: TSIdentType("C")),
+                    .init(name: "d", type: TSIdentType("D"))
                 ],
                 result: TSIdentType.void
             ),
@@ -217,7 +217,7 @@ final class PrintTypeTests: PrintTestsBase {
 
     func testCustom() throws {
         assertPrint(
-            TSCustomType(text: "aaa", symbols: []),
+            TSCustomType(text: "aaa"),
             "aaa"
         )
     }

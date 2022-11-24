@@ -5,7 +5,7 @@ final class BasicTests: XCTestCase {
     func testAutoParent() throws {
         let b = TSIdentType.boolean
         let t = TSIdentType(
-            name: "t",
+            "t",
             genericArgs: .init([b])
         )
 
@@ -27,12 +27,12 @@ final class BasicTests: XCTestCase {
 
     func testPrintType() throws {
         let atu = TSIdentType(
-            name: "A",
-            genericArgs: [TSIdentType(name: "T"), TSIdentType(name: "U")]
+            "A",
+            genericArgs: [TSIdentType("T"), TSIdentType("U")]
         )
         XCTAssertEqual(atu.print(), "A<T, U>")
 
-        let na = TSArrayType(element: TSIdentType.number)
+        let na = TSArrayType(TSIdentType.number)
         XCTAssertEqual(na.print(), "number[]")
 
         

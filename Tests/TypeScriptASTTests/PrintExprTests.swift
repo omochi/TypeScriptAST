@@ -171,7 +171,7 @@ final class PrintExprTests: PrintTestsBase {
     }
 
     func testAs() throws {
-        assertPrint(TSAsExpr(TSIdentExpr("a"), TSIdentType(name: "A")), "a as A")
+        assertPrint(TSAsExpr(TSIdentExpr("a"), TSIdentType("A")), "a as A")
     }
 
     func testInfixOperator() throws {
@@ -215,6 +215,90 @@ final class PrintExprTests: PrintTestsBase {
     }
 
     func testNew() throws {
-        assertPrint(TSNewExpr(callee: TSIdentType(name: "Error"), args: []), "new Error()")
+        assertPrint(TSNewExpr(callee: TSIdentType("Error"), args: []), "new Error()")
+    }
+
+    func testArray() throws {
+        assertPrint(TSArrayExpr([]), "[]")
+
+        assertPrint(
+            TSArrayExpr([
+                TSIdentExpr("a"),
+                TSIdentExpr("b"),
+                TSIdentExpr("c"),
+                TSIdentExpr("d"),
+            ]),
+            """
+            [
+                a,
+                b,
+                c,
+                d
+            ]
+            """
+        )
+    }
+
+    func testObject() throws {
+        assertPrint(TSObjectExpr([]), "{}")
+
+        assertPrint(
+            TSObjectExpr([
+                .init(name: "a", value: TSIdentExpr.true)
+            ]),
+            """
+            {
+                a: true
+            }
+            """
+        )
+    }
+
+    func testClosure() throws {
+        assertPrint(
+            TSClosureExpr(params: [], body: TSIdentExpr.true),
+            "() => true"
+        )
+
+        assertPrint(
+            TSClosureExpr(hasParen: false, params: [.init(name: "x")], body: TSIdentExpr("x")),
+            "x => x"
+        )
+
+        assertPrint(
+            TSClosureExpr(
+                params: [
+                    .init(name: "a", type: TSIdentType("A")),
+                    .init(name: "b", type: TSIdentType("B")),
+                    .init(name: "c", type: TSIdentType("C")),
+                    .init(name: "d", type: TSIdentType("D"))
+                ],
+                result: TSIdentType.boolean,
+                body: TSBlockStmt([
+                    TSReturnStmt(TSIdentExpr.true)
+                ])
+            ),
+            """
+            (
+                a: A,
+                b: B,
+                c: C,
+                d: D
+            ): boolean => {
+                return true;
+            }
+            """
+        )
+    }
+
+    func testCustom() throws {
+        assertPrint(TSCustomExpr(text: "aaa"), "aaa")
+    }
+
+    func testAwait() throws {
+        assertPrint(
+            TSAwaitExpr(TSCallExpr(callee: TSIdentExpr("f"), args: [])),
+            "await f()"
+        )
     }
 }

@@ -1,6 +1,6 @@
 public final class TSIdentType: _TSType {
     public init(
-        name: String,
+        _ name: String,
         genericArgs: [any TSType] = []
     ) {
         self.name = name
@@ -15,16 +15,16 @@ public final class TSIdentType: _TSType {
     public var name: String
     @AnyTSTypeArrayStorage public var genericArgs: [any TSType]
 
-    public static var null: TSIdentType { TSIdentType(name: "null") }
-    public static var undefined: TSIdentType { TSIdentType(name: "undefined") }
-    public static var void: TSIdentType { TSIdentType(name: "void") }
-    public static var never: TSIdentType { TSIdentType(name: "never") }
-    public static var any: TSIdentType { TSIdentType(name: "any") }
-    public static var unknown: TSIdentType { TSIdentType(name: "unknown") }
-    public static var boolean: TSIdentType { TSIdentType(name: "boolean") }
-    public static var number: TSIdentType { TSIdentType(name: "number") }
-    public static var string: TSIdentType { TSIdentType(name: "string") }
+    public static var null: TSIdentType { TSIdentType("null") }
+    public static var undefined: TSIdentType { TSIdentType("undefined") }
+    public static var void: TSIdentType { TSIdentType("void") }
+    public static var never: TSIdentType { TSIdentType("never") }
+    public static var any: TSIdentType { TSIdentType("any") }
+    public static var unknown: TSIdentType { TSIdentType("unknown") }
+    public static var boolean: TSIdentType { TSIdentType("boolean") }
+    public static var number: TSIdentType { TSIdentType("number") }
+    public static var string: TSIdentType { TSIdentType("string") }
     public static func promise(_ element: any TSType) -> TSIdentType {
-        TSIdentType(name: "Promise", genericArgs: [element])
+        TSIdentType("Promise", genericArgs: [element])
     }
 }

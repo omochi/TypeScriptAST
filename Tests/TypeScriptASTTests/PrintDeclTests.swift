@@ -53,7 +53,7 @@ final class PrintDeclTests: PrintTestsBase {
             TSTypeDecl(
                 name: "A",
                 genericParams: ["T"],
-                type: TSIdentType(name: "B", genericArgs: [TSIdentType(name: "T")])
+                type: TSIdentType("B", genericArgs: [TSIdentType("T")])
             ),
             """
             type A<T> = B<T>;
@@ -207,8 +207,8 @@ final class PrintDeclTests: PrintTestsBase {
                 name: "I",
                 genericParams: ["T"],
                 extends: [
-                    TSIdentType(name: "J", genericArgs: [TSIdentType(name: "T")]),
-                    TSIdentType(name: "K")
+                    TSIdentType("J", genericArgs: [TSIdentType("T")]),
+                    TSIdentType("K")
                 ],
                 block: TSBlockStmt([
                     TSFieldDecl(name: "x", type: TSIdentType.number),
@@ -244,8 +244,8 @@ final class PrintDeclTests: PrintTestsBase {
                 modifiers: [.export],
                 name: "A",
                 genericParams: ["T"],
-                extends: TSIdentType(name: "B"),
-                implements: [TSIdentType(name: "I")],
+                extends: TSIdentType("B"),
+                implements: [TSIdentType("I")],
                 block: TSBlockStmt([
                     TSFieldDecl(
                         modifiers: [.public],
