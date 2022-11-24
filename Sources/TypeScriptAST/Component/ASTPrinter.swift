@@ -69,7 +69,20 @@ public final class ASTPrinter: ASTVisitor {
         popContext()
     }
 
-    private func printsNewlineBetweenSibling(decl: any TSDecl) -> Bool {
+    private func printsNewline(
+        after prev: any ASTNode,
+        before node: any ASTNode
+    ) -> Bool {
+        guard let prev = prev.asDecl,
+              let decl = node.asDecl else
+        {
+            return false
+        }
+
+        if type(of: prev) != type(of: decl) {
+            return true
+        }
+
         switch decl {
         case is TSClassDecl:
             return true
@@ -89,6 +102,8 @@ public final class ASTPrinter: ASTVisitor {
             }
         case is TSNamespaceDecl:
             return true
+        case is TSSourceFile:
+            return true
         case is TSTypeDecl:
             return true
         case is TSVarDecl:
@@ -98,8 +113,6 @@ public final class ASTPrinter: ASTVisitor {
             default:
                 return false
             }
-//        case .custom:
-//            return true
         default:
             return true
         }
@@ -161,12 +174,8 @@ public final class ASTPrinter: ASTVisitor {
         }
 
         for (index, element) in elements.enumerated() {
-            if index > 0,
-               let prevDecl = elements[index - 1].asDecl,
-               let decl = element.asDecl
-            {
-                let isSame = type(of: prevDecl) == type(of: decl)
-                if !isSame || printsNewlineBetweenSibling(decl: decl) {
+            if index > 0 {
+                if printsNewline(after: elements[index - 1], before: element) {
                     printer.writeNewline()
                 }
             }
@@ -313,6 +322,14 @@ public final class ASTPrinter: ASTVisitor {
         write(block: namespace.block, scope: .namespace)
     }
 
+    public func visit(sourceFile: TSSourceFile) {
+        pushContext()
+        context.scope = .topLevel
+        write(blockElements: sourceFile.elements)
+        printer.writeNewline()
+        popContext()
+    }
+
     public func visit(type: TSTypeDecl) {
         write(modifiers: type.modifiers)
         printer.write(space: " ", "type \(type.name)")
@@ -336,6 +353,10 @@ public final class ASTPrinter: ASTVisitor {
         printer.write(";")
     }
 
+    public func visit(ident: TSIdentExpr) {
+        printer.write(ident.name)
+    }
+
     public func visit(numberLiteral: TSNumberLiteralExpr) {
         printer.write(numberLiteral.text)
     }
@@ -355,9 +376,37 @@ public final class ASTPrinter: ASTVisitor {
         closeBracket("}")
     }
 
+    public func visit(forIn: TSForInStmt) {
+        printer.write("for (\(forIn.kind) \(forIn.name) \(forIn.operator) ")
+        visit(forIn.expr)
+        printer.write(") ")
+        visit(forIn.body)
+    }
+
+    public func visit(if: TSIfStmt) {
+        printer.write("if (")
+        visit(`if`.condition)
+        printer.write(") ")
+        visit(`if`.then)
+        if let `else` = `if`.else {
+            if !(`if`.then is TSBlockStmt) {
+                printer.writeNewline()
+            }
+
+            printer.write(space: " ", "else ")
+            visit(`else`)
+        }
+    }
+
     public func visit(return: TSReturnStmt) {
         printer.write("return ")
         visit(`return`.expr)
+        printer.write(";")
+    }
+
+    public func visit(throw: TSThrowStmt) {
+        printer.write("throw ")
+        visit(`throw`.expr)
         printer.write(";")
     }
 
@@ -411,9 +460,9 @@ public final class ASTPrinter: ASTVisitor {
         }
     }
 
-    public func visit(named: TSNamedType) {
-        printer.write(named.name)
-        write(genericArgs: named.genericArgs)
+    public func visit(ident: TSIdentType) {
+        printer.write(ident.name)
+        write(genericArgs: ident.genericArgs)
     }
 
     public func visit(nested: TSNestedType) {

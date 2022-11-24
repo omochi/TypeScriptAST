@@ -3,8 +3,8 @@ public final class TSClassDecl: _TSDecl {
         modifiers: [TSDeclModifier] = [],
         name: String,
         genericParams: [String] = [],
-        extends: TSNamedType? = nil,
-        implements: [TSNamedType] = [],
+        extends: TSIdentType? = nil,
+        implements: [TSIdentType] = [],
         block: TSBlockStmt
     ) {
         self.modifiers = modifiers
@@ -23,7 +23,7 @@ public final class TSClassDecl: _TSDecl {
     public var modifiers: [TSDeclModifier]
     public var name: String
     public var genericParams: [String]
-    @ASTNodeOptionalStorage public var extends: TSNamedType?
-    @ASTNodeArrayStorage public var implements: [TSNamedType]
+    @ASTNodeOptionalStorage public var extends: TSIdentType?
+    @ASTNodeArrayStorage public var implements: [TSIdentType]
     @ASTNodeStorage public var block: TSBlockStmt
 }

@@ -1,6 +1,4 @@
-public protocol TSDecl: ASTNode {
-    var modifiers: [TSDeclModifier] { get }
-}
+public protocol TSDecl: ASTNode {}
 
 internal protocol _TSDecl: _ASTNode & TSDecl {}
 
@@ -12,6 +10,7 @@ extension TSDecl {
     public var asInterface: TSInterfaceDecl? { self as? TSInterfaceDecl }
     public var asMethod: TSMethodDecl? { self as? TSMethodDecl }
     public var asNamespace: TSNamespaceDecl? { self as? TSNamespaceDecl }
+    public var asSourceFile: TSSourceFile? { self as? TSSourceFile }
     public var asType: TSTypeDecl? { self as? TSTypeDecl }
     public var asVar: TSVarDecl? { self as? TSVarDecl }
 }

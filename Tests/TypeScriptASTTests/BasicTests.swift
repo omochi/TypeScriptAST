@@ -3,19 +3,19 @@ import TypeScriptAST
 
 final class BasicTests: XCTestCase {
     func testAutoParent() throws {
-        let b = TSNamedType.boolean
-        let t = TSNamedType(
+        let b = TSIdentType.boolean
+        let t = TSIdentType(
             name: "t",
             genericArgs: .init([b])
         )
 
         XCTAssertIdentical(b.parent, t)
 
-        let n = TSNamedType.number
+        let n = TSIdentType.number
         t.genericArgs.append(n)
         XCTAssertIdentical(n.parent, t)
 
-        let s = TSNamedType.string
+        let s = TSIdentType.string
         t.genericArgs[0] = s
         XCTAssertNil(b.parent)
         XCTAssertIdentical(s.parent, t)
@@ -26,13 +26,13 @@ final class BasicTests: XCTestCase {
     }
 
     func testPrintType() throws {
-        let atu = TSNamedType(
+        let atu = TSIdentType(
             name: "A",
-            genericArgs: [TSNamedType(name: "T"), TSNamedType(name: "U")]
+            genericArgs: [TSIdentType(name: "T"), TSIdentType(name: "U")]
         )
         XCTAssertEqual(atu.print(), "A<T, U>")
 
-        let na = TSArrayType(element: TSNamedType.number)
+        let na = TSArrayType(element: TSIdentType.number)
         XCTAssertEqual(na.print(), "number[]")
 
         

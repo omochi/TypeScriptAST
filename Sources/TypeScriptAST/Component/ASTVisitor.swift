@@ -9,22 +9,27 @@ public protocol ASTVisitor {
     func visit(interface: TSInterfaceDecl)
     func visit(method: TSMethodDecl)
     func visit(namespace: TSNamespaceDecl)
+    func visit(sourceFile: TSSourceFile)
     func visit(type: TSTypeDecl)
     func visit(`var`: TSVarDecl)
 
     func visit(expr: any TSExpr)
+    func visit(ident: TSIdentExpr)
     func visit(numberLiteral: TSNumberLiteralExpr)
 
     func visit(stmt: any TSStmt)
     func visit(block: TSBlockStmt)
+    func visit(forIn: TSForInStmt)
+    func visit(if: TSIfStmt)
     func visit(return: TSReturnStmt)
+    func visit(throw: TSThrowStmt)
 
     func visit(type: any TSType)
     func visit(array: TSArrayType)
     func visit(custom: TSCustomType)
     func visit(dictionary: TSDictionaryType)
     func visit(function: TSFunctionType)
-    func visit(named: TSNamedType)
+    func visit(ident: TSIdentType)
     func visit(nested: TSNestedType)
     func visit(record: TSRecordType)
     func visit(stringLiteral: TSStringLiteralType)
@@ -48,16 +53,26 @@ extension ASTVisitor {
             visit(method: x)
         case let x as TSNamespaceDecl:
             visit(namespace: x)
+        case let x as TSSourceFile:
+            visit(sourceFile: x)
         case let x as TSTypeDecl:
             visit(type: x)
         case let x as TSVarDecl:
             visit(var: x)
+        case let x as TSIdentExpr:
+            visit(ident: x)
         case let x as TSNumberLiteralExpr:
             visit(numberLiteral: x)
         case let x as TSBlockStmt:
             visit(block: x)
+        case let x as TSForInStmt:
+            visit(forIn: x)
+        case let x as TSIfStmt:
+            visit(if: x)
         case let x as TSReturnStmt:
             visit(return: x)
+        case let x as TSThrowStmt:
+            visit(throw: x)
         case let x as TSArrayType:
             visit(array: x)
         case let x as TSCustomType:
@@ -66,8 +81,8 @@ extension ASTVisitor {
             visit(dictionary: x)
         case let x as TSFunctionType:
             visit(function: x)
-        case let x as TSNamedType:
-            visit(named: x)
+        case let x as TSIdentType:
+            visit(ident: x)
         case let x as TSNestedType:
             visit(nested: x)
         case let x as TSRecordType:
@@ -89,22 +104,27 @@ extension ASTVisitor {
     public func visit(interface: TSInterfaceDecl) { visit(decl: interface) }
     public func visit(method: TSMethodDecl) { visit(decl: method) }
     public func visit(namespace: TSNamespaceDecl) { visit(decl: namespace) }
+    public func visit(sourceFile: TSSourceFile) { visit(decl: sourceFile) }
     public func visit(type: TSTypeDecl) { visit(decl: type) }
     public func visit(`var`: TSVarDecl) { visit(decl: `var`) }
 
     public func visit(expr: any TSExpr) {}
+    public func visit(ident: TSIdentExpr) { visit(expr: ident) }
     public func visit(numberLiteral: TSNumberLiteralExpr) { visit(expr: numberLiteral) }
 
     public func visit(stmt: any TSStmt) {}
     public func visit(block: TSBlockStmt) { visit(stmt: block) }
+    public func visit(forIn: TSForInStmt) { visit(stmt: forIn) }
+    public func visit(if: TSIfStmt) { visit(stmt: `if`) }
     public func visit(return: TSReturnStmt) { visit(stmt: `return`) }
+    public func visit(throw: TSThrowStmt) { visit(stmt: `throw`) }
 
     public func visit(type: any TSType) {}
     public func visit(array: TSArrayType) { visit(type: array) }
     public func visit(custom: TSCustomType) { visit(type: custom) }
     public func visit(dictionary: TSDictionaryType) { visit(type: dictionary) }
     public func visit(function: TSFunctionType) { visit(type: function) }
-    public func visit(named: TSNamedType) { visit(type: named) }
+    public func visit(ident: TSIdentType) { visit(type: ident) }
     public func visit(nested: TSNestedType) { visit(type: nested) }
     public func visit(record: TSRecordType) { visit(type: record) }
     public func visit(stringLiteral: TSStringLiteralType) { visit(type: stringLiteral) }

@@ -9,7 +9,6 @@ public final class TSImportDecl: _TSDecl {
         parent = newValue
     }
 
-    public var modifiers: [TSDeclModifier] { [] }
     public var names: [String]
     public var from: String
 }

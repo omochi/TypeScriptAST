@@ -3,7 +3,7 @@ public final class TSInterfaceDecl: _TSDecl {
         modifiers: [TSDeclModifier] = [],
         name: String,
         genericParams: [String] = [],
-        extends: [TSNamedType] = [],
+        extends: [TSIdentType] = [],
         block: TSBlockStmt
     ) {
         self.modifiers = modifiers
@@ -21,6 +21,6 @@ public final class TSInterfaceDecl: _TSDecl {
     public var modifiers: [TSDeclModifier]
     public var name: String
     public var genericParams: [String]
-    @ASTNodeArrayStorage public var extends: [TSNamedType]
+    @ASTNodeArrayStorage public var extends: [TSIdentType]
     @ASTNodeStorage public var block: TSBlockStmt
 }

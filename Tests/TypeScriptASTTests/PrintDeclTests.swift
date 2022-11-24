@@ -42,7 +42,7 @@ final class PrintDeclTests: PrintTestsBase {
             TSTypeDecl(
                 modifiers: [.export],
                 name: "A",
-                type: TSUnionType([TSNamedType.number, TSNamedType.null])
+                type: TSUnionType([TSIdentType.number, TSIdentType.null])
             ),
             """
             export type A = number | null;
@@ -53,7 +53,7 @@ final class PrintDeclTests: PrintTestsBase {
             TSTypeDecl(
                 name: "A",
                 genericParams: ["T"],
-                type: TSNamedType(name: "B", genericArgs: [TSNamedType(name: "T")])
+                type: TSIdentType(name: "B", genericArgs: [TSIdentType(name: "T")])
             ),
             """
             type A<T> = B<T>;
@@ -78,7 +78,7 @@ final class PrintDeclTests: PrintTestsBase {
                 modifiers: [.export],
                 name: "A",
                 block: TSBlockStmt([
-                    TSTypeDecl(modifiers: [.export], name: "B", type: TSNamedType.string)
+                    TSTypeDecl(modifiers: [.export], name: "B", type: TSIdentType.string)
                 ])
             ),
             """
@@ -93,8 +93,8 @@ final class PrintDeclTests: PrintTestsBase {
                 modifiers: [.export],
                 name: "A",
                 block: TSBlockStmt([
-                    TSTypeDecl(modifiers: [.export], name: "B", type: TSNamedType.string),
-                    TSTypeDecl(modifiers: [.export], name: "C", type: TSNamedType.string)
+                    TSTypeDecl(modifiers: [.export], name: "B", type: TSIdentType.string),
+                    TSTypeDecl(modifiers: [.export], name: "C", type: TSIdentType.string)
                 ])
             ),
             """
@@ -123,7 +123,7 @@ final class PrintDeclTests: PrintTestsBase {
                 modifiers: [.export],
                 kind: .const,
                 name: "b",
-                type: TSNamedType.number,
+                type: TSIdentType.number,
                 initializer: TSNumberLiteralExpr("0")
             ),
             """
@@ -138,8 +138,8 @@ final class PrintDeclTests: PrintTestsBase {
                 modifiers: [.export],
                 name: "f",
                 params: [
-                    .init(name: "a", type: TSNamedType.number),
-                    .init(name: "b", type: TSNamedType.string)
+                    .init(name: "a", type: TSIdentType.number),
+                    .init(name: "b", type: TSIdentType.string)
                 ],
                 body: TSBlockStmt([
                     TSReturnStmt(
@@ -160,12 +160,12 @@ final class PrintDeclTests: PrintTestsBase {
                 name: "f",
                 genericParams: ["A", "B", "C", "D"],
                 params: [
-                    .init(name: "a", type: TSNamedType.number),
-                    .init(name: "b", type: TSNamedType.string),
-                    .init(name: "c", type: TSNamedType.number),
-                    .init(name: "d", type: TSNamedType.string)
+                    .init(name: "a", type: TSIdentType.number),
+                    .init(name: "b", type: TSIdentType.string),
+                    .init(name: "c", type: TSIdentType.number),
+                    .init(name: "d", type: TSIdentType.string)
                 ],
-                result: TSNamedType.number,
+                result: TSIdentType.number,
                 body: TSBlockStmt([
                     TSReturnStmt(
                         TSNumberLiteralExpr("0")
@@ -207,16 +207,16 @@ final class PrintDeclTests: PrintTestsBase {
                 name: "I",
                 genericParams: ["T"],
                 extends: [
-                    TSNamedType(name: "J", genericArgs: [TSNamedType(name: "T")]),
-                    TSNamedType(name: "K")
+                    TSIdentType(name: "J", genericArgs: [TSIdentType(name: "T")]),
+                    TSIdentType(name: "K")
                 ],
                 block: TSBlockStmt([
-                    TSFieldDecl(name: "x", type: TSNamedType.number),
-                    TSFieldDecl(name: "y", type: TSNamedType.number),
+                    TSFieldDecl(name: "x", type: TSIdentType.number),
+                    TSFieldDecl(name: "y", type: TSIdentType.number),
                     TSMethodDecl(name: "f", params: []),
                     TSMethodDecl(name: "g", genericParams: ["U"], params: [
-                        .init(name: "a", type: TSNamedType.string)
-                    ], result: TSNamedType.string)
+                        .init(name: "a", type: TSIdentType.string)
+                    ], result: TSIdentType.string)
                 ])
             ),
             """
@@ -244,24 +244,24 @@ final class PrintDeclTests: PrintTestsBase {
                 modifiers: [.export],
                 name: "A",
                 genericParams: ["T"],
-                extends: TSNamedType(name: "B"),
-                implements: [TSNamedType(name: "I")],
+                extends: TSIdentType(name: "B"),
+                implements: [TSIdentType(name: "I")],
                 block: TSBlockStmt([
                     TSFieldDecl(
                         modifiers: [.public],
                         name: "a",
-                        type: TSNamedType.number
+                        type: TSIdentType.number
                     ),
                     TSFieldDecl(
                         modifiers: [.private],
                         name: "b",
-                        type: TSNamedType.number
+                        type: TSIdentType.number
                     ),
                     TSMethodDecl(
                         modifiers: [.public, .async],
                         name: "f",
                         params: [],
-                        result: TSNamedType(name: "Promise", genericArgs: [TSNamedType.number])
+                        result: TSIdentType.promise(TSIdentType.number)
                     )
                 ])
             ),
@@ -272,6 +272,27 @@ final class PrintDeclTests: PrintTestsBase {
 
                 public async f(): Promise<number>;
             }
+            """
+        )
+    }
+
+    func testSourceFile() throws {
+        assertPrint(
+            TSSourceFile([
+                TSVarDecl(
+                    modifiers: [.export], kind: .const, name: "a", type: TSIdentType.number,
+                    initializer: TSNumberLiteralExpr("1")
+                ),
+                TSVarDecl(
+                    modifiers: [.export], kind: .const, name: "b", type: TSIdentType.number,
+                    initializer: TSNumberLiteralExpr("2")
+                )
+            ]),
+            """
+            export const a: number = 1;
+
+            export const b: number = 2;
+            
             """
         )
     }
