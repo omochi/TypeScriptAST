@@ -134,4 +134,87 @@ final class PrintExprTests: PrintTestsBase {
             """
         )
     }
+
+    func testNumberLiteral() throws {
+        assertPrint(TSNumberLiteralExpr("0"), "0")
+    }
+
+    func testStringLiteral() throws {
+        assertPrint(
+            TSStringLiteralExpr("aaa"),
+            """
+            "aaa"
+            """
+        )
+        assertPrint(
+            TSStringLiteralExpr("a\nb"),
+            #"""
+            "a\nb"
+            """#
+        )
+        assertPrint(
+            TSStringLiteralExpr(#"a\b"#),
+            #"""
+            "a\\b"
+            """#
+        )
+        assertPrint(
+            TSStringLiteralExpr(#"a"b"#),
+            #"""
+            "a\"b"
+            """#
+        )
+    }
+
+    func testIdent() throws {
+        assertPrint(TSIdentExpr.null, "null")
+    }
+
+    func testAs() throws {
+        assertPrint(TSAsExpr(TSIdentExpr("a"), TSIdentType(name: "A")), "a as A")
+    }
+
+    func testInfixOperator() throws {
+        assertPrint(
+            TSInfixOperatorExpr(
+                TSIdentExpr("a"), "+", TSIdentExpr("b")
+            ),
+            "a + b"
+        )
+    }
+
+    func testParen() throws {
+        assertPrint(TSParenExpr(TSIdentExpr("a")), "(a)")
+    }
+
+    func testPrefixOperator() throws {
+        assertPrint(TSPrefixOperatorExpr("!", TSIdentExpr("a")), "! a")
+    }
+
+    func testCall() throws {
+        assertPrint(TSCallExpr(callee: TSIdentExpr("f"), args: []), "f()")
+
+        assertPrint(
+            TSCallExpr(
+                callee: TSIdentExpr("f"),
+                args: [
+                    TSIdentExpr("a"),
+                    TSIdentExpr("b"),
+                    TSIdentExpr("c"),
+                    TSIdentExpr("d")
+                ]
+            ),
+            """
+            f(
+                a,
+                b,
+                c,
+                d
+            )
+            """)
+    }
+
+    func testNew() throws {
+        assertPrint(TSNewExpr(callee: TSIdentType(name: "Error"), args: []), "new Error()")
+    }
 }

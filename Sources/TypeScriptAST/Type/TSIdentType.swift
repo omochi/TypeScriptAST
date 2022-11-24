@@ -20,6 +20,7 @@ public final class TSIdentType: _TSType {
     public static var void: TSIdentType { TSIdentType(name: "void") }
     public static var never: TSIdentType { TSIdentType(name: "never") }
     public static var any: TSIdentType { TSIdentType(name: "any") }
+    public static var unknown: TSIdentType { TSIdentType(name: "unknown") }
     public static var boolean: TSIdentType { TSIdentType(name: "boolean") }
     public static var number: TSIdentType { TSIdentType(name: "number") }
     public static var string: TSIdentType { TSIdentType(name: "string") }

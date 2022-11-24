@@ -1,3 +1,5 @@
+import Foundation
+
 public final class ASTPrinter: ASTVisitor {
     public enum ScopeKind {
         case topLevel
@@ -67,6 +69,17 @@ public final class ASTPrinter: ASTVisitor {
         printer.write(text)
         context.isInBrackets = false
         popContext()
+    }
+
+    private func escape(_ string: String) -> String {
+        let b = "\\"
+        let q = "\""
+        let n = "\n"
+        var s = string
+        s = s.replacingOccurrences(of: "\(b)", with: "\(b)\(b)")
+        s = s.replacingOccurrences(of: "\(q)", with: "\(b)\(q)")
+        s = s.replacingOccurrences(of: "\(n)", with: "\(b)n")
+        return s
     }
 
     private func printsNewline(
@@ -216,6 +229,8 @@ public final class ASTPrinter: ASTVisitor {
         closeBracket(">")
     }
 
+    // MARK: - decl
+
     public func visit(class: TSClassDecl) {
         write(modifiers: `class`.modifiers)
         printer.write(space: " ", "class \(`class`.name)")
@@ -353,13 +368,65 @@ public final class ASTPrinter: ASTVisitor {
         printer.write(";")
     }
 
+    // MARK: - expr
+
+    public func visit(as: TSAsExpr) {
+        visit(`as`.expr)
+        printer.write(" as ")
+        visit(`as`.type)
+    }
+
+    public func visit(call: TSCallExpr) {
+        visit(call.callee)
+        write(args: call.args)
+    }
+
+    private func write(args: [any TSExpr]) {
+        openBracket("(")
+        write(array: args, separator: ",") {
+            visit($0)
+        }
+        closeBracket(")")
+    }
+
     public func visit(ident: TSIdentExpr) {
         printer.write(ident.name)
+    }
+
+    public func visit(infixOperator: TSInfixOperatorExpr) {
+        visit(infixOperator.lhs)
+        printer.write(" \(infixOperator.operator) ")
+        visit(infixOperator.rhs)
+    }
+
+    public func visit(new: TSNewExpr) {
+        printer.write("new ")
+        visit(new.callee)
+        write(args: new.args)
     }
 
     public func visit(numberLiteral: TSNumberLiteralExpr) {
         printer.write(numberLiteral.text)
     }
+
+    public func visit(paren: TSParenExpr) {
+        printer.write("(")
+        visit(paren.expr)
+        printer.write(")")
+    }
+
+    public func visit(prefixOperator: TSPrefixOperatorExpr) {
+        printer.write("\(prefixOperator.operator) ")
+        visit(prefixOperator.expr)
+    }
+
+    public func visit(stringLiteral: TSStringLiteralExpr) {
+        printer.write("\"")
+        printer.write(escape(stringLiteral.text))
+        printer.write("\"")
+    }
+
+    // MARK: - stmt
 
     private func write(block: TSBlockStmt, scope: ScopeKind? = nil) {
         pushContext()
@@ -409,6 +476,8 @@ public final class ASTPrinter: ASTVisitor {
         visit(`throw`.expr)
         printer.write(";")
     }
+
+    // MARK: - type
 
     public func visit(array: TSArrayType) {
         let paren: Bool = {
@@ -492,7 +561,7 @@ public final class ASTPrinter: ASTVisitor {
 
     public func visit(stringLiteral: TSStringLiteralType) {
         printer.write("\"")
-        printer.write(stringLiteral.value)
+        printer.write(escape(stringLiteral.value))
         printer.write("\"")
     }
 
