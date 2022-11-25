@@ -21,54 +21,39 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public init(scope: ScopeKind = .topLevel) {
-        self.contextStack = [
-            Context(
-                scope: scope,
-                isInBrackets: false
-            )
-        ]
+        self.initialContext = Context(
+            scope: scope,
+            isInBrackets: false
+        )
+        super.init()
     }
 
+    private let initialContext: Context
     private var printer: PrettyPrinter!
     public var onelineCount: Int = 3
 
-    private var contextStack: [Context]
+    private var contextStack: [Context] = []
     private var context: Context {
         get { contextStack.last! }
         set {
             contextStack[contextStack.count - 1] = newValue
         }
     }
-    private func pushContext() {
+    private func push() {
         contextStack.append(context)
     }
-    private func popContext() {
+    private func pop() {
         contextStack.removeLast()
     }
 
-    public func print(_ node: any ASTNode) -> String {
-        printer = PrettyPrinter()
-        walk(node)
-        return printer.output
-    }
-
-    private func openBracket(
-        scope: ScopeKind? = nil,
-        space: String? = nil,
-        _ text: String
-    ) {
-        pushContext()
-        printer.write(space: space, text)
-        context.isInBrackets = true
-        if let scope {
-            context.scope = scope
+    private func closeBracket(for open: String) -> String {
+        switch open {
+        case "(": return ")"
+        case "{": return "}"
+        case "[": return "]"
+        case "<": return ">"
+        default: return open
         }
-    }
-
-    private func closeBracket(_ text: String) {
-        printer.write(text)
-        context.isInBrackets = false
-        popContext()
     }
 
     private func escape(_ string: String) -> String {
@@ -80,6 +65,39 @@ public final class ASTPrinter: ASTVisitor {
         s = s.replacingOccurrences(of: "\(q)", with: "\(b)\(q)")
         s = s.replacingOccurrences(of: "\(n)", with: "\(b)n")
         return s
+    }
+
+    private func nest<R>(
+        scope: ScopeKind? = nil,
+        bracket: String? = nil,
+        _ body: () throws -> R
+    ) rethrows -> R {
+        push()
+
+        if let scope {
+            context.scope = scope
+        }
+        if let bracket {
+            printer.write(bracket)
+            context.isInBrackets = true
+        }
+
+        defer {
+            if let bracket {
+                printer.write(closeBracket(for: bracket))
+                context.isInBrackets = false
+            }
+
+            pop()
+        }
+        return try body()
+    }
+
+    public func print(_ node: any ASTNode) -> String {
+        self.printer = PrettyPrinter()
+        self.contextStack = [initialContext]
+        walk(node)
+        return printer.output
     }
 
     private func printsNewline(
@@ -149,59 +167,52 @@ public final class ASTPrinter: ASTVisitor {
             }
         }()
 
-        if isMultiline, context.isInBrackets {
-            printer.push()
-        }
-
-        for (index, element) in array.enumerated() {
-            if sideSpace, index == 0, !isMultiline {
-                printer.write(space: " ")
-            }
-            if index > 0 {
-                printer.write(space: " ")
-            }
-
-            writeElement(element)
-
-            if index < array.count - 1 {
-                printer.write(separator)
-                if isMultiline {
-                    printer.writeNewline()
-                }
-            } else {
-                if sideSpace, !isMultiline {
+        printer.nestIf(
+            condition: isMultiline && context.isInBrackets
+        ) {
+            for (index, element) in array.enumerated() {
+                if sideSpace, index == 0, !isMultiline {
                     printer.write(space: " ")
                 }
-            }
-        }
+                if index > 0 {
+                    printer.write(space: " ")
+                }
 
-        if isMultiline, context.isInBrackets {
-            printer.pop()
+                writeElement(element)
+
+                if index < array.count - 1 {
+                    printer.write(separator)
+                    if isMultiline {
+                        printer.writeNewline()
+                    }
+                } else {
+                    if sideSpace, !isMultiline {
+                        printer.write(space: " ")
+                    }
+                }
+            }
         }
     }
 
     private func write(blockElements elements: [any ASTNode]) {
         if elements.isEmpty { return }
-        if context.isInBrackets {
-            printer.push()
-        }
 
-        for (index, element) in elements.enumerated() {
-            if index > 0 {
-                if printsNewline(after: elements[index - 1], before: element) {
+        printer.nestIf(
+            condition: context.isInBrackets
+        ) {
+            for (index, element) in elements.enumerated() {
+                if index > 0 {
+                    if printsNewline(after: elements[index - 1], before: element) {
+                        printer.writeNewline()
+                    }
+                }
+
+                walk(element)
+
+                if index < elements.count - 1 {
                     printer.writeNewline()
                 }
             }
-
-            walk(element)
-
-            if index < elements.count - 1 {
-                printer.writeNewline()
-            }
-        }
-
-        if context.isInBrackets {
-            printer.pop()
         }
     }
 
@@ -213,20 +224,20 @@ public final class ASTPrinter: ASTVisitor {
 
     private func write(genericArgs: [any TSType]) {
         if genericArgs.isEmpty { return }
-        openBracket("<")
-        write(array: genericArgs, separator: ",") {
-            walk($0)
+        nest(bracket: "<") {
+            write(array: genericArgs, separator: ",") {
+                walk($0)
+            }
         }
-        closeBracket(">")
     }
 
     private func write(genericParams: [String]) {
         if genericParams.isEmpty { return }
-        openBracket("<")
-        write(array: genericParams, separator: ",") {
-            printer.write($0)
+        nest(bracket: "<") {
+            write(array: genericParams, separator: ",") {
+                printer.write($0)
+            }
         }
-        closeBracket(">")
     }
 
     // MARK: - decl
@@ -294,11 +305,11 @@ public final class ASTPrinter: ASTVisitor {
 
     public override func visit(import: TSImportDecl) -> Bool {
         printer.write("import ")
-        openBracket("{")
-        write(array: `import`.names, sideSpace: true, separator: ",") {
-            printer.write($0)
+        nest(bracket: "{") {
+            write(array: `import`.names, sideSpace: true, separator: ",") {
+                printer.write($0)
+            }
         }
-        closeBracket("}")
         printer.write(" from \"\(`import`.from)\";")
         return false
     }
@@ -329,11 +340,10 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public override func visit(sourceFile: TSSourceFile) -> Bool {
-        pushContext()
-        context.scope = .topLevel
-        write(blockElements: sourceFile.elements)
-        printer.writeNewline()
-        popContext()
+        nest(scope: .topLevel) {
+            write(blockElements: sourceFile.elements)
+            printer.writeNewline()
+        }
         return false
     }
 
@@ -365,11 +375,11 @@ public final class ASTPrinter: ASTVisitor {
     // MARK: - expr
 
     public override func visit(array: TSArrayExpr) -> Bool {
-        openBracket("[")
-        write(array: array.elements, separator: ",") {
-            walk($0)
+        nest(bracket: "[") {
+            write(array: array.elements, separator: ",") {
+                walk($0)
+            }
         }
-        closeBracket("]")
         return false
     }
 
@@ -409,11 +419,11 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     private func write(args: [any TSExpr]) {
-        openBracket("(")
-        write(array: args, separator: ",") {
-            walk($0)
+        nest(bracket: "(") {
+            write(array: args, separator: ",") {
+                walk($0)
+            }
         }
-        closeBracket(")")
     }
 
     public override func visit(ident: TSIdentExpr) -> Bool {
@@ -441,11 +451,11 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public override func visit(object: TSObjectExpr) -> Bool {
-        openBracket("{")
-        write(array: object.fields, separator: ",", multilineMode: .multiline) {
-            write(field: $0)
+        nest(bracket: "{") {
+            write(array: object.fields, separator: ",", multilineMode: .multiline) {
+                write(field: $0)
+            }
         }
-        closeBracket("}")
         return false
     }
 
@@ -478,18 +488,15 @@ public final class ASTPrinter: ASTVisitor {
     // MARK: - stmt
 
     private func write(block: TSBlockStmt, scope: ScopeKind? = nil) {
-        pushContext()
-        if let scope {
-            context.scope = scope
+        nest(scope: scope) {
+            walk(block)
         }
-        walk(block)
-        popContext()
     }
 
     public override func visit(block: TSBlockStmt) -> Bool {
-        openBracket("{")
-        write(blockElements: block.elements)
-        closeBracket("}")
+        nest(bracket: "{") {
+            write(blockElements: block.elements)
+        }
         return false
     }
 
@@ -541,12 +548,8 @@ public final class ASTPrinter: ASTVisitor {
             }
         }()
 
-        if paren {
-            openBracket("(")
-        }
-        walk(array.element)
-        if paren {
-            closeBracket(")")
+        nest(bracket: paren ? "(" : nil) {
+            walk(array.element)
         }
         printer.write("[]")
         return false
@@ -572,14 +575,10 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     private func write(params: [TSFunctionType.Param], paren: Bool = true) {
-        if paren {
-            openBracket("(")
-        }
-        write(array: params, separator: ",") {
-            write(param: $0)
-        }
-        if paren {
-            closeBracket(")")
+        nest(bracket: paren ? "(" : nil) {
+            write(array: params, separator: ",") {
+                write(param: $0)
+            }
         }
     }
 
@@ -609,11 +608,11 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public override func visit(object: TSObjectType) -> Bool {
-        openBracket("{")
-        write(array: object.fields, multilineMode: .multiline) {
-            write(field: $0)
+        nest(bracket: "{") {
+            write(array: object.fields, multilineMode: .multiline) {
+                write(field: $0)
+            }
         }
-        closeBracket("}")
         return false
     }
 

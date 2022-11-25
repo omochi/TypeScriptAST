@@ -5,7 +5,11 @@ public final class PrettyPrinter {
     public private(set) var isStartOfLine: Bool = true
     private var depth: Int = 0
 
-    public func write(space: String? = nil, _ text: String, newline: Bool = false) {
+    public func write(
+        space: String? = nil,
+        _ text: String,
+        newline: Bool = false
+    ) {
         if let space {
             write(space: space)
         }
@@ -48,10 +52,18 @@ public final class PrettyPrinter {
         depth -= 1
     }
 
-    public func nest<R>(_ f: () throws -> R) rethrows -> R {
+    public func nest<R>(_ body: () throws -> R) rethrows -> R {
         push()
         defer { pop() }
-        return try f()
+        return try body()
+    }
+
+    public func nestIf<R>(condition: Bool, _ body: () throws -> R) rethrows -> R {
+        if condition {
+            return try nest(body)
+        } else {
+            return try body()
+        }
     }
 
     private func writeIndent() {
