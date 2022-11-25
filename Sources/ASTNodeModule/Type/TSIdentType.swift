@@ -24,6 +24,7 @@ public final class TSIdentType: _TSType {
     public static var boolean: TSIdentType { TSIdentType("boolean") }
     public static var number: TSIdentType { TSIdentType("number") }
     public static var string: TSIdentType { TSIdentType("string") }
+    public static var error: TSIdentType { TSIdentType("Error") }
     public static func promise(_ element: any TSType) -> TSIdentType {
         TSIdentType("Promise", genericArgs: [element])
     }
