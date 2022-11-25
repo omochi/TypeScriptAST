@@ -1,7 +1,7 @@
 public final class TSAssignExpr: _TSExpr {
     public init(
-        lhs: any TSExpr,
-        rhs: any TSExpr
+        _ lhs: any TSExpr,
+        _ rhs: any TSExpr
     ) {
         self.lhs = lhs
         self.rhs = rhs
