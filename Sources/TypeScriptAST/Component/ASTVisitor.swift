@@ -189,7 +189,7 @@ open class ASTVisitor {
         guard visit(class: `class`) else { return }
         walk(`class`.extends)
         walk(`class`.implements)
-        walk(`class`.block)
+        walk(`class`.body)
         visitPost(class: `class`)
     }
 
@@ -215,7 +215,7 @@ open class ASTVisitor {
     private func visitImpl(interface: TSInterfaceDecl) {
         guard visit(interface: interface) else { return }
         walk(interface.extends)
-        walk(interface.block)
+        walk(interface.body)
         visitPost(interface: interface)
     }
 
@@ -223,13 +223,13 @@ open class ASTVisitor {
         guard visit(method: method) else { return }
         walk(params: method.params)
         walk(method.result)
-        walk(method.block)
+        walk(method.body)
         visitPost(method: method)
     }
 
     private func visitImpl(namespace: TSNamespaceDecl) {
         guard visit(namespace: namespace) else { return }
-        walk(namespace.block)
+        walk(namespace.body)
         visitPost(namespace: namespace)
     }
 
@@ -320,6 +320,7 @@ open class ASTVisitor {
     private func visitImpl(member: TSMemberExpr) {
         guard visit(member: member) else { return }
         walk(member.base)
+        walk(member.name)
         visitPost(member: member)
     }
 

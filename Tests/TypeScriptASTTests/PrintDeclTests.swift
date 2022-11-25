@@ -35,6 +35,13 @@ final class PrintDeclTests: TestCaseBase {
             } from "./a.js";
             """
         )
+
+        assertPrint(
+            TSImportDecl(names: ["A", "B", "C"], from: ".."),
+            """
+            import { A, B, C } from "..";
+            """
+        )
     }
 
     func testType() throws {
@@ -59,6 +66,23 @@ final class PrintDeclTests: TestCaseBase {
             type A<T> = B<T>;
             """
         )
+
+        assertPrint(
+            TSTypeDecl(name: "S1", type: TSObjectType([
+                .init(name: "a", isOptional: true, type: TSObjectType([
+                    .init(name: "a", type: TSIdentType.number),
+                    .init(name: "b", type: TSIdentType.string)
+                ]))
+            ])),
+            """
+            type S1 = {
+                a?: {
+                    a: number;
+                    b: string;
+                };
+            };
+            """
+        )
     }
 
     func testNamespace() throws {
@@ -66,7 +90,7 @@ final class PrintDeclTests: TestCaseBase {
             TSNamespaceDecl(
                 modifiers: [],
                 name: "A",
-                block: TSBlockStmt([])
+                body: TSBlockStmt([])
             ),
             """
             namespace A {}
@@ -77,7 +101,7 @@ final class PrintDeclTests: TestCaseBase {
             TSNamespaceDecl(
                 modifiers: [.export],
                 name: "A",
-                block: TSBlockStmt([
+                body: TSBlockStmt([
                     TSTypeDecl(modifiers: [.export], name: "B", type: TSIdentType.string)
                 ])
             ),
@@ -92,7 +116,7 @@ final class PrintDeclTests: TestCaseBase {
             TSNamespaceDecl(
                 modifiers: [.export],
                 name: "A",
-                block: TSBlockStmt([
+                body: TSBlockStmt([
                     TSTypeDecl(modifiers: [.export], name: "B", type: TSIdentType.string),
                     TSTypeDecl(modifiers: [.export], name: "C", type: TSIdentType.string)
                 ])
@@ -102,6 +126,24 @@ final class PrintDeclTests: TestCaseBase {
                 export type B = string;
 
                 export type C = string;
+            }
+            """
+        )
+
+        assertPrint(
+            TSNamespaceDecl(
+                name: "A",
+                body: TSBlockStmt([
+                    TSTypeDecl(name: "B", type: TSObjectType([
+                        .init(name: "x", type: TSIdentType.string)
+                    ]))
+                ])
+            ),
+            """
+            namespace A {
+                type B = {
+                    x: string;
+                };
             }
             """
         )
@@ -194,10 +236,31 @@ final class PrintDeclTests: TestCaseBase {
         assertPrint(
             TSInterfaceDecl(
                 name: "I",
-                block: TSBlockStmt()
+                body: TSBlockStmt()
             ),
             """
             interface I {}
+            """
+        )
+
+        assertPrint(
+            TSInterfaceDecl(
+                name: "I",
+                genericParams: ["T"],
+                extends: [TSIdentType("J")],
+                body: TSBlockStmt([
+                    TSMethodDecl(
+                        name: "a",
+                        genericParams: ["U"],
+                        params: [.init(name: "x", type: TSIdentType("T"))],
+                        result: TSIdentType("U")
+                    )
+                ])
+            ),
+            """
+            interface I<T> extends J {
+                a<U>(x: T): U;
+            }
             """
         )
 
@@ -210,7 +273,7 @@ final class PrintDeclTests: TestCaseBase {
                     TSIdentType("J", genericArgs: [TSIdentType("T")]),
                     TSIdentType("K")
                 ],
-                block: TSBlockStmt([
+                body: TSBlockStmt([
                     TSFieldDecl(name: "x", type: TSIdentType.number),
                     TSFieldDecl(name: "y", type: TSIdentType.number),
                     TSMethodDecl(name: "f", params: []),
@@ -233,7 +296,7 @@ final class PrintDeclTests: TestCaseBase {
 
     func testClass() throws {
         assertPrint(
-            TSClassDecl(name: "A", block: TSBlockStmt()),
+            TSClassDecl(name: "A", body: TSBlockStmt()),
             """
             class A {}
             """
@@ -246,7 +309,7 @@ final class PrintDeclTests: TestCaseBase {
                 genericParams: ["T"],
                 extends: TSIdentType("B"),
                 implements: [TSIdentType("I")],
-                block: TSBlockStmt([
+                body: TSBlockStmt([
                     TSFieldDecl(
                         modifiers: [.public],
                         name: "a",
@@ -274,6 +337,77 @@ final class PrintDeclTests: TestCaseBase {
             }
             """
         )
+
+        assertPrint(
+            TSClassDecl(
+                name: "A",
+                genericParams: ["T"],
+                extends: TSIdentType("B", genericArgs: [TSIdentType("T")]),
+                implements: [TSIdentType("I", genericArgs: [TSIdentType("T")])],
+                body: TSBlockStmt([
+                    TSMethodDecl(
+                        name: "a", params: [], result: TSIdentType.number,
+                        body: TSBlockStmt([
+                            TSReturnStmt(TSNumberLiteralExpr("1.0"))
+                        ])
+                    )
+                ])
+            ),
+            """
+            class A<T> extends B<T> implements I<T> {
+                a(): number {
+                    return 1.0;
+                }
+            }
+            """
+        )
+
+        assertPrint(
+            TSClassDecl(
+                name: "A",
+                extends: TSIdentType("B"),
+                implements: [TSIdentType("I"), TSIdentType("J"), TSIdentType("K"), TSIdentType("L")],
+                body: TSBlockStmt([
+                    TSMethodDecl(
+                        modifiers: [.async], name: "a", params: [],
+                        result: TSIdentType.promise(TSIdentType.number),
+                        body: TSBlockStmt([
+                            TSReturnStmt(TSNumberLiteralExpr(1))
+                        ])
+                    ),
+                    TSMethodDecl(
+                        modifiers: [.async], name: "b", params: [],
+                        result: TSIdentType.promise(TSIdentType.number),
+                        body: TSBlockStmt([
+                            TSReturnStmt(
+                                TSAwaitExpr(
+                                    TSCallExpr(
+                                        callee: TSMemberExpr(base: TSIdentExpr.this, name: TSIdentExpr("a")),
+                                        args: []
+                                    )
+                                )
+                            )
+                        ])
+                    )
+                ])
+            ),
+            """
+            class A extends B implements
+                I,
+                J,
+                K,
+                L
+            {
+                async a(): Promise<number> {
+                    return 1;
+                }
+
+                async b(): Promise<number> {
+                    return await this.a();
+                }
+            }
+            """
+        )
     }
 
     func testSourceFile() throws {
@@ -292,6 +426,115 @@ final class PrintDeclTests: TestCaseBase {
             export const a: number = 1;
 
             export const b: number = 2;
+            
+            """
+        )
+    }
+
+    func testImports() throws {
+        assertPrint(
+            TSSourceFile([
+                TSImportDecl(names: ["A", "B"], from: "./ab.js"),
+                TSImportDecl(names: ["C"], from: "./c.js"),
+                TSImportDecl(names: ["D", "E", "F", "G", "H", "I"], from: "./defghi.js"),
+                TSFunctionDecl(name: "foo", params: [], body: TSBlockStmt([]))
+            ]),
+            """
+            import { A, B } from "./ab.js";
+            import { C } from "./c.js";
+            import {
+                D,
+                E,
+                F,
+                G,
+                H,
+                I
+            } from "./defghi.js";
+
+            function foo() {}
+
+            """
+        )
+    }
+
+    func testNewlineBetweenDecls() throws {
+        let s = TSSourceFile([
+            TSImportDecl(names: ["A", "B"], from: "./ab.js"),
+            TSImportDecl(names: ["C"], from: "./c.js"),
+            TSInterfaceDecl(name: "I", body: TSBlockStmt([
+                TSFieldDecl(name: "value1", type: TSIdentType("A")),
+                TSFieldDecl(name: "value2", type: TSIdentType("B")),
+                TSMethodDecl(name: "f1", params: []),
+                TSMethodDecl(name: "f2", params: []),
+            ])),
+            TSFunctionDecl(name: "foo", params: [], body: TSBlockStmt([
+                TSVarDecl(
+                    kind: .const, name: "c1", type: TSUnionType([TSIdentType("C"), TSIdentType.undefined]),
+                    initializer: TSIdentExpr.undefined
+                ),
+                TSVarDecl(
+                    kind: .const, name: "c2", type: TSUnionType([TSIdentType("C"), TSIdentType.undefined]),
+                    initializer: TSIdentExpr.undefined
+                ),
+            ])),
+            TSVarDecl(
+                kind: .const, name: "c1", type: TSUnionType([TSIdentType("C"), TSIdentType.undefined]),
+                initializer: TSIdentExpr.undefined
+            ),
+            TSVarDecl(
+                kind: .const, name: "c1", type: TSUnionType([TSIdentType("C"), TSIdentType.undefined]),
+                initializer: TSIdentExpr.undefined
+            ),
+            TSClassDecl(name: "Bar", body: TSBlockStmt([
+                TSFieldDecl(name: "value1", type: TSIdentType("A")),
+                TSFieldDecl(name: "value2", type: TSIdentType("B")),
+                TSFunctionDecl(name: "f1", params: [], result: TSIdentType.string, body: TSBlockStmt([
+                    TSVarDecl(
+                        kind: .const, name: "c1", type: TSUnionType([TSIdentType("C"), TSIdentType.undefined]),
+                        initializer: TSIdentExpr.undefined
+                    ),
+                    TSVarDecl(
+                        kind: .const, name: "c1", type: TSUnionType([TSIdentType("C"), TSIdentType.undefined]),
+                        initializer: TSIdentExpr.undefined
+                    ),
+                ])),
+                TSFunctionDecl(name: "f2", params: [], result: TSIdentType.string, body: TSBlockStmt([]))
+            ])),
+        ])
+
+        assertPrint(
+            s, """
+            import { A, B } from "./ab.js";
+            import { C } from "./c.js";
+
+            interface I {
+                value1: A;
+                value2: B;
+
+                f1();
+                f2();
+            }
+
+            function foo() {
+                const c1: C | undefined = undefined;
+                const c2: C | undefined = undefined;
+            }
+
+            const c1: C | undefined = undefined;
+
+            const c1: C | undefined = undefined;
+
+            class Bar {
+                value1: A;
+                value2: B;
+
+                function f1(): string {
+                    const c1: C | undefined = undefined;
+                    const c1: C | undefined = undefined;
+                }
+
+                function f2(): string {}
+            }
             
             """
         )

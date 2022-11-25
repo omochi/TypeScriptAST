@@ -136,6 +136,16 @@ private final class Impl: ASTVisitor {
         pop()
     }
 
+    override func visit(member: TSMemberExpr) -> Bool {
+        walk(member.base)
+        return false
+    }
+
+    override func visit(member: TSMemberType) -> Bool {
+        walk(member.base)
+        return false
+    }
+
     override func visit(ident: TSIdentExpr) -> Bool {
         use(ident.name)
         return true

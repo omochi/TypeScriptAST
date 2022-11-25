@@ -312,11 +312,19 @@ final class PrintExprTests: TestCaseBase {
     func testMember() throws {
         assertPrint(
             TSMemberExpr(
+                base: TSIdentExpr("A"),
+                name: TSIdentExpr("B")
+            ),
+            "A.B"
+        )
+
+        assertPrint(
+            TSMemberExpr(
                 base: TSMemberExpr(
                     base: TSIdentExpr("A"),
-                    name: "B"
+                    name: TSIdentExpr("B")
                 ),
-                name: "C"
+                name: TSIdentExpr("C")
             ),
             "A.B.C"
         )

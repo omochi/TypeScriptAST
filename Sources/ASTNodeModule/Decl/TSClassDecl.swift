@@ -5,14 +5,14 @@ public final class TSClassDecl: _TSDecl {
         genericParams: [String] = [],
         extends: TSIdentType? = nil,
         implements: [TSIdentType] = [],
-        block: TSBlockStmt
+        body: TSBlockStmt
     ) {
         self.modifiers = modifiers
         self.name = name
         self.genericParams = genericParams
         self.extends = extends
         self.implements = implements
-        self.block = block
+        self.body = body
     }
     
     public private(set) unowned var parent: (any ASTNode)?
@@ -25,5 +25,5 @@ public final class TSClassDecl: _TSDecl {
     public var genericParams: [String]
     @ASTNodeOptionalStorage public var extends: TSIdentType?
     @ASTNodeArrayStorage public var implements: [TSIdentType]
-    @ASTNodeStorage public var block: TSBlockStmt
+    @ASTNodeStorage public var body: TSBlockStmt
 }

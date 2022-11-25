@@ -95,21 +95,21 @@ final class ScanDependencyTests: TestCaseBase {
 
     func testClassName() throws {
         let s = TSSourceFile([
-            TSInterfaceDecl(name: "I", block: TSBlockStmt([
+            TSInterfaceDecl(name: "I", body: TSBlockStmt([
                 TSMethodDecl(name: "f", params: [], result: TSIdentType.void)
             ])),
             TSClassDecl(
                 name: "K", genericParams: ["T"], extends: TSIdentType("M"),
                 implements: [TSIdentType("I"), TSIdentType("J")],
-                block: TSBlockStmt([
+                body: TSBlockStmt([
                     TSFieldDecl(name: "t", isOptional: true, type: TSIdentType("T")),
                     TSFieldDecl(name: "x", isOptional: true, type: TSIdentType("X")),
-                    TSMethodDecl(name: "f", params: [], block: TSBlockStmt([
+                    TSMethodDecl(name: "f", params: [], body: TSBlockStmt([
                         TSReturnStmt(
                             TSPostfixOperatorExpr(
                                 TSMemberExpr(
                                     base: TSIdentExpr.this,
-                                    name: "t"
+                                    name: TSIdentExpr("t")
                                 ), "!"
                             )
                         )
@@ -213,7 +213,7 @@ final class ScanDependencyTests: TestCaseBase {
         let s = TSSourceFile([
             TSInterfaceDecl(
                 name: "I", genericParams: ["T"], extends: [TSIdentType("J")],
-                block: TSBlockStmt([
+                body: TSBlockStmt([
                     TSMethodDecl(
                         name: "foo", genericParams: ["U"],
                         params: [
@@ -245,7 +245,7 @@ final class ScanDependencyTests: TestCaseBase {
             TSClassDecl(
                 name: "C", genericParams: ["T"],
                 extends: TSIdentType("D"), implements: [TSIdentType("I")],
-                block: TSBlockStmt([
+                body: TSBlockStmt([
                     TSMethodDecl(
                         name: "foo", genericParams: ["U"],
                         params: [
@@ -254,7 +254,7 @@ final class ScanDependencyTests: TestCaseBase {
                             .init(name: "u", type: TSIdentType("U"))
                         ],
                         result: TSIdentType("B"),
-                        block: TSBlockStmt([
+                        body: TSBlockStmt([
                             TSReturnStmt(
                                 TSInfixOperatorExpr(
                                     TSInfixOperatorExpr(

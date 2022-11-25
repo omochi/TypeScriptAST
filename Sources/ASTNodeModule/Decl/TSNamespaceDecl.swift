@@ -2,11 +2,11 @@ public final class TSNamespaceDecl: _TSDecl {
     public init(
         modifiers: [TSDeclModifier] = [],
         name: String,
-        block: TSBlockStmt
+        body: TSBlockStmt
     ) {
         self.modifiers = modifiers
         self.name = name
-        self.block = block
+        self.body = body
     }
 
     public private(set) unowned var parent: (any ASTNode)?
@@ -16,5 +16,5 @@ public final class TSNamespaceDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
-    @ASTNodeStorage public var block: TSBlockStmt
+    @ASTNodeStorage public var body: TSBlockStmt
 }

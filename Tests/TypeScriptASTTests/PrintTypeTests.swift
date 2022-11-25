@@ -221,4 +221,43 @@ final class PrintTypeTests: TestCaseBase {
             "aaa"
         )
     }
+
+    func testTaggedUnion() throws {
+        let e = TSUnionType([
+            TSObjectType([
+                .init(name: "kind", type: TSStringLiteralType("a")),
+                .init(name: "a", type: TSObjectType([]))
+            ]),
+            TSObjectType([
+                .init(name: "kind", type: TSStringLiteralType("b")),
+                .init(name: "b", type: TSObjectType([]))
+            ])
+        ])
+
+        assertPrint(
+            e, """
+            {
+                kind: "a";
+                a: {};
+            } | {
+                kind: "b";
+                b: {};
+            }
+            """
+        )
+    }
+
+    func testLinedUnion() throws {
+        let e = TSUnionType([
+            TSStringLiteralType("a"),
+            TSStringLiteralType("b"),
+            TSStringLiteralType("c")
+        ])
+
+        assertPrint(
+            e, """
+            "a" | "b" | "c"
+            """
+        )
+    }
 }

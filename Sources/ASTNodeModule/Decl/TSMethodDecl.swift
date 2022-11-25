@@ -5,14 +5,14 @@ public final class TSMethodDecl: _TSDecl {
         genericParams: [String] = [],
         params: [TSFunctionType.Param],
         result: (any TSType)? = nil,
-        block: TSBlockStmt? = nil
+        body: TSBlockStmt? = nil
     ) {
         self.modifiers = modifiers
         self.name = name
         self.genericParams = genericParams
         self.params = params
         self.result = result
-        self.block = block
+        self.body = body
     }
 
     public private(set) unowned var parent: (any ASTNode)?
@@ -38,5 +38,5 @@ public final class TSMethodDecl: _TSDecl {
     private var _params: [TSFunctionType.Param] = []
 
     @AnyTSTypeOptionalStorage public var result: (any TSType)?
-    @ASTNodeOptionalStorage public var block: TSBlockStmt?
+    @ASTNodeOptionalStorage public var body: TSBlockStmt?
 }

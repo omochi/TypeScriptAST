@@ -107,21 +107,21 @@ public final class ASTPrinter: ASTVisitor {
         return printer.output
     }
 
-    private func printsNewline(
-        after prev: any ASTNode,
-        before node: any ASTNode
+    private func printsNewlineBetween(
+        prev: any ASTNode,
+        next: any ASTNode
     ) -> Bool {
         guard let prev = prev.asDecl,
-              let decl = node.asDecl else
+              let next = next.asDecl else
         {
             return false
         }
 
-        if type(of: prev) != type(of: decl) {
+        if type(of: prev) != type(of: next) {
             return true
         }
 
-        switch decl {
+        switch next {
         case is TSClassDecl:
             return true
         case is TSFieldDecl:
@@ -158,7 +158,8 @@ public final class ASTPrinter: ASTVisitor {
 
     private func write<T>(
         array: [T],
-        sideSpace: Bool = false,
+        startSpace: String? = nil,
+        endSpace: String? = nil,
         separator: String = "",
         multilineMode: MultilineMode = .automatic,
         writeElement: (T) -> Void
@@ -178,8 +179,8 @@ public final class ASTPrinter: ASTVisitor {
             condition: isMultiline && context.isInBrackets
         ) {
             for (index, element) in array.enumerated() {
-                if sideSpace, index == 0, !isMultiline {
-                    printer.write(space: " ")
+                if index == 0, let startSpace, !isMultiline {
+                    printer.write(space: startSpace)
                 }
                 if index > 0 {
                     printer.write(space: " ")
@@ -193,8 +194,8 @@ public final class ASTPrinter: ASTVisitor {
                         printer.writeNewline()
                     }
                 } else {
-                    if sideSpace, !isMultiline {
-                        printer.write(space: " ")
+                    if let endSpace, !isMultiline {
+                        printer.write(space: endSpace)
                     }
                 }
             }
@@ -209,7 +210,7 @@ public final class ASTPrinter: ASTVisitor {
         ) {
             for (index, element) in elements.enumerated() {
                 if index > 0 {
-                    if printsNewline(after: elements[index - 1], before: element) {
+                    if printsNewlineBetween(prev: elements[index - 1], next: element) {
                         printer.writeNewline()
                     }
                 }
@@ -261,13 +262,15 @@ public final class ASTPrinter: ASTVisitor {
             walk(extends)
         }
         if !`class`.implements.isEmpty {
-            printer.write(" implements ")
-            write(array: `class`.implements, separator: ",") {
-                walk($0)
+            printer.write(" implements")
+            nest(bracket: "") {
+                write(array: `class`.implements, startSpace: " ", separator: ",") {
+                    walk($0)
+                }
             }
         }
         printer.write(space: " ")
-        write(block: `class`.block, scope: .class)
+        write(block: `class`.body, scope: .class)
         return false
     }
 
@@ -303,20 +306,24 @@ public final class ASTPrinter: ASTVisitor {
         printer.write(space: " ", "interface \(interface.name)")
         write(genericParams: interface.genericParams)
         if !interface.extends.isEmpty {
-            printer.write(" extends ")
-            write(array: interface.extends, separator: ",") {
+            printer.write(" extends")
+            write(array: interface.extends, startSpace: " ", separator: ",") {
                 walk($0)
             }
         }
         printer.write(space: " ")
-        write(block: interface.block, scope: .interface)
+        write(block: interface.body, scope: .interface)
         return false
     }
 
     public override func visit(import: TSImportDecl) -> Bool {
         printer.write("import ")
         nest(bracket: "{") {
-            write(array: `import`.names, sideSpace: true, separator: ",") {
+            write(
+                array: `import`.names,
+                startSpace: " ", endSpace: " ",
+                separator: ","
+            ) {
                 printer.write($0)
             }
         }
@@ -333,7 +340,7 @@ public final class ASTPrinter: ASTVisitor {
             printer.write(": ")
             walk(result)
         }
-        if let block = method.block {
+        if let block = method.body {
             printer.write(space: " ")
             write(block: block)
         } else {
@@ -345,7 +352,7 @@ public final class ASTPrinter: ASTVisitor {
     public override func visit(namespace: TSNamespaceDecl) -> Bool {
         write(modifiers: namespace.modifiers)
         printer.write(space: " ", "namespace \(namespace.name) ")
-        write(block: namespace.block, scope: .namespace)
+        write(block: namespace.body, scope: .namespace)
         return false
     }
 
@@ -458,7 +465,7 @@ public final class ASTPrinter: ASTVisitor {
     public override func visit(member: TSMemberExpr) -> Bool {
         walk(member.base)
         printer.write(".")
-        printer.write(member.name)
+        walk(member.name)
         return false
     }
 

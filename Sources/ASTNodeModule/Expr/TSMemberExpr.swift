@@ -1,7 +1,7 @@
 public final class TSMemberExpr: _TSExpr {
     public init(
         base: any TSExpr,
-        name: String
+        name: TSIdentExpr
     ) {
         self.name = name
         self.base = base
@@ -13,5 +13,5 @@ public final class TSMemberExpr: _TSExpr {
     }
 
     @AnyTSExprStorage public var base: any TSExpr
-    public var name: String
+    @ASTNodeStorage public var name: TSIdentExpr
 }
