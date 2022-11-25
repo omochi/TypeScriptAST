@@ -215,6 +215,9 @@ public final class ASTPrinter: ASTVisitor {
                 }
 
                 walk(element)
+                if element is any TSExpr {
+                    printer.write(";")
+                }
 
                 if index < elements.count - 1 {
                     printer.writeNewline()
@@ -397,6 +400,13 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(assign: TSAssignExpr) -> Bool {
+        walk(assign.lhs)
+        printer.write(" = ")
+        walk(assign.rhs)
+        return false
+    }
+
     public override func visit(await: TSAwaitExpr) -> Bool {
         printer.write("await ")
         walk(`await`.expr)
@@ -502,6 +512,14 @@ public final class ASTPrinter: ASTVisitor {
         printer.write("\"")
         printer.write(escape(stringLiteral.text))
         printer.write("\"")
+        return false
+    }
+
+    public override func visit(subscript: TSSubscriptExpr) -> Bool {
+        walk(`subscript`.base)
+        printer.write("[")
+        walk(`subscript`.key)
+        printer.write("]")
         return false
     }
 

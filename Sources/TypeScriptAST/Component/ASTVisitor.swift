@@ -74,6 +74,8 @@ open class ASTVisitor {
     open func visitPost(array: TSArrayExpr) {}
     open func visit(as: TSAsExpr) -> Bool { defaultVisitResult }
     open func visitPost(as: TSAsExpr) {}
+    open func visit(assign: TSAssignExpr) -> Bool { defaultVisitResult }
+    open func visitPost(assign: TSAssignExpr) {}
     open func visit(await: TSAwaitExpr) -> Bool { defaultVisitResult }
     open func visitPost(await: TSAwaitExpr) {}
     open func visit(call: TSCallExpr) -> Bool { defaultVisitResult }
@@ -102,6 +104,8 @@ open class ASTVisitor {
     open func visitPost(prefixOperator: TSPrefixOperatorExpr) {}
     open func visit(stringLiteral: TSStringLiteralExpr) -> Bool { defaultVisitResult }
     open func visitPost(stringLiteral: TSStringLiteralExpr) {}
+    open func visit(subscript: TSSubscriptExpr) -> Bool { defaultVisitResult }
+    open func visitPost(subscript: TSSubscriptExpr) {}
 
     open func visit(block: TSBlockStmt) -> Bool { defaultVisitResult }
     open func visitPost(block: TSBlockStmt) {}
@@ -147,6 +151,7 @@ open class ASTVisitor {
         case let x as TSVarDecl: visitImpl(var: x)
         case let x as TSArrayExpr: visitImpl(array: x)
         case let x as TSAsExpr: visitImpl(as: x)
+        case let x as TSAssignExpr: visitImpl(assign: x)
         case let x as TSAwaitExpr: visitImpl(await: x)
         case let x as TSCallExpr: visitImpl(call: x)
         case let x as TSClosureExpr: visitImpl(closure: x)
@@ -161,6 +166,7 @@ open class ASTVisitor {
         case let x as TSPostfixOperatorExpr: visitImpl(postfixOperator: x)
         case let x as TSPrefixOperatorExpr: visitImpl(prefixOperator: x)
         case let x as TSStringLiteralExpr: visitImpl(stringLiteral: x)
+        case let x as TSSubscriptExpr: visitImpl(subscript: x)
         case let x as TSBlockStmt: visitImpl(block: x)
         case let x as TSForInStmt: visitImpl(forIn: x)
         case let x as TSIfStmt: visitImpl(if: x)
@@ -259,6 +265,13 @@ open class ASTVisitor {
         visitPost(as: `as`)
     }
 
+    private func visitImpl(assign: TSAssignExpr) {
+        guard visit(assign: assign) else { return }
+        walk(assign.lhs)
+        walk(assign.rhs)
+        visitPost(assign: assign)
+    }
+
     private func visitImpl(await: TSAwaitExpr) {
         guard visit(await: `await`) else { return }
         walk(`await`.expr)
@@ -342,6 +355,13 @@ open class ASTVisitor {
     private func visitImpl(stringLiteral: TSStringLiteralExpr) {
         guard visit(stringLiteral: stringLiteral) else { return }
         visitPost(stringLiteral: stringLiteral)
+    }
+
+    private func visitImpl(subscript: TSSubscriptExpr) {
+        guard visit(subscript: `subscript`) else { return }
+        walk(`subscript`.base)
+        walk(`subscript`.key)
+        visitPost(subscript: `subscript`)
     }
 
     private func visitImpl(block: TSBlockStmt) {

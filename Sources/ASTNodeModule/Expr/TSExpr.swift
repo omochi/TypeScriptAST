@@ -7,6 +7,7 @@ internal protocol _TSExpr: _TSStmt & TSExpr {}
 extension TSExpr {
     public var asArray: TSArrayExpr? { self as? TSArrayExpr }
     public var asAs: TSAsExpr? { self as? TSAsExpr }
+    public var asAssign: TSAssignExpr? { self as? TSAssignExpr }
     public var asAwait: TSAwaitExpr? { self as? TSAwaitExpr }
     public var asCall: TSCallExpr? { self as? TSCallExpr }
     public var asClosure: TSClosureExpr? { self as? TSClosureExpr }
@@ -21,4 +22,5 @@ extension TSExpr {
     public var asPostfixOperator: TSPostfixOperatorExpr? { self as? TSPostfixOperatorExpr }
     public var asPrefixOperator: TSPrefixOperatorExpr? { self as? TSPrefixOperatorExpr }
     public var asStringLiteral: TSStringLiteralExpr? { self as? TSStringLiteralExpr }
+    public var asSubscript: TSSubscriptExpr? { self as? TSSubscriptExpr }
 }

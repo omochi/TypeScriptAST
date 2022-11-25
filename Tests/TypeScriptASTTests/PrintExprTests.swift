@@ -321,4 +321,29 @@ final class PrintExprTests: TestCaseBase {
             "A.B.C"
         )
     }
+
+    func testAssign() throws {
+        assertPrint(
+            TSAssignExpr(lhs: TSIdentExpr("x"), rhs: TSNumberLiteralExpr(0)),
+            "x = 0"
+        )
+
+        assertPrint(
+            TSFunctionDecl(name: "f", params: [], body: TSBlockStmt([
+                TSAssignExpr(lhs: TSIdentExpr("x"), rhs: TSNumberLiteralExpr(0))
+            ])),
+            """
+            function f() {
+                x = 0;
+            }
+            """
+        )
+    }
+
+    func testSubscript() throws {
+        assertPrint(
+            TSSubscriptExpr(base: TSIdentExpr("a"), key: TSIdentExpr("k")),
+            "a[k]"
+        )
+    }
 }
