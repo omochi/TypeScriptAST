@@ -1,7 +1,7 @@
 public final class TSCustomType: _TSType {
-    public init(text: String, symbols: [String] = []) {
+    public init(text: String, dependencies: [String] = []) {
         self.text = text
-        self.symbols = symbols
+        self.dependencies = dependencies
     }
 
     public private(set) unowned var parent: (any ASTNode)?
@@ -10,5 +10,5 @@ public final class TSCustomType: _TSType {
     }
 
     public var text: String
-    public var symbols: [String]
+    public var dependencies: [String]
 }

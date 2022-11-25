@@ -1,7 +1,7 @@
 import XCTest
 import TypeScriptAST
 
-final class PrintTypeTests: PrintTestsBase {
+final class PrintTypeTests: TestCaseBase {
     func testNamed() throws {
         assertPrint(TSIdentType("A"), "A")
 

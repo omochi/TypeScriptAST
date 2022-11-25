@@ -1,7 +1,7 @@
 import XCTest
 import TypeScriptAST
 
-final class ScanDependencyTests: PrintTestsBase {
+final class ScanDependencyTests: TestCaseBase {
     func testUseValue() throws {
         let s = TSSourceFile([
             TSVarDecl(kind: .const, name: "a", initializer: TSNumberLiteralExpr(1)),
@@ -138,5 +138,31 @@ final class ScanDependencyTests: PrintTestsBase {
 
         XCTAssertEqual(Set(s.memberDeclaredNames), ["I", "K"])
         XCTAssertEqual(Set(s.scanDependency()), ["void", "M", "J", "X", "this"])
+    }
+
+    func testCustomNode() throws {
+        let s = TSSourceFile([
+            TSFunctionDecl(
+                name: "f",
+                params: [.init(name: "x", type: TSCustomType(text: "A[]", dependencies: ["A"]))],
+                body: TSBlockStmt([
+                    TSReturnStmt(
+                        TSCustomExpr(text: "g(x)", dependencies: ["g"])
+                    )
+                ])
+            )
+        ])
+
+        assertPrint(
+            s, """
+            function f(x: A[]) {
+                return g(x);
+            }
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.memberDeclaredNames), ["f"])
+        XCTAssertEqual(Set(s.scanDependency()), ["A", "g"])
     }
 }

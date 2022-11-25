@@ -1,7 +1,7 @@
 import XCTest
 import TypeScriptAST
 
-class PrintTestsBase: XCTestCase {
+class TestCaseBase: XCTestCase {
     func assertPrint(
         _ node: any ASTNode,
         _ expected: String,

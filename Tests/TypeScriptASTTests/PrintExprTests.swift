@@ -1,7 +1,7 @@
 import XCTest
 import TypeScriptAST
 
-final class PrintExprTests: PrintTestsBase {
+final class PrintExprTests: TestCaseBase {
     func testReturn() throws {
         assertPrint(
             TSReturnStmt(TSNumberLiteralExpr("0")),

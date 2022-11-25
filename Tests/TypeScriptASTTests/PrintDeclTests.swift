@@ -1,7 +1,7 @@
 import XCTest
 import TypeScriptAST
 
-final class PrintDeclTests: PrintTestsBase {
+final class PrintDeclTests: TestCaseBase {
     func testImport() throws {
         assertPrint(
             TSImportDecl(names: [], from: "./a.js"),

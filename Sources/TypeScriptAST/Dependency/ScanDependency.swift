@@ -141,8 +141,22 @@ private final class Impl: ASTVisitor {
         return true
     }
 
+    override func visit(custom: TSCustomExpr) -> Bool {
+        for d in custom.dependencies {
+            use(d)
+        }
+        return true
+    }
+
     override func visit(ident: TSIdentType) -> Bool {
         use(ident.name)
+        return true
+    }
+
+    override func visit(custom: TSCustomType) -> Bool {
+        for d in custom.dependencies {
+            use(d)
+        }
         return true
     }
 }
