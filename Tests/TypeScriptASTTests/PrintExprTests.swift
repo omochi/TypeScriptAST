@@ -324,13 +324,13 @@ final class PrintExprTests: TestCaseBase {
 
     func testAssign() throws {
         assertPrint(
-            TSAssignExpr(lhs: TSIdentExpr("x"), rhs: TSNumberLiteralExpr(0)),
+            TSAssignExpr(TSIdentExpr("x"), TSNumberLiteralExpr(0)),
             "x = 0"
         )
 
         assertPrint(
             TSFunctionDecl(name: "f", params: [], body: TSBlockStmt([
-                TSAssignExpr(lhs: TSIdentExpr("x"), rhs: TSNumberLiteralExpr(0))
+                TSAssignExpr(TSIdentExpr("x"), TSNumberLiteralExpr(0))
             ])),
             """
             function f() {

@@ -165,4 +165,123 @@ final class ScanDependencyTests: TestCaseBase {
         XCTAssertEqual(Set(s.memberDeclaredNames), ["f"])
         XCTAssertEqual(Set(s.scanDependency()), ["A", "g"])
     }
+
+    func testStruct() throws {
+        let s = TSSourceFile([
+            TSTypeDecl(
+                name: "X", genericParams: ["T"],
+                type: TSObjectType([])
+            ),
+            TSTypeDecl(
+                name: "S", genericParams: ["T", "U"],
+                type: TSObjectType([
+                    .init(name: "a", isOptional: true, type: TSIdentType("A")),
+                    .init(name: "b", type: TSIdentType("number")),
+                    .init(name: "c", type: TSArrayType(TSIdentType("C"))),
+                    .init(name: "d", type: TSIdentType("T")),
+                    .init(name: "e", type: TSIdentType("X", genericArgs: [TSIdentType("E")])),
+                    .init(name: "f", type: TSIdentType("X", genericArgs: [TSIdentType("U")])),
+                    .init(name: "g", type: TSIdentType("Y", genericArgs: [TSIdentType("G")])),
+                    .init(name: "h", type: TSIdentType("Y", genericArgs: [TSIdentType("U")])),
+                ])
+            )
+        ])
+
+        assertPrint(
+            s, """
+            type X<T> = {};
+
+            type S<T, U> = {
+                a?: A;
+                b: number;
+                c: C[];
+                d: T;
+                e: X<E>;
+                f: X<U>;
+                g: Y<G>;
+                h: Y<U>;
+            };
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.memberDeclaredNames), ["X", "S"])
+        XCTAssertEqual(Set(s.scanDependency()), ["A", "C", "E", "G", "Y", "number"])
+    }
+
+    func testInterface() throws {
+        let s = TSSourceFile([
+            TSInterfaceDecl(
+                name: "I", genericParams: ["T"], extends: [TSIdentType("J")],
+                block: TSBlockStmt([
+                    TSMethodDecl(
+                        name: "foo", genericParams: ["U"],
+                        params: [
+                            .init(name: "a", type: TSIdentType("A")),
+                            .init(name: "t", type: TSIdentType("T")),
+                            .init(name: "u", type: TSIdentType("U"))
+                        ],
+                        result: TSIdentType("B")
+                    )
+                ])
+            )
+        ])
+
+        assertPrint(
+            s, """
+            interface I<T> extends J {
+                foo<U>(a: A, t: T, u: U): B;
+            }
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.memberDeclaredNames), ["I"])
+        XCTAssertEqual(Set(s.scanDependency()), ["A", "B", "J"])
+    }
+
+    func testClass() throws {
+        let s = TSSourceFile([
+            TSClassDecl(
+                name: "C", genericParams: ["T"],
+                extends: TSIdentType("D"), implements: [TSIdentType("I")],
+                block: TSBlockStmt([
+                    TSMethodDecl(
+                        name: "foo", genericParams: ["U"],
+                        params: [
+                            .init(name: "a", type: TSIdentType("A")),
+                            .init(name: "t", type: TSIdentType("T")),
+                            .init(name: "u", type: TSIdentType("U"))
+                        ],
+                        result: TSIdentType("B"),
+                        block: TSBlockStmt([
+                            TSReturnStmt(
+                                TSInfixOperatorExpr(
+                                    TSInfixOperatorExpr(
+                                        TSIdentExpr("a"), "+",
+                                        TSIdentExpr("b")
+                                    ), "+",
+                                    TSIdentExpr("t")
+                                )
+                            )
+                        ])
+                    )
+                ])
+            )
+        ])
+
+        assertPrint(
+            s, """
+            class C<T> extends D implements I {
+                foo<U>(a: A, t: T, u: U): B {
+                    return a + b + t;
+                }
+            }
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.memberDeclaredNames), ["C"])
+        XCTAssertEqual(Set(s.scanDependency()), ["A", "B", "D", "I", "b"])
+    }
 }
