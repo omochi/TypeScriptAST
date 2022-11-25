@@ -438,6 +438,13 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(member: TSMemberExpr) -> Bool {
+        walk(member.base)
+        printer.write(".")
+        printer.write(member.name)
+        return false
+    }
+
     public override func visit(new: TSNewExpr) -> Bool {
         printer.write("new ")
         walk(new.callee)
@@ -469,6 +476,12 @@ public final class ASTPrinter: ASTVisitor {
         printer.write("(")
         walk(paren.expr)
         printer.write(")")
+        return false
+    }
+
+    public override func visit(postfixOperator: TSPostfixOperatorExpr) -> Bool {
+        walk(postfixOperator.expr)
+        printer.write(space: " ", "\(postfixOperator.operator)")
         return false
     }
 

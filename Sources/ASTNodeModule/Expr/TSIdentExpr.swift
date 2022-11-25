@@ -16,4 +16,5 @@ public final class TSIdentExpr: _TSExpr {
     public static var never: TSIdentExpr { TSIdentExpr("never") }
     public static var `true`: TSIdentExpr { TSIdentExpr("true") }
     public static var `false`: TSIdentExpr { TSIdentExpr("false") }
+    public static var this: TSIdentExpr { TSIdentExpr("this") }
 }

@@ -1,6 +1,8 @@
 open class ASTVisitor {
     public init() {}
 
+    public var defaultVisitResult: Bool { true }
+
     public func walk(_ node: any ASTNode) {
         dispatch(node)
     }
@@ -47,84 +49,88 @@ open class ASTVisitor {
         }
     }
 
-    open func visit(class: TSClassDecl) -> Bool { true }
+    open func visit(class: TSClassDecl) -> Bool { defaultVisitResult }
     open func visitPost(class: TSClassDecl) {}
-    open func visit(field: TSFieldDecl) -> Bool { true }
+    open func visit(field: TSFieldDecl) -> Bool { defaultVisitResult }
     open func visitPost(field: TSFieldDecl) {}
-    open func visit(function: TSFunctionDecl) -> Bool { true }
+    open func visit(function: TSFunctionDecl) -> Bool { defaultVisitResult }
     open func visitPost(function: TSFunctionDecl) {}
-    open func visit(import: TSImportDecl) -> Bool { true }
+    open func visit(import: TSImportDecl) -> Bool { defaultVisitResult }
     open func visitPost(import: TSImportDecl) {}
-    open func visit(interface: TSInterfaceDecl) -> Bool { true }
+    open func visit(interface: TSInterfaceDecl) -> Bool { defaultVisitResult }
     open func visitPost(interface: TSInterfaceDecl) {}
-    open func visit(method: TSMethodDecl) -> Bool { true }
+    open func visit(method: TSMethodDecl) -> Bool { defaultVisitResult }
     open func visitPost(method: TSMethodDecl) {}
-    open func visit(namespace: TSNamespaceDecl) -> Bool { true }
+    open func visit(namespace: TSNamespaceDecl) -> Bool { defaultVisitResult }
     open func visitPost(namespace: TSNamespaceDecl) {}
-    open func visit(sourceFile: TSSourceFile) -> Bool { true }
+    open func visit(sourceFile: TSSourceFile) -> Bool { defaultVisitResult }
     open func visitPost(sourceFile: TSSourceFile) {}
-    open func visit(type: TSTypeDecl) -> Bool { true }
+    open func visit(type: TSTypeDecl) -> Bool { defaultVisitResult }
     open func visitPost(type: TSTypeDecl) {}
-    open func visit(`var`: TSVarDecl) -> Bool { true }
+    open func visit(`var`: TSVarDecl) -> Bool { defaultVisitResult }
     open func visitPost(`var`: TSVarDecl) {}
 
-    open func visit(array: TSArrayExpr) -> Bool { true }
+    open func visit(array: TSArrayExpr) -> Bool { defaultVisitResult }
     open func visitPost(array: TSArrayExpr) {}
-    open func visit(as: TSAsExpr) -> Bool { true }
+    open func visit(as: TSAsExpr) -> Bool { defaultVisitResult }
     open func visitPost(as: TSAsExpr) {}
-    open func visit(await: TSAwaitExpr) -> Bool { true }
+    open func visit(await: TSAwaitExpr) -> Bool { defaultVisitResult }
     open func visitPost(await: TSAwaitExpr) {}
-    open func visit(call: TSCallExpr) -> Bool { true }
+    open func visit(call: TSCallExpr) -> Bool { defaultVisitResult }
     open func visitPost(call: TSCallExpr) {}
-    open func visit(closure: TSClosureExpr) -> Bool { true }
+    open func visit(closure: TSClosureExpr) -> Bool { defaultVisitResult }
     open func visitPost(closure: TSClosureExpr) {}
-    open func visit(custom: TSCustomExpr) -> Bool { true }
+    open func visit(custom: TSCustomExpr) -> Bool { defaultVisitResult }
     open func visitPost(custom: TSCustomExpr) {}
-    open func visit(ident: TSIdentExpr) -> Bool { true }
+    open func visit(ident: TSIdentExpr) -> Bool { defaultVisitResult }
     open func visitPost(ident: TSIdentExpr) {}
-    open func visit(infixOperator: TSInfixOperatorExpr) -> Bool { true }
+    open func visit(infixOperator: TSInfixOperatorExpr) -> Bool { defaultVisitResult }
     open func visitPost(infixOperator: TSInfixOperatorExpr) {}
-    open func visit(new: TSNewExpr) -> Bool { true }
+    open func visit(new: TSNewExpr) -> Bool { defaultVisitResult }
     open func visitPost(new: TSNewExpr) {}
-    open func visit(numberLiteral: TSNumberLiteralExpr) -> Bool { true }
+    open func visit(member: TSMemberExpr) -> Bool { defaultVisitResult }
+    open func visitPost(member: TSMemberExpr) {}
+    open func visit(numberLiteral: TSNumberLiteralExpr) -> Bool { defaultVisitResult }
     open func visitPost(numberLiteral: TSNumberLiteralExpr) {}
-    open func visit(object: TSObjectExpr) -> Bool { true }
+    open func visit(object: TSObjectExpr) -> Bool { defaultVisitResult }
     open func visitPost(object: TSObjectExpr) {}
-    open func visit(paren: TSParenExpr) -> Bool { true }
+    open func visit(paren: TSParenExpr) -> Bool { defaultVisitResult }
     open func visitPost(paren: TSParenExpr) {}
-    open func visit(prefixOperator: TSPrefixOperatorExpr) -> Bool { true }
+    open func visit(postfixOperator: TSPostfixOperatorExpr) -> Bool { defaultVisitResult }
+    open func visitPost(postfixOperator: TSPostfixOperatorExpr) {}
+    open func visit(prefixOperator: TSPrefixOperatorExpr) -> Bool { defaultVisitResult }
     open func visitPost(prefixOperator: TSPrefixOperatorExpr) {}
-    open func visit(stringLiteral: TSStringLiteralExpr) -> Bool { true }
+    open func visit(stringLiteral: TSStringLiteralExpr) -> Bool { defaultVisitResult }
     open func visitPost(stringLiteral: TSStringLiteralExpr) {}
 
-    open func visit(block: TSBlockStmt) -> Bool { true }
+    open func visit(block: TSBlockStmt) -> Bool { defaultVisitResult }
     open func visitPost(block: TSBlockStmt) {}
-    open func visit(forIn: TSForInStmt) -> Bool { true }
+    open func visit(forIn: TSForInStmt) -> Bool { defaultVisitResult }
     open func visitPost(forIn: TSForInStmt) {}
-    open func visit(if: TSIfStmt) -> Bool { true }
+    open func visit(if: TSIfStmt) -> Bool { defaultVisitResult }
     open func visitPost(if: TSIfStmt) {}
-    open func visit(return: TSReturnStmt) -> Bool { true }
+    open func visit(return: TSReturnStmt) -> Bool { defaultVisitResult }
     open func visitPost(return: TSReturnStmt) {}
-    open func visit(throw: TSThrowStmt) -> Bool { true }
+    open func visit(throw: TSThrowStmt) -> Bool { defaultVisitResult }
     open func visitPost(throw: TSThrowStmt) {}
 
-    open func visit(array: TSArrayType) -> Bool { true }
+    open func visit(array: TSArrayType) -> Bool { defaultVisitResult }
     open func visitPost(array: TSArrayType) {}
-    open func visit(custom: TSCustomType) -> Bool { true }
+    open func visit(custom: TSCustomType) -> Bool { defaultVisitResult }
     open func visitPost(custom: TSCustomType) {}
-    open func visit(dictionary: TSDictionaryType) -> Bool { true }
+    open func visit(dictionary: TSDictionaryType) -> Bool { defaultVisitResult }
     open func visitPost(dictionary: TSDictionaryType) {}
-    open func visit(function: TSFunctionType) -> Bool { true }
+    open func visit(function: TSFunctionType) -> Bool { defaultVisitResult }
     open func visitPost(function: TSFunctionType) {}
-    open func visit(ident: TSIdentType) -> Bool { true }
+    open func visit(ident: TSIdentType) -> Bool { defaultVisitResult }
     open func visitPost(ident: TSIdentType) {}
-    open func visit(member: TSMemberType) -> Bool { true }
+    open func visit(member: TSMemberType) -> Bool { defaultVisitResult }
     open func visitPost(member: TSMemberType) {}
-    open func visit(object: TSObjectType) -> Bool { true }
+    open func visit(object: TSObjectType) -> Bool { defaultVisitResult }
     open func visitPost(object: TSObjectType) {}
-    open func visit(stringLiteral: TSStringLiteralType) -> Bool { true }
+    open func visit(stringLiteral: TSStringLiteralType) -> Bool { defaultVisitResult }
     open func visitPost(stringLiteral: TSStringLiteralType) {}
-    open func visit(union: TSUnionType) -> Bool { true }
+    open func visit(union: TSUnionType) -> Bool { defaultVisitResult }
     open func visitPost(union: TSUnionType) {}
 
     private func dispatch(_ node: any ASTNode) {
@@ -148,9 +154,11 @@ open class ASTVisitor {
         case let x as TSIdentExpr: visitImpl(ident: x)
         case let x as TSInfixOperatorExpr: visitImpl(infixOperator: x)
         case let x as TSNewExpr: visitImpl(new: x)
+        case let x as TSMemberExpr: visitImpl(member: x)
         case let x as TSNumberLiteralExpr: visitImpl(numberLiteral: x)
         case let x as TSObjectExpr: visitImpl(object: x)
         case let x as TSParenExpr: visitImpl(paren: x)
+        case let x as TSPostfixOperatorExpr: visitImpl(postfixOperator: x)
         case let x as TSPrefixOperatorExpr: visitImpl(prefixOperator: x)
         case let x as TSStringLiteralExpr: visitImpl(stringLiteral: x)
         case let x as TSBlockStmt: visitImpl(block: x)
@@ -296,6 +304,12 @@ open class ASTVisitor {
         visitPost(new: new)
     }
 
+    private func visitImpl(member: TSMemberExpr) {
+        guard visit(member: member) else { return }
+        walk(member.base)
+        visitPost(member: member)
+    }
+
     private func visitImpl(numberLiteral: TSNumberLiteralExpr) {
         guard visit(numberLiteral: numberLiteral) else { return }
         visitPost(numberLiteral: numberLiteral)
@@ -311,6 +325,12 @@ open class ASTVisitor {
         guard visit(paren: paren) else { return }
         walk(paren.expr)
         visitPost(paren: paren)
+    }
+
+    private func visitImpl(postfixOperator: TSPostfixOperatorExpr) {
+        guard visit(postfixOperator: postfixOperator) else { return }
+        walk(postfixOperator.expr)
+        visitPost(postfixOperator: postfixOperator)
     }
 
     private func visitImpl(prefixOperator: TSPrefixOperatorExpr) {

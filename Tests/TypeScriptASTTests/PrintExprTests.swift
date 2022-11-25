@@ -301,4 +301,24 @@ final class PrintExprTests: PrintTestsBase {
             "await f()"
         )
     }
+
+    func testPostfix() throws {
+        assertPrint(
+            TSPostfixOperatorExpr(TSIdentExpr("v"), "!"),
+            "v !"
+        )
+    }
+
+    func testMember() throws {
+        assertPrint(
+            TSMemberExpr(
+                base: TSMemberExpr(
+                    base: TSIdentExpr("A"),
+                    name: "B"
+                ),
+                name: "C"
+            ),
+            "A.B.C"
+        )
+    }
 }

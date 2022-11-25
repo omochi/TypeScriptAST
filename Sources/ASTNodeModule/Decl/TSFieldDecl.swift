@@ -2,8 +2,8 @@ public final class TSFieldDecl: _TSDecl {
     public init(
         modifiers: [TSDeclModifier] = [],
         name: String,
-        type: any TSType,
-        isOptional: Bool = false
+        isOptional: Bool = false,
+        type: any TSType
     ) {
         self.modifiers = modifiers
         self.name = name
@@ -18,6 +18,6 @@ public final class TSFieldDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
-    @AnyTSTypeStorage public var type: any TSType
     public var isOptional: Bool
+    @AnyTSTypeStorage public var type: any TSType
 }

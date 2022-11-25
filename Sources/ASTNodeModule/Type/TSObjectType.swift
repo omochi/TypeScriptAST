@@ -2,17 +2,18 @@ public final class TSObjectType: _TSType {
     public struct Field {
         public init(
             name: String,
-            type: any TSType,
-            isOptional: Bool = false
+            isOptional: Bool = false,
+            type: any TSType
+
         ) {
             self.name = name
-            self.type = type
             self.isOptional = isOptional
+            self.type = type
         }
 
         public var name: String
-        public var type: any TSType
         public var isOptional: Bool
+        public var type: any TSType
     }
 
     public init(_ fields: [Field]) {

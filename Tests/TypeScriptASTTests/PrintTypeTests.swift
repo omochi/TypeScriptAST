@@ -169,7 +169,7 @@ final class PrintTypeTests: PrintTestsBase {
         assertPrint(
             TSObjectType([
                 .init(name: "a", type: TSIdentType("A")),
-                .init(name: "b", type: TSIdentType("B"), isOptional: true)
+                .init(name: "b", isOptional: true, type: TSIdentType("B"))
             ]),
             """
             {
