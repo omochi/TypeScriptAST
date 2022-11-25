@@ -4,7 +4,6 @@ public final class TSObjectType: _TSType {
             name: String,
             isOptional: Bool = false,
             type: any TSType
-
         ) {
             self.name = name
             self.isOptional = isOptional

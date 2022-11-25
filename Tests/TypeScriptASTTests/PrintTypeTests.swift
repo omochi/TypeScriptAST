@@ -158,7 +158,7 @@ final class PrintTypeTests: TestCaseBase {
 
     func testDictionary() throws {
         assertPrint(
-            TSDictionaryType(value: TSIdentType("A")),
+            TSDictionaryType(TSIdentType("A")),
             "{ [key: string]: A; }"
         )
     }

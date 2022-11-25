@@ -1,5 +1,5 @@
 public final class TSDictionaryType: _TSType {
-    public init(value: any TSType) {
+    public init(_ value: any TSType) {
         self.value = value
     }
 
