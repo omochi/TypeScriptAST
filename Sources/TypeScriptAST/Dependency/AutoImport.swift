@@ -3,14 +3,17 @@ extension TSSourceFile {
         elements.compactMap { $0.asDecl?.asImport }
     }
 
-    public func replaceImportDecls(list: [TSImportDecl]) {
+    public func replaceImportDecls(_ imports: [TSImportDecl]) {
         var elements = self.elements
         elements.removeAll { $0 is TSImportDecl }
-        elements.insert(contentsOf: list, at: 0)
+        elements.insert(contentsOf: imports, at: 0)
         self.elements = elements
     }
 
-    public func buildAutoImportDecls(symbolTable: SymbolTable) throws -> [TSImportDecl] {
+    public func buildAutoImportDecls(
+        symbolTable: SymbolTable,
+        defaultFile: String? = nil
+    ) throws -> [TSImportDecl] {
         var symbolTable = symbolTable
 
         var fileToSymbols = FileToSymbols()
@@ -24,14 +27,19 @@ extension TSSourceFile {
 
         let symbols = self.scanDependency()
         for symbol in symbols {
-            guard let file = symbolTable.find(symbol) else {
-                throw MessageError("unknown symbol: \(symbol)")
-            }
-
-            switch file {
-            case .standardLibrary: break
-            case .file(let file):
-                fileToSymbols.add(file: file, symbol: symbol)
+            if let file = symbolTable.find(symbol) {
+                switch file {
+                case .standardLibrary: break
+                case .file(let file):
+                    fileToSymbols.add(file: file, symbol: symbol)
+                }
+            } else {
+                if let defaultFile {
+                    fileToSymbols.add(file: defaultFile, symbol: symbol)
+                    continue
+                } else {
+                    throw MessageError("unknown symbol: \(symbol)")
+                }
             }
         }
 

@@ -48,13 +48,41 @@ final class AutoImportTests: TestCaseBase {
             """
         )
 
-        m.replaceImportDecls(list: imports)
+        m.replaceImportDecls(imports)
         assertPrint(
             m, """
             import { S } from "./s.js";
             import { X } from "./x.js";
 
             function f(a: S, b: X) {}
+            
+            """
+        )
+    }
+
+    func testDefaultImport() throws {
+        let s = TSSourceFile([
+            TSVarDecl(
+                kind: .const, name: "a", type: TSIdentType("A"),
+                initializer: TSIdentExpr("b")
+            )
+        ])
+
+        assertPrint(
+            s, """
+            const a: A = b;
+
+            """
+        )
+
+        let imports = try s.buildAutoImportDecls(symbolTable: SymbolTable(), defaultFile: "..")
+        s.replaceImportDecls(imports)
+
+        assertPrint(
+            s, """
+            import { A, b } from "..";
+
+            const a: A = b;
             
             """
         )
