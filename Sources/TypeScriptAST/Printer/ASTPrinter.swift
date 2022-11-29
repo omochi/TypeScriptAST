@@ -545,6 +545,25 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(catch: TSCatchStmt) -> Bool {
+        printer.write("catch")
+        if let name = `catch`.name {
+            printer.write(space: " ")
+            nest(bracket: "(") {
+                walk(name)
+            }
+        }
+        printer.write(space: " ")
+        walk(`catch`.body)
+        return false
+    }
+
+    public override func visit(finally: TSFinallyStmt) -> Bool {
+        printer.write("finally ")
+        walk(finally.body)
+        return false
+    }
+
     public override func visit(forIn: TSForInStmt) -> Bool {
         printer.write("for (\(forIn.kind) \(forIn.name) \(forIn.operator) ")
         walk(forIn.expr)
@@ -580,6 +599,20 @@ public final class ASTPrinter: ASTVisitor {
         printer.write("throw ")
         walk(`throw`.expr)
         printer.write(";")
+        return false
+    }
+
+    public override func visit(try: TSTryStmt) -> Bool {
+        printer.write("try ")
+        walk(`try`.body)
+        if let `catch` = `try`.catch {
+            printer.write(space: " ")
+            walk(`catch`)
+        }
+        if let finally = `try`.finally {
+            printer.write(space: " ")
+            walk(finally)
+        }
         return false
     }
 

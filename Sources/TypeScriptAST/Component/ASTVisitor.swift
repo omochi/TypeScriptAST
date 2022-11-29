@@ -109,6 +109,10 @@ open class ASTVisitor {
 
     open func visit(block: TSBlockStmt) -> Bool { defaultVisitResult }
     open func visitPost(block: TSBlockStmt) {}
+    open func visit(catch: TSCatchStmt) -> Bool { defaultVisitResult }
+    open func visitPost(catch: TSCatchStmt) {}
+    open func visit(finally: TSFinallyStmt) -> Bool { defaultVisitResult }
+    open func visitPost(finally: TSFinallyStmt) {}
     open func visit(forIn: TSForInStmt) -> Bool { defaultVisitResult }
     open func visitPost(forIn: TSForInStmt) {}
     open func visit(if: TSIfStmt) -> Bool { defaultVisitResult }
@@ -117,6 +121,8 @@ open class ASTVisitor {
     open func visitPost(return: TSReturnStmt) {}
     open func visit(throw: TSThrowStmt) -> Bool { defaultVisitResult }
     open func visitPost(throw: TSThrowStmt) {}
+    open func visit(try: TSTryStmt) -> Bool { defaultVisitResult }
+    open func visitPost(try: TSTryStmt) {}
 
     open func visit(array: TSArrayType) -> Bool { defaultVisitResult }
     open func visitPost(array: TSArrayType) {}
@@ -168,10 +174,13 @@ open class ASTVisitor {
         case let x as TSStringLiteralExpr: visitImpl(stringLiteral: x)
         case let x as TSSubscriptExpr: visitImpl(subscript: x)
         case let x as TSBlockStmt: visitImpl(block: x)
+        case let x as TSCatchStmt: visitImpl(catch: x)
+        case let x as TSFinallyStmt: visitImpl(finally: x)
         case let x as TSForInStmt: visitImpl(forIn: x)
         case let x as TSIfStmt: visitImpl(if: x)
         case let x as TSReturnStmt: visitImpl(return: x)
         case let x as TSThrowStmt: visitImpl(throw: x)
+        case let x as TSTryStmt: visitImpl(try: x)
         case let x as TSArrayType: visitImpl(array: x)
         case let x as TSCustomType: visitImpl(custom: x)
         case let x as TSDictionaryType: visitImpl(dictionary: x)
@@ -371,6 +380,19 @@ open class ASTVisitor {
         visitPost(block: block)
     }
 
+    private func visitImpl(catch: TSCatchStmt) {
+        guard visit(catch: `catch`) else { return }
+        walk(`catch`.name)
+        walk(`catch`.body)
+        visitPost(catch: `catch`)
+    }
+
+    private func visitImpl(finally: TSFinallyStmt) {
+        guard visit(finally: finally) else { return }
+        walk(finally.body)
+        visitPost(finally: finally)
+    }
+
     private func visitImpl(forIn: TSForInStmt) {
         guard visit(forIn: forIn) else { return }
         walk(forIn.expr)
@@ -396,6 +418,12 @@ open class ASTVisitor {
         guard visit(throw: `throw`) else { return }
         walk(`throw`.expr)
         visitPost(throw: `throw`)
+    }
+
+    private func visitImpl(try: TSTryStmt) {
+        guard visit(try: `try`) else { return }
+        walk(`try`.body)
+        visitPost(try: `try`)
     }
 
     private func visitImpl(array: TSArrayType) {

@@ -354,4 +354,46 @@ final class PrintExprTests: TestCaseBase {
             "a[k]"
         )
     }
+
+    func testTry() throws {
+        assertPrint(
+            TSTryStmt(
+                body: TSBlockStmt([
+                    TSReturnStmt(TSNumberLiteralExpr(1))
+                ]),
+                catch: TSCatchStmt(body: TSBlockStmt([
+                    TSReturnStmt(TSNumberLiteralExpr(2))
+                ]))
+            ),
+            """
+            try {
+                return 1;
+            } catch {
+                return 2;
+            }
+            """
+        )
+
+        assertPrint(
+            TSTryStmt(
+                body: TSBlockStmt([
+                    TSReturnStmt(TSNumberLiteralExpr(1))
+                ]),
+                catch: TSCatchStmt(name: TSIdentExpr("e"), body: TSBlockStmt([
+                    TSReturnStmt(TSNumberLiteralExpr(2))
+                ])),
+                finally: TSFinallyStmt(body: TSBlockStmt([
+                    TSReturnStmt(TSNumberLiteralExpr(3))
+                ]))
+            ), """
+            try {
+                return 1;
+            } catch (e) {
+                return 2;
+            } finally {
+                return 3;
+            }
+            """
+        )
+    }
 }
