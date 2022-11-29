@@ -26,7 +26,8 @@ public struct SymbolTable {
         "string",
         "this",
         "Promise",
-        "Error"
+        "Error",
+        "Date"
     ]
 
     public var table: [String: File] = [:]
