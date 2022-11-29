@@ -284,4 +284,59 @@ final class ScanDependencyTests: TestCaseBase {
         XCTAssertEqual(Set(s.memberDeclaredNames), ["C"])
         XCTAssertEqual(Set(s.scanDependency()), ["A", "B", "D", "I", "b"])
     }
+
+    func testCatch() {
+        let s = TSSourceFile([
+            TSTryStmt(
+                body: TSBlockStmt([
+                    TSReturnStmt()
+                ]),
+                catch: TSCatchStmt(name: TSIdentExpr("e"), body: TSBlockStmt([
+                    TSReturnStmt(TSIdentExpr("e"))
+                ]))
+            )
+        ])
+
+        assertPrint(
+            s, """
+            try {
+                return;
+            } catch (e) {
+                return e;
+            }
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.scanDependency()), [])
+    }
+
+    func testSwitch() {
+        let s = TSSourceFile([
+            TSSwitchStmt(expr: TSIdentExpr("x"), cases: [
+                TSCaseStmt(expr: TSIdentExpr("y"), elements: [
+                    TSVarDecl(kind: .const, name: "a", initializer: TSNumberLiteralExpr(1)),
+                    TSReturnStmt(TSIdentExpr("a"))
+                ]),
+                TSDefaultStmt(elements: [
+                    TSReturnStmt(TSIdentExpr("b"))
+                ])
+            ])
+        ])
+
+        assertPrint(
+            s, """
+            switch (x) {
+            case y:
+                const a = 1;
+                return a;
+            default:
+                return b;
+            }
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.scanDependency()), ["x", "y", "b"])
+    }
 }

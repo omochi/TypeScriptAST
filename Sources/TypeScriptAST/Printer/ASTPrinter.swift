@@ -545,6 +545,16 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(case: TSCaseStmt) -> Bool {
+        printer.write("case ")
+        walk(`case`.expr)
+        printer.write(":")
+        nest(bracket: "") {
+            write(blockElements: `case`.elements)
+        }
+        return false
+    }
+
     public override func visit(catch: TSCatchStmt) -> Bool {
         printer.write("catch")
         if let name = `catch`.name {
@@ -555,6 +565,14 @@ public final class ASTPrinter: ASTVisitor {
         }
         printer.write(space: " ")
         walk(`catch`.body)
+        return false
+    }
+
+    public override func visit(default: TSDefaultStmt) -> Bool {
+        printer.write("default:")
+        nest(bracket: "") {
+            write(blockElements: `default`.elements)
+        }
         return false
     }
 
@@ -589,9 +607,26 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public override func visit(return: TSReturnStmt) -> Bool {
-        printer.write("return ")
-        walk(`return`.expr)
+        printer.write("return")
+        if let expr = `return`.expr {
+            printer.write(space: " ")
+            walk(expr)
+        }
         printer.write(";")
+        return false
+    }
+
+    public override func visit(switch: TSSwitchStmt) -> Bool {
+        printer.write("switch (")
+        walk(`switch`.expr)
+        printer.write(") {")
+        for (i, `case`) in `switch`.cases.enumerated() {
+            if i == 0 {
+                printer.writeNewline()
+            }
+            walk(`case`)
+        }
+        printer.write("}")
         return false
     }
 

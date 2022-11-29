@@ -116,6 +116,38 @@ private final class Impl: ASTVisitor {
         pop()
     }
 
+    override func visit(case: TSCaseStmt) -> Bool {
+        push()
+        addNames(`case`.memberDeclaredNames)
+        return true
+    }
+
+    override func visitPost(case: TSCaseStmt) {
+        pop()
+    }
+
+    override func visit(catch: TSCatchStmt) -> Bool {
+        push()
+        if let name = `catch`.name {
+            addNames([name.name])
+        }
+        return true
+    }
+
+    override func visitPost(catch: TSCatchStmt) {
+        pop()
+    }
+
+    override func visit(default: TSDefaultStmt) -> Bool {
+        push()
+        addNames(`default`.memberDeclaredNames)
+        return true
+    }
+
+    override func visitPost(default: TSDefaultStmt) {
+        pop()
+    }
+
     override func visit(forIn: TSForInStmt) -> Bool {
         push()
         addNames([forIn.name])

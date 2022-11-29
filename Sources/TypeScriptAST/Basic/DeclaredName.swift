@@ -12,13 +12,26 @@ extension ASTNode {
     }
 }
 
-extension TSSourceFile {
+
+extension TSBlockStmt {
     public var memberDeclaredNames: [String] {
         return elements.compactMap { $0.declaredName }
     }
 }
 
-extension TSBlockStmt {
+extension TSCaseStmt {
+    public var memberDeclaredNames: [String] {
+        return elements.compactMap { $0.declaredName }
+    }
+}
+
+extension TSDefaultStmt {
+    public var memberDeclaredNames: [String] {
+        return elements.compactMap { $0.declaredName }
+    }
+}
+
+extension TSSourceFile {
     public var memberDeclaredNames: [String] {
         return elements.compactMap { $0.declaredName }
     }

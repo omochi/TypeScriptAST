@@ -396,4 +396,34 @@ final class PrintExprTests: TestCaseBase {
             """
         )
     }
+
+    func testSwitch() throws {
+        assertPrint(
+            TSSwitchStmt(expr: TSIdentExpr("x")),
+            """
+            switch (x) {}
+            """
+        )
+
+        assertPrint(
+            TSSwitchStmt(
+                expr: TSIdentExpr("x"),
+                cases: [
+                    TSCaseStmt(expr: TSNumberLiteralExpr(1), elements: [
+                        TSReturnStmt(TSIdentExpr.true)
+                    ]),
+                    TSDefaultStmt(elements: [
+                        TSReturnStmt(TSIdentExpr.false)
+                    ])
+                ]
+            ),
+            """
+            switch (x) {
+            case 1:
+                return true;
+            default:
+                return false;
+            }
+            """)
+    }
 }

@@ -1,5 +1,5 @@
 public final class TSReturnStmt: _TSStmt {
-    public init(_ expr: TSExpr) {
+    public init(_ expr: TSExpr? = nil) {
         self.expr = expr
     }
 
@@ -8,5 +8,5 @@ public final class TSReturnStmt: _TSStmt {
         parent = newValue
     }
 
-    @AnyTSExprStorage public var expr: TSExpr
+    @AnyTSExprOptionalStorage public var expr: (any TSExpr)?
 }

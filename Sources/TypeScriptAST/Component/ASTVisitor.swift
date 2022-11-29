@@ -109,8 +109,12 @@ open class ASTVisitor {
 
     open func visit(block: TSBlockStmt) -> Bool { defaultVisitResult }
     open func visitPost(block: TSBlockStmt) {}
+    open func visit(case: TSCaseStmt) -> Bool { defaultVisitResult }
+    open func visitPost(case: TSCaseStmt) {}
     open func visit(catch: TSCatchStmt) -> Bool { defaultVisitResult }
     open func visitPost(catch: TSCatchStmt) {}
+    open func visit(default: TSDefaultStmt) -> Bool { defaultVisitResult }
+    open func visitPost(default: TSDefaultStmt) {}
     open func visit(finally: TSFinallyStmt) -> Bool { defaultVisitResult }
     open func visitPost(finally: TSFinallyStmt) {}
     open func visit(forIn: TSForInStmt) -> Bool { defaultVisitResult }
@@ -119,6 +123,8 @@ open class ASTVisitor {
     open func visitPost(if: TSIfStmt) {}
     open func visit(return: TSReturnStmt) -> Bool { defaultVisitResult }
     open func visitPost(return: TSReturnStmt) {}
+    open func visit(switch: TSSwitchStmt) -> Bool { defaultVisitResult }
+    open func visitPost(switch: TSSwitchStmt) {}
     open func visit(throw: TSThrowStmt) -> Bool { defaultVisitResult }
     open func visitPost(throw: TSThrowStmt) {}
     open func visit(try: TSTryStmt) -> Bool { defaultVisitResult }
@@ -174,11 +180,14 @@ open class ASTVisitor {
         case let x as TSStringLiteralExpr: visitImpl(stringLiteral: x)
         case let x as TSSubscriptExpr: visitImpl(subscript: x)
         case let x as TSBlockStmt: visitImpl(block: x)
+        case let x as TSCaseStmt: visitImpl(case: x)
         case let x as TSCatchStmt: visitImpl(catch: x)
+        case let x as TSDefaultStmt: visitImpl(default: x)
         case let x as TSFinallyStmt: visitImpl(finally: x)
         case let x as TSForInStmt: visitImpl(forIn: x)
         case let x as TSIfStmt: visitImpl(if: x)
         case let x as TSReturnStmt: visitImpl(return: x)
+        case let x as TSSwitchStmt: visitImpl(switch: x)
         case let x as TSThrowStmt: visitImpl(throw: x)
         case let x as TSTryStmt: visitImpl(try: x)
         case let x as TSArrayType: visitImpl(array: x)
@@ -380,11 +389,24 @@ open class ASTVisitor {
         visitPost(block: block)
     }
 
+    private func visitImpl(case: TSCaseStmt) {
+        guard visit(case: `case`) else { return }
+        walk(`case`.expr)
+        walk(`case`.elements)
+        visitPost(case: `case`)
+    }
+
     private func visitImpl(catch: TSCatchStmt) {
         guard visit(catch: `catch`) else { return }
         walk(`catch`.name)
         walk(`catch`.body)
         visitPost(catch: `catch`)
+    }
+
+    private func visitImpl(default: TSDefaultStmt) {
+        guard visit(default: `default`) else { return }
+        walk(`default`.elements)
+        visitPost(default: `default`)
     }
 
     private func visitImpl(finally: TSFinallyStmt) {
@@ -412,6 +434,13 @@ open class ASTVisitor {
         guard visit(return: `return`) else { return }
         walk(`return`.expr)
         visitPost(return: `return`)
+    }
+
+    private func visitImpl(switch: TSSwitchStmt) {
+        guard visit(switch: `switch`) else { return }
+        walk(`switch`.expr)
+        walk(`switch`.cases)
+        visitPost(switch: `switch`)
     }
 
     private func visitImpl(throw: TSThrowStmt) {
