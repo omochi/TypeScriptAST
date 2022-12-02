@@ -150,6 +150,8 @@ open class ASTVisitor {
     open func visitPost(function: TSFunctionType) {}
     open func visit(ident: TSIdentType) -> Bool { defaultVisitResult }
     open func visitPost(ident: TSIdentType) {}
+    open func visit(intersection: TSIntersectionType) -> Bool { defaultVisitResult }
+    open func visitPost(intersection: TSIntersectionType) {}
     open func visit(member: TSMemberType) -> Bool { defaultVisitResult }
     open func visitPost(member: TSMemberType) {}
     open func visit(object: TSObjectType) -> Bool { defaultVisitResult }
@@ -205,6 +207,7 @@ open class ASTVisitor {
         case let x as TSDictionaryType: visitImpl(dictionary: x)
         case let x as TSFunctionType: visitImpl(function: x)
         case let x as TSIdentType: visitImpl(ident: x)
+        case let x as TSIntersectionType: visitImpl(intersection: x)
         case let x as TSMemberType: visitImpl(member: x)
         case let x as TSObjectType: visitImpl(object: x)
         case let x as TSStringLiteralType: visitImpl(stringLiteral: x)
@@ -493,6 +496,12 @@ open class ASTVisitor {
         guard visit(ident: ident) else { return }
         walk(ident.genericArgs)
         visitPost(ident: ident)
+    }
+
+    private func visitImpl(intersection: TSIntersectionType) {
+        guard visit(intersection: intersection) else { return }
+        walk(intersection.elements)
+        visitPost(intersection: intersection)
     }
 
     private func visitImpl(member: TSMemberType) {

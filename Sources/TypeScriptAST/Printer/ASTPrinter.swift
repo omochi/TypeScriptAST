@@ -670,6 +670,7 @@ public final class ASTPrinter: ASTVisitor {
         let paren: Bool = {
             switch array.element {
             case is TSUnionType: return true
+            case is TSIntersectionType: return true
             default: return false
             }
         }()
@@ -723,6 +724,13 @@ public final class ASTPrinter: ASTVisitor {
     public override func visit(ident: TSIdentType) -> Bool {
         printer.write(ident.name)
         write(genericArgs: ident.genericArgs)
+        return false
+    }
+
+    public override func visit(intersection: TSIntersectionType) -> Bool {
+        write(array: intersection.elements, separator: " &") {
+            walk($0)
+        }
         return false
     }
 
