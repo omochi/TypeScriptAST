@@ -244,11 +244,15 @@ final class PrintExprTests: TestCaseBase {
 
         assertPrint(
             TSObjectExpr([
-                .init(name: "a", value: TSIdentExpr.true)
+                .named(name: "a", value: TSIdentExpr.true),
+                .namedWithVariable(varName: "b"),
+                .method(.init(name: "c", params: [], body: TSBlockStmt([])))
             ]),
             """
             {
-                a: true
+                a: true,
+                b,
+                c() {}
             }
             """
         )

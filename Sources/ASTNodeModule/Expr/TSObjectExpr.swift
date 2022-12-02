@@ -1,11 +1,8 @@
 public final class TSObjectExpr: _TSExpr {
-    public struct Field {
-        public init(name: String, value: any TSExpr) {
-            self.name = name
-            self.value = value
-        }
-        public var name: String
-        public var value: any TSExpr
+    public enum Field {
+        case named(name: String, value: any TSExpr)
+        case namedWithVariable(varName: String)
+        case method(TSMethodDecl)
     }
 
     public init(
@@ -23,11 +20,25 @@ public final class TSObjectExpr: _TSExpr {
         get { _fields }
         set {
             for field in _fields {
-                field.value.setParent(nil)
+                switch field {
+                case .named(_, let value):
+                    value.setParent(nil)
+                case .namedWithVariable:
+                    break
+                case .method(let decl):
+                    decl.setParent(nil)
+                }
             }
             _fields = newValue
             for field in newValue {
-                field.value.setParent(self)
+                switch field {
+                case .named(_, let value):
+                    value.setParent(self)
+                case .namedWithVariable:
+                    break
+                case .method(let decl):
+                    decl.setParent(self)
+                }
             }
         }
     }

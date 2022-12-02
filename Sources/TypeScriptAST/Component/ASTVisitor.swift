@@ -30,7 +30,14 @@ open class ASTVisitor {
     }
 
     private func walk(field: TSObjectExpr.Field) {
-        walk(field.value)
+        switch field {
+        case .named(_, let value):
+            walk(value)
+        case .namedWithVariable:
+            break
+        case .method(let decl):
+            walk(decl)
+        }
     }
 
     private func walk(fields: [TSObjectExpr.Field]) {
