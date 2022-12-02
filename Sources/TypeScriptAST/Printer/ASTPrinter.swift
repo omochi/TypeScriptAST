@@ -491,9 +491,22 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     private func write(field: TSObjectExpr.Field) {
-        printer.write(field.name)
-        printer.write(": ")
-        walk(field.value)
+        switch field {
+        case .named(let name, let value):
+            printer.write(name)
+            printer.write(": ")
+            walk(value)
+        case .shorthandPropertyNames(let name):
+            printer.write(name)
+        case .computedPropertyNames(let name, let value):
+            printer.write("[")
+            walk(name)
+            printer.write("]")
+            printer.write(": ")
+            walk(value)
+        case .method(let decl):
+            walk(decl)
+        }
     }
 
     public override func visit(paren: TSParenExpr) -> Bool {

@@ -59,9 +59,9 @@ final class ScanDependencyTests: TestCaseBase {
                 body: TSBlockStmt([
                     TSReturnStmt(
                         TSObjectExpr([
-                            .init(name: "a", value: TSStringLiteralExpr("a")),
-                            .init(name: "b", value: TSIdentExpr("t")),
-                            .init(name: "c", value: TSCallExpr(
+                            .named(name: "a", value: TSStringLiteralExpr("a")),
+                            .named(name: "b", value: TSIdentExpr("t")),
+                            .named(name: "c", value: TSCallExpr(
                                 callee: TSIdentExpr("g"), args: [])
                             )
                         ])
