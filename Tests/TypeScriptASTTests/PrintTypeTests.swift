@@ -110,6 +110,11 @@ final class PrintTypeTests: TestCaseBase {
         )
 
         assertPrint(
+            TSArrayType(TSIntersectionType([TSIdentType.number, TSIdentType.null])),
+            "(number & null)[]"
+        )
+
+        assertPrint(
             TSArrayType(TSUnionType([
                 TSIdentType("A"),
                 TSIdentType("B"),
@@ -257,6 +262,23 @@ final class PrintTypeTests: TestCaseBase {
         assertPrint(
             e, """
             "a" | "b" | "c"
+            """
+        )
+    }
+
+    func testIntersection() throws {
+        let s = TSIntersectionType([
+            TSIdentType.string,
+            TSObjectType([
+                .init(name: "S", type: TSIdentType.never)
+            ])
+        ])
+
+        assertPrint(
+            s, """
+            string & {
+                S: never;
+            }
             """
         )
     }
