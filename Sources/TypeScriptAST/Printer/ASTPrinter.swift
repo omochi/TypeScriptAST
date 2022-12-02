@@ -496,8 +496,14 @@ public final class ASTPrinter: ASTVisitor {
             printer.write(name)
             printer.write(": ")
             walk(value)
-        case .namedWithVariable(let varName):
-            printer.write(varName)
+        case .shorthandPropertyNames(let name):
+            printer.write(name)
+        case .computedPropertyNames(let name, let value):
+            printer.write("[")
+            walk(name)
+            printer.write("]")
+            printer.write(": ")
+            walk(value)
         case .method(let decl):
             walk(decl)
         }

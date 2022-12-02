@@ -33,8 +33,11 @@ open class ASTVisitor {
         switch field {
         case .named(_, let value):
             walk(value)
-        case .namedWithVariable:
+        case .shorthandPropertyNames:
             break
+        case .computedPropertyNames(let name, let value):
+            walk(name)
+            walk(value)
         case .method(let decl):
             walk(decl)
         }
