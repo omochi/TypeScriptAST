@@ -251,6 +251,7 @@ final class PrintExprTests: TestCaseBase {
                 ), value: TSIdentExpr.true),
                 .method(.init(name: "c", params: [], body: TSBlockStmt([]))),
                 .named(name: "Content-Type", value: TSStringLiteralExpr("application/json")),
+                .method(.init(name: "Foo&Bar", params: [], body: TSBlockStmt([]))),
             ]),
             """
             {
@@ -258,7 +259,8 @@ final class PrintExprTests: TestCaseBase {
                 b,
                 [a + 42]: true,
                 c() {},
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Foo&Bar"() {}
             }
             """
         )

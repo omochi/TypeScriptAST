@@ -338,7 +338,14 @@ public final class ASTPrinter: ASTVisitor {
 
     public override func visit(method: TSMethodDecl) -> Bool {
         write(modifiers: method.modifiers)
-        printer.write(space: " ", method.name)
+        printer.write(space: " ")
+        if isValidIdentifier(method.name) {
+            printer.write(method.name)
+        } else {
+            printer.write("\"")
+            printer.write(escape(method.name))
+            printer.write("\"")
+        }
         write(genericParams: method.genericParams)
         write(params: method.params)
         if let result = method.result {
