@@ -27,7 +27,30 @@ public struct SymbolTable {
         "this",
         "Promise",
         "Error",
-        "Date"
+        "Date",
+
+        // TypeScript Utility types
+        "Awaited",
+        "Partial",
+        "Required",
+        "Readonly",
+        "Record",
+        "Pick",
+        "Omit",
+        "Exclude",
+        "Extract",
+        "NonNullable",
+        "Parameters",
+        "ConstructorParameters",
+        "ReturnType",
+        "InstanceType",
+        "ThisParameterType",
+        "OmitThisParameter",
+        "ThisType",
+        "Uppercase",
+        "Lowercase",
+        "Capitalize",
+        "Uncapitalize",
     ]
 
     public var table: [String: File] = [:]

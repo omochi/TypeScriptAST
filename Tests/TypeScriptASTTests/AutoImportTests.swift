@@ -4,11 +4,11 @@ import TypeScriptAST
 final class AutoImportTests: TestCaseBase {
     func testAutoImport() throws {
         let s = TSSourceFile([
-            TSTypeDecl(modifiers: [.export], name: "S", type: TSObjectType([]))
+            TSTypeDecl(modifiers: [.export], name: "S", type: TSIdentType("Record", genericArgs: [TSIdentType("string"), TSIdentType("number")]))
         ])
         assertPrint(
             s, """
-            export type S = {};
+            export type S = Record<string, number>;
 
             """
         )
