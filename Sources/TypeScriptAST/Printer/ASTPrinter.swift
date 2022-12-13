@@ -74,6 +74,21 @@ public final class ASTPrinter: ASTVisitor {
         return s
     }
 
+    private func isValidIdentifier(_ name: String) -> Bool {
+        let scalars = name.unicodeScalars
+        guard let start = scalars.first,
+              (start.properties.isIDStart || start == "_" || start == "$") else {
+            return false
+        }
+        let i = scalars.index(after: scalars.startIndex)
+        return scalars[i...].allSatisfy { scaler in
+            scaler.properties.isIDContinue
+            || scaler == "$"
+            || scaler == "\u{200D}"
+            || scaler == "\u{200C}"
+        }
+    }
+
     private func nest<R>(
         scope: ScopeKind? = nil,
         bracket: String? = nil,
@@ -333,7 +348,14 @@ public final class ASTPrinter: ASTVisitor {
 
     public override func visit(method: TSMethodDecl) -> Bool {
         write(modifiers: method.modifiers)
-        printer.write(space: " ", method.name)
+        printer.write(space: " ")
+        if isValidIdentifier(method.name) {
+            printer.write(method.name)
+        } else {
+            printer.write("\"")
+            printer.write(escape(method.name))
+            printer.write("\"")
+        }
         write(genericParams: method.genericParams)
         write(params: method.params)
         if let result = method.result {
@@ -493,7 +515,13 @@ public final class ASTPrinter: ASTVisitor {
     private func write(field: TSObjectExpr.Field) {
         switch field {
         case .named(let name, let value):
-            printer.write(name)
+            if isValidIdentifier(name) {
+                printer.write(name)
+            } else {
+                printer.write("\"")
+                printer.write(escape(name))
+                printer.write("\"")
+            }
             printer.write(": ")
             walk(value)
         case .shorthandPropertyNames(let name):
