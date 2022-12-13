@@ -74,6 +74,11 @@ public final class ASTPrinter: ASTVisitor {
         return s
     }
 
+    private func isValidIdentifier(_ name: String) -> Bool {
+        let safeSet = CharacterSet.alphanumerics.union(.init(charactersIn: "_$"))
+        return name.components(separatedBy: safeSet.inverted).count == 1
+    }
+
     private func nest<R>(
         scope: ScopeKind? = nil,
         bracket: String? = nil,
@@ -493,7 +498,13 @@ public final class ASTPrinter: ASTVisitor {
     private func write(field: TSObjectExpr.Field) {
         switch field {
         case .named(let name, let value):
-            printer.write(name)
+            if isValidIdentifier(name) {
+                printer.write(name)
+            } else {
+                printer.write("\"")
+                printer.write(escape(name))
+                printer.write("\"")
+            }
             printer.write(": ")
             walk(value)
         case .shorthandPropertyNames(let name):

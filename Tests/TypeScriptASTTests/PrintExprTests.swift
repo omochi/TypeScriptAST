@@ -249,14 +249,16 @@ final class PrintExprTests: TestCaseBase {
                 .computedPropertyNames(name: TSInfixOperatorExpr(
                     TSIdentExpr("a"), "+", TSNumberLiteralExpr(42)
                 ), value: TSIdentExpr.true),
-                .method(.init(name: "c", params: [], body: TSBlockStmt([])))
+                .method(.init(name: "c", params: [], body: TSBlockStmt([]))),
+                .named(name: "Content-Type", value: TSStringLiteralExpr("application/json")),
             ]),
             """
             {
                 a: true,
                 b,
                 [a + 42]: true,
-                c() {}
+                c() {},
+                "Content-Type": "application/json"
             }
             """
         )
