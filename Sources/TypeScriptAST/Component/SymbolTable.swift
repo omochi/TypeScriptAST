@@ -25,6 +25,7 @@ public struct SymbolTable {
         "number",
         "string",
         "this",
+        "super",
         "Promise",
         "Error",
         "Date",
