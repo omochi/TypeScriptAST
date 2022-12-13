@@ -22,5 +22,6 @@ extension TSExpr {
     public var asPostfixOperator: TSPostfixOperatorExpr? { self as? TSPostfixOperatorExpr }
     public var asPrefixOperator: TSPrefixOperatorExpr? { self as? TSPrefixOperatorExpr }
     public var asStringLiteral: TSStringLiteralExpr? { self as? TSStringLiteralExpr }
+    public var asTemplateLiteral: TSTemplateLiteralExpr? { self as? TSTemplateLiteralExpr }
     public var asSubscript: TSSubscriptExpr? { self as? TSSubscriptExpr }
 }

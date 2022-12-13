@@ -114,6 +114,8 @@ open class ASTVisitor {
     open func visitPost(prefixOperator: TSPrefixOperatorExpr) {}
     open func visit(stringLiteral: TSStringLiteralExpr) -> Bool { defaultVisitResult }
     open func visitPost(stringLiteral: TSStringLiteralExpr) {}
+    open func visit(templateLiteral: TSTemplateLiteralExpr) -> Bool { defaultVisitResult }
+    open func visitPost(templateLiteral: TSTemplateLiteralExpr) {}
     open func visit(subscript: TSSubscriptExpr) -> Bool { defaultVisitResult }
     open func visitPost(subscript: TSSubscriptExpr) {}
 
@@ -190,6 +192,7 @@ open class ASTVisitor {
         case let x as TSPostfixOperatorExpr: visitImpl(postfixOperator: x)
         case let x as TSPrefixOperatorExpr: visitImpl(prefixOperator: x)
         case let x as TSStringLiteralExpr: visitImpl(stringLiteral: x)
+        case let x as TSTemplateLiteralExpr: visitImpl(templateLiteral: x)
         case let x as TSSubscriptExpr: visitImpl(subscript: x)
         case let x as TSBlockStmt: visitImpl(block: x)
         case let x as TSCaseStmt: visitImpl(case: x)
@@ -387,6 +390,12 @@ open class ASTVisitor {
     private func visitImpl(stringLiteral: TSStringLiteralExpr) {
         guard visit(stringLiteral: stringLiteral) else { return }
         visitPost(stringLiteral: stringLiteral)
+    }
+
+    private func visitImpl(templateLiteral: TSTemplateLiteralExpr) {
+        guard visit(templateLiteral: templateLiteral) else { return }
+        walk(templateLiteral.substitutions)
+        visitPost(templateLiteral: templateLiteral)
     }
 
     private func visitImpl(subscript: TSSubscriptExpr) {

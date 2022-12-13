@@ -4,4 +4,5 @@ public enum TSDeclModifier: String {
     case `private`
     case protected
     case async
+    case readonly
 }

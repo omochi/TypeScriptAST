@@ -339,4 +339,22 @@ final class ScanDependencyTests: TestCaseBase {
 
         XCTAssertEqual(Set(s.scanDependency()), ["x", "y", "b"])
     }
+
+    func testTemplateLiteral() {
+        let s = TSSourceFile([
+            TSVarDecl(kind: .const, name: "a", initializer: TSNumberLiteralExpr(1)),
+            TSVarDecl(kind: .const, name: "c", initializer: TSTemplateLiteralExpr("\(ident: "a"), \(ident: "b")")),
+        ])
+
+        assertPrint(
+            s, """
+            const a = 1;
+
+            const c = `${a}, ${b}`;
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.scanDependency()), ["b"])
+    }
 }
