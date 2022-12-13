@@ -166,6 +166,22 @@ final class PrintExprTests: TestCaseBase {
         )
     }
 
+    func testTemplateLiteral() throws {
+        assertPrint(
+            TSTemplateLiteralExpr("string text \(TSIdentExpr("foo")) string text"),
+            #"""
+            `string text ${foo} string text`
+            """#
+        )
+
+        assertPrint(
+            TSTemplateLiteralExpr(tag: "css", "\(ident: "foo")string\(ident: "bar")"),
+            #"""
+            css`${foo}string${bar}`
+            """#
+        )
+    }
+
     func testIdent() throws {
         assertPrint(TSIdentExpr.null, "null")
     }

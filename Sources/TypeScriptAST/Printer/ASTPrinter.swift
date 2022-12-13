@@ -535,6 +535,25 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(templateLiteral: TSTemplateLiteralExpr) -> Bool {
+        if let tag = templateLiteral.tag {
+            printer.write(tag)
+        }
+        printer.write("`")
+        for fragment in templateLiteral.fragments {
+            switch fragment {
+            case .literal(let literal):
+                printer.write(literal)
+            case .expr(let expr):
+                printer.write("${")
+                walk(expr)
+                printer.write("}")
+            }
+        }
+        printer.write("`")
+        return false
+    }
+
     public override func visit(subscript: TSSubscriptExpr) -> Bool {
         walk(`subscript`.base)
         printer.write("[")
