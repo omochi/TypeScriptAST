@@ -42,7 +42,7 @@ extension TSTemplateLiteralExpr.StringInterpolation: ExpressibleByStringInterpol
 
 extension TSTemplateLiteralExpr.StringInterpolation: StringInterpolationProtocol {
     public init(literalCapacity: Int, interpolationCount: Int) {
-        self.fragments = []
+        fragments = []
     }
 
     public mutating func appendLiteral(_ literal: String) {
