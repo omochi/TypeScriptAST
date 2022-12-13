@@ -75,14 +75,18 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     private func isValidIdentifier(_ name: String) -> Bool {
-        guard let start = name.unicodeScalars.first else {
+        let scalars = name.unicodeScalars
+        guard let start = scalars.first,
+              (start.properties.isIDStart || start == "_" || start == "$") else {
             return false
         }
-        if CharacterSet(charactersIn: "0123456789").contains(start) {
-            return false
+        let i = scalars.index(after: scalars.startIndex)
+        return scalars[i...].allSatisfy { scaler in
+            scaler.properties.isIDContinue
+            || scaler == "$"
+            || scaler == "\u{200D}"
+            || scaler == "\u{200C}"
         }
-        let safeSet = CharacterSet.alphanumerics.union(.init(charactersIn: "_$"))
-        return name.components(separatedBy: safeSet.inverted).count == 1
     }
 
     private func nest<R>(
