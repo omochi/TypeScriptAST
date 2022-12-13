@@ -75,6 +75,12 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     private func isValidIdentifier(_ name: String) -> Bool {
+        guard let start = name.unicodeScalars.first else {
+            return false
+        }
+        if CharacterSet(charactersIn: "0123456789").contains(start) {
+            return false
+        }
         let safeSet = CharacterSet.alphanumerics.union(.init(charactersIn: "_$"))
         return name.components(separatedBy: safeSet.inverted).count == 1
     }
