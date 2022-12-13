@@ -336,6 +336,15 @@ final class PrintExprTests: TestCaseBase {
             ),
             "A.B.C"
         )
+
+        assertPrint(
+            TSMemberExpr(
+                base: TSIdentExpr("A"),
+                isOptional: true,
+                name: TSIdentExpr("B")
+            ),
+            "A?.B"
+        )
     }
 
     func testAssign() throws {

@@ -464,6 +464,9 @@ public final class ASTPrinter: ASTVisitor {
 
     public override func visit(member: TSMemberExpr) -> Bool {
         walk(member.base)
+        if member.isOptional {
+            printer.write("?")
+        }
         printer.write(".")
         walk(member.name)
         return false
