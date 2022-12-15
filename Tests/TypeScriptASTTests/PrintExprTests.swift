@@ -275,6 +275,7 @@ final class PrintExprTests: TestCaseBase {
                     TSIdentExpr("a"), "+", TSNumberLiteralExpr(42)
                 ), value: TSBooleanLiteralExpr.true),
                 .method(.init(name: "c", params: [], body: TSBlockStmt([]))),
+                .destructuring(value: TSIdentExpr("d")),
                 .named(name: "Content-Type", value: TSStringLiteralExpr("application/json")),
                 .method(.init(name: "0f", params: [], body: TSBlockStmt([]))),
                 .named(name: "", value: TSBooleanLiteralExpr.true),
@@ -285,6 +286,7 @@ final class PrintExprTests: TestCaseBase {
                 b,
                 [a + 42]: true,
                 c() {},
+                ...d,
                 "Content-Type": "application/json",
                 "0f"() {},
                 "": true

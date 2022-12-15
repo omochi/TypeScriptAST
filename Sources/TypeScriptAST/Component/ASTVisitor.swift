@@ -40,6 +40,8 @@ open class ASTVisitor {
             walk(value)
         case .method(let decl):
             walk(decl)
+        case .destructuring(let value):
+            walk(value)
         }
     }
 

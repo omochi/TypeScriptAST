@@ -357,4 +357,33 @@ final class ScanDependencyTests: TestCaseBase {
 
         XCTAssertEqual(Set(s.scanDependency()), ["b"])
     }
+
+    func testObjectExpr() {
+        let s = TSSourceFile([
+            TSVarDecl(kind: .const, name: "v", initializer: TSObjectExpr([
+                .named(name: "a", value: TSBooleanLiteralExpr.true),
+                .shorthandPropertyNames(value: TSIdentExpr("b")),
+                .computedPropertyNames(name: TSInfixOperatorExpr(
+                    TSIdentExpr("c"), "+", TSNumberLiteralExpr(42)
+                ), value: TSIdentExpr.undefined),
+                .method(.init(name: "d", params: [], body: TSBlockStmt([]))),
+                .destructuring(value: TSIdentExpr("e")),
+            ])),
+        ])
+
+        assertPrint(
+            s, """
+            const v = {
+                a: true,
+                b,
+                [c + 42]: undefined,
+                d() {},
+                ...e
+            };
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.scanDependency()), ["b", "c", "e"])
+    }
 }
