@@ -33,8 +33,8 @@ open class ASTVisitor {
         switch field {
         case .named(_, let value):
             walk(value)
-        case .shorthandPropertyNames:
-            break
+        case .shorthandPropertyNames(let value):
+            walk(value)
         case .computedPropertyNames(let name, let value):
             walk(name)
             walk(value)
@@ -102,6 +102,10 @@ open class ASTVisitor {
     open func visitPost(new: TSNewExpr) {}
     open func visit(member: TSMemberExpr) -> Bool { defaultVisitResult }
     open func visitPost(member: TSMemberExpr) {}
+    open func visit(nullLiteral: TSNullLiteralExpr) -> Bool { defaultVisitResult }
+    open func visitPost(nullLiteral: TSNullLiteralExpr) {}
+    open func visit(booleanLiteral: TSBooleanLiteralExpr) -> Bool { defaultVisitResult }
+    open func visitPost(booleanLiteral: TSBooleanLiteralExpr) {}
     open func visit(numberLiteral: TSNumberLiteralExpr) -> Bool { defaultVisitResult }
     open func visitPost(numberLiteral: TSNumberLiteralExpr) {}
     open func visit(object: TSObjectExpr) -> Bool { defaultVisitResult }
@@ -186,6 +190,8 @@ open class ASTVisitor {
         case let x as TSInfixOperatorExpr: visitImpl(infixOperator: x)
         case let x as TSNewExpr: visitImpl(new: x)
         case let x as TSMemberExpr: visitImpl(member: x)
+        case let x as TSNullLiteralExpr: visitImpl(nullLiteral: x)
+        case let x as TSBooleanLiteralExpr: visitImpl(booleanLiteral: x)
         case let x as TSNumberLiteralExpr: visitImpl(numberLiteral: x)
         case let x as TSObjectExpr: visitImpl(object: x)
         case let x as TSParenExpr: visitImpl(paren: x)
@@ -356,6 +362,16 @@ open class ASTVisitor {
         walk(member.base)
         walk(member.name)
         visitPost(member: member)
+    }
+
+    private func visitImpl(nullLiteral: TSNullLiteralExpr) {
+        guard visit(nullLiteral: nullLiteral) else { return }
+        visitPost(nullLiteral: nullLiteral)
+    }
+
+    private func visitImpl(booleanLiteral: TSBooleanLiteralExpr) {
+        guard visit(booleanLiteral: booleanLiteral) else { return }
+        visitPost(booleanLiteral: booleanLiteral)
     }
 
     private func visitImpl(numberLiteral: TSNumberLiteralExpr) {

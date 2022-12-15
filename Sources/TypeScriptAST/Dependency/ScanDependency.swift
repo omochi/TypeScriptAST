@@ -8,7 +8,7 @@ extension TSSourceFile {
 
 private final class Impl: ASTVisitor {
     struct Context {
-        var knownNames: Set<String> = []
+        var knownNames: Set<String> = wellKnownGlobalObjects
     }
 
     var contextStack: [Context]
@@ -18,6 +18,10 @@ private final class Impl: ASTVisitor {
             contextStack[contextStack.count - 1] = newValue
         }
     }
+
+    static let wellKnownGlobalObjects: Set<String> = [
+        TSIdentExpr.undefined.name,
+    ]
 
     override init() {
         contextStack = [Context()]

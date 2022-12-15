@@ -501,6 +501,20 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(nullLiteral: TSNullLiteralExpr) -> Bool {
+        printer.write("null")
+        return false
+    }
+
+    public override func visit(booleanLiteral: TSBooleanLiteralExpr) -> Bool {
+        if booleanLiteral.value {
+            printer.write("true")
+        } else {
+            printer.write("false")
+        }
+        return false
+    }
+
     public override func visit(numberLiteral: TSNumberLiteralExpr) -> Bool {
         printer.write(numberLiteral.text)
         return false
