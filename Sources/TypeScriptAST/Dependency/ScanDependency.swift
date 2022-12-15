@@ -8,7 +8,7 @@ extension TSSourceFile {
 
 private final class Impl: ASTVisitor {
     struct Context {
-        var knownNames: Set<String> = wellKnownGlobalObjects
+        var knownNames: Set<String> = []
     }
 
     var contextStack: [Context]
@@ -24,7 +24,9 @@ private final class Impl: ASTVisitor {
     ]
 
     override init() {
-        contextStack = [Context()]
+        var rootContext = Context()
+        rootContext.knownNames = Self.wellKnownGlobalObjects
+        contextStack = [rootContext]
         super.init()
     }
 
