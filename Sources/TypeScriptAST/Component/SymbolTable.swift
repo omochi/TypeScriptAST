@@ -13,15 +13,12 @@ public struct SymbolTable {
     }
 
     public static let standardLibrarySymbols: Set<String> = [
-        "null",
         "undefined",
         "void",
         "never",
         "any",
         "unknown",
         "boolean",
-        "true",
-        "false",
         "number",
         "string",
         "this",

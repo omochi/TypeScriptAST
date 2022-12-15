@@ -183,7 +183,16 @@ final class PrintExprTests: TestCaseBase {
     }
 
     func testIdent() throws {
-        assertPrint(TSIdentExpr.null, "null")
+        assertPrint(TSIdentExpr.undefined, "undefined")
+    }
+
+    func testNull() throws {
+        assertPrint(TSNullLiteralExpr(), "null")
+    }
+
+    func testBoolean() throws {
+        assertPrint(TSBooleanLiteralExpr.true, "true")
+        assertPrint(TSBooleanLiteralExpr.false, "false")
     }
 
     func testAs() throws {
@@ -260,15 +269,16 @@ final class PrintExprTests: TestCaseBase {
 
         assertPrint(
             TSObjectExpr([
-                .named(name: "a", value: TSIdentExpr.true),
-                .shorthandPropertyNames(name: "b"),
+                .named(name: "a", value: TSBooleanLiteralExpr.true),
+                .shorthandPropertyNames(value: TSIdentExpr("b")),
                 .computedPropertyNames(name: TSInfixOperatorExpr(
                     TSIdentExpr("a"), "+", TSNumberLiteralExpr(42)
-                ), value: TSIdentExpr.true),
+                ), value: TSBooleanLiteralExpr.true),
                 .method(.init(name: "c", params: [], body: TSBlockStmt([]))),
+                .destructuring(value: TSIdentExpr("d")),
                 .named(name: "Content-Type", value: TSStringLiteralExpr("application/json")),
                 .method(.init(name: "0f", params: [], body: TSBlockStmt([]))),
-                .named(name: "", value: TSIdentExpr.true),
+                .named(name: "", value: TSBooleanLiteralExpr.true),
             ]),
             """
             {
@@ -276,6 +286,7 @@ final class PrintExprTests: TestCaseBase {
                 b,
                 [a + 42]: true,
                 c() {},
+                ...d,
                 "Content-Type": "application/json",
                 "0f"() {},
                 "": true
@@ -286,7 +297,7 @@ final class PrintExprTests: TestCaseBase {
 
     func testClosure() throws {
         assertPrint(
-            TSClosureExpr(params: [], body: TSIdentExpr.true),
+            TSClosureExpr(params: [], body: TSBooleanLiteralExpr.true),
             "() => true"
         )
 
@@ -305,7 +316,7 @@ final class PrintExprTests: TestCaseBase {
                 ],
                 result: TSIdentType.boolean,
                 body: TSBlockStmt([
-                    TSReturnStmt(TSIdentExpr.true)
+                    TSReturnStmt(TSBooleanLiteralExpr.true)
                 ])
             ),
             """
@@ -449,10 +460,10 @@ final class PrintExprTests: TestCaseBase {
                 expr: TSIdentExpr("x"),
                 cases: [
                     TSCaseStmt(expr: TSNumberLiteralExpr(1), elements: [
-                        TSReturnStmt(TSIdentExpr.true)
+                        TSReturnStmt(TSBooleanLiteralExpr.true)
                     ]),
                     TSDefaultStmt(elements: [
-                        TSReturnStmt(TSIdentExpr.false)
+                        TSReturnStmt(TSBooleanLiteralExpr.false)
                     ])
                 ]
             ),

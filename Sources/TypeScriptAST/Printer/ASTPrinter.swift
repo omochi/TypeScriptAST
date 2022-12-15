@@ -501,6 +501,20 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(nullLiteral: TSNullLiteralExpr) -> Bool {
+        printer.write("null")
+        return false
+    }
+
+    public override func visit(booleanLiteral: TSBooleanLiteralExpr) -> Bool {
+        if booleanLiteral.value {
+            printer.write("true")
+        } else {
+            printer.write("false")
+        }
+        return false
+    }
+
     public override func visit(numberLiteral: TSNumberLiteralExpr) -> Bool {
         printer.write(numberLiteral.text)
         return false
@@ -527,8 +541,8 @@ public final class ASTPrinter: ASTVisitor {
             }
             printer.write(": ")
             walk(value)
-        case .shorthandPropertyNames(let name):
-            printer.write(name)
+        case .shorthandPropertyNames(let value):
+            walk(value)
         case .computedPropertyNames(let name, let value):
             printer.write("[")
             walk(name)
@@ -537,6 +551,9 @@ public final class ASTPrinter: ASTVisitor {
             walk(value)
         case .method(let decl):
             walk(decl)
+        case .destructuring(let value):
+            printer.write("...")
+            walk(value)
         }
     }
 
