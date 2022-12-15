@@ -2,7 +2,7 @@ public final class TSMemberExpr: _TSExpr {
     public init(
         base: any TSExpr,
         isOptional: Bool = false,
-        name: TSIdentExpr
+        name: String
     ) {
         self.isOptional = isOptional
         self.name = name
@@ -16,5 +16,5 @@ public final class TSMemberExpr: _TSExpr {
 
     @AnyTSExprStorage public var base: any TSExpr
     public var isOptional: Bool
-    @ASTNodeStorage public var name: TSIdentExpr
+    public var name: String
 }

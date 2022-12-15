@@ -109,7 +109,7 @@ final class ScanDependencyTests: TestCaseBase {
                             TSPostfixOperatorExpr(
                                 TSMemberExpr(
                                     base: TSIdentExpr.this,
-                                    name: TSIdentExpr("t")
+                                    name: "t"
                                 ), "!"
                             )
                         )
@@ -291,7 +291,7 @@ final class ScanDependencyTests: TestCaseBase {
                 body: TSBlockStmt([
                     TSReturnStmt()
                 ]),
-                catch: TSCatchStmt(name: TSIdentExpr("e"), body: TSBlockStmt([
+                catch: TSCatchStmt(name: "e", body: TSBlockStmt([
                     TSReturnStmt(TSIdentExpr("e"))
                 ]))
             )

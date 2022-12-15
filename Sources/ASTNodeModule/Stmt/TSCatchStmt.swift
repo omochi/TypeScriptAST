@@ -1,6 +1,6 @@
 public final class TSCatchStmt: _TSStmt {
     public init(
-        name: TSIdentExpr? = nil,
+        name: String? = nil,
         body: TSBlockStmt
     ) {
         self.name = name
@@ -12,6 +12,6 @@ public final class TSCatchStmt: _TSStmt {
         parent = newValue
     }
 
-    @ASTNodeOptionalStorage public var name: TSIdentExpr?
+    public var name: String?
     @ASTNodeStorage public var body: TSBlockStmt
 }

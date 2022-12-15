@@ -382,7 +382,7 @@ final class PrintDeclTests: TestCaseBase {
                             TSReturnStmt(
                                 TSAwaitExpr(
                                     TSCallExpr(
-                                        callee: TSMemberExpr(base: TSIdentExpr.this, name: TSIdentExpr("a")),
+                                        callee: TSMemberExpr(base: TSIdentExpr.this, name: "a"),
                                         args: []
                                     )
                                 )
