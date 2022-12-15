@@ -384,6 +384,6 @@ final class ScanDependencyTests: TestCaseBase {
             """
         )
 
-        XCTAssertEqual(Set(s.scanDependency()), ["b", "c", "e"])
+        XCTAssertEqual(Set(s.scanDependency()), ["b", "c", "e", "undefined"])
     }
 }

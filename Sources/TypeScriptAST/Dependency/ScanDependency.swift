@@ -19,14 +19,8 @@ private final class Impl: ASTVisitor {
         }
     }
 
-    static let wellKnownGlobalObjects: Set<String> = [
-        TSIdentExpr.undefined.name,
-    ]
-
     override init() {
-        var rootContext = Context()
-        rootContext.knownNames = Self.wellKnownGlobalObjects
-        contextStack = [rootContext]
+        contextStack = [Context()]
         super.init()
     }
 
