@@ -354,7 +354,7 @@ final class PrintExprTests: TestCaseBase {
         assertPrint(
             TSMemberExpr(
                 base: TSIdentExpr("A"),
-                name: TSIdentExpr("B")
+                name: "B"
             ),
             "A.B"
         )
@@ -363,9 +363,9 @@ final class PrintExprTests: TestCaseBase {
             TSMemberExpr(
                 base: TSMemberExpr(
                     base: TSIdentExpr("A"),
-                    name: TSIdentExpr("B")
+                    name: "B"
                 ),
-                name: TSIdentExpr("C")
+                name: "C"
             ),
             "A.B.C"
         )
@@ -374,7 +374,7 @@ final class PrintExprTests: TestCaseBase {
             TSMemberExpr(
                 base: TSIdentExpr("A"),
                 isOptional: true,
-                name: TSIdentExpr("B")
+                name: "B"
             ),
             "A?.B"
         )
@@ -429,7 +429,7 @@ final class PrintExprTests: TestCaseBase {
                 body: TSBlockStmt([
                     TSReturnStmt(TSNumberLiteralExpr(1))
                 ]),
-                catch: TSCatchStmt(name: TSIdentExpr("e"), body: TSBlockStmt([
+                catch: TSCatchStmt(name: "e", body: TSBlockStmt([
                     TSReturnStmt(TSNumberLiteralExpr(2))
                 ])),
                 finally: TSFinallyStmt(body: TSBlockStmt([

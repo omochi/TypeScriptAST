@@ -362,7 +362,6 @@ open class ASTVisitor {
     private func visitImpl(member: TSMemberExpr) {
         guard visit(member: member) else { return }
         walk(member.base)
-        walk(member.name)
         visitPost(member: member)
     }
 
@@ -438,7 +437,6 @@ open class ASTVisitor {
 
     private func visitImpl(catch: TSCatchStmt) {
         guard visit(catch: `catch`) else { return }
-        walk(`catch`.name)
         walk(`catch`.body)
         visitPost(catch: `catch`)
     }

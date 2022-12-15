@@ -490,7 +490,7 @@ public final class ASTPrinter: ASTVisitor {
             printer.write("?")
         }
         printer.write(".")
-        walk(member.name)
+        printer.write(member.name)
         return false
     }
 
@@ -640,7 +640,7 @@ public final class ASTPrinter: ASTVisitor {
         if let name = `catch`.name {
             printer.write(space: " ")
             nest(bracket: "(") {
-                walk(name)
+                printer.write(name)
             }
         }
         printer.write(space: " ")

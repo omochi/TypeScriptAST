@@ -129,7 +129,7 @@ private final class Impl: ASTVisitor {
     override func visit(catch: TSCatchStmt) -> Bool {
         push()
         if let name = `catch`.name {
-            addNames([name.name])
+            addNames([name])
         }
         return true
     }
