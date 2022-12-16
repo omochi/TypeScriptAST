@@ -2,7 +2,7 @@ public final class TSMemberType: _TSType {
     public init(
         base: any TSType,
         name: String,
-        genericArgs: [any TSType]
+        genericArgs: [any TSType] = []
     ) {
         self.name = name
         self.base = base
