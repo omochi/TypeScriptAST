@@ -1,10 +1,12 @@
 public final class TSMemberType: _TSType {
     public init(
         base: any TSType,
-        name: TSIdentType
+        name: String,
+        genericArgs: [any TSType]
     ) {
-        self.base = base
         self.name = name
+        self.base = base
+        self.genericArgs = genericArgs
     }
 
     public private(set) unowned var parent: (any ASTNode)?
@@ -13,5 +15,6 @@ public final class TSMemberType: _TSType {
     }
 
     @AnyTSTypeStorage public var base: any TSType
-    @ASTNodeStorage public var name: TSIdentType
+    public var name: String
+    @AnyTSTypeArrayStorage public var genericArgs: [any TSType]
 }

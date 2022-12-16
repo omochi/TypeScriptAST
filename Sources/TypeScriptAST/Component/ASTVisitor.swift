@@ -227,7 +227,7 @@ open class ASTVisitor {
         }
     }
     // @end
-    
+
     // @codegen(visitImpl)
     private func visitImpl(`class`: TSClassDecl) {
         guard visit(class: `class`) else { return }
@@ -532,7 +532,7 @@ open class ASTVisitor {
     private func visitImpl(member: TSMemberType) {
         guard visit(member: member) else { return }
         walk(member.base)
-        walk(member.name)
+        walk(member.genericArgs)
         visitPost(member: member)
     }
 

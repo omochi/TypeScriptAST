@@ -159,7 +159,7 @@ struct Definitions {
             "elements"
         ]),
         .init(.type, "member", children: [
-            "base", "name"
+            "base", "genericArgs"
         ]),
         .init(.type, "object", children: [
             "fields"
