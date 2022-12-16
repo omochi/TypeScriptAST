@@ -10,18 +10,21 @@ struct Definitions {
         init(
             _ kind: Kind,
             _ stem: String,
-            _ typeName: String? = nil
+            typeName: String? = nil,
+            children: [String] = []
         ) {
             self.kind = kind
             self.stem = stem
             self.typeName = typeName ?? Self.defaultTypeName(
                 kind: kind, stem: stem
             )
+            self.children = children
         }
 
         var kind: Kind
         var stem: String
         var typeName: String
+        var children: [String]
 
         static func defaultTypeName(kind: Kind, stem: String) -> String {
             return "TS" + stem.pascal + kind.rawValue.pascal
@@ -29,58 +32,142 @@ struct Definitions {
     }
 
     var nodes: [Node] = [
-        .init(.decl, "class"),
-        .init(.decl, "field"),
-        .init(.decl, "function"),
+        .init(.decl, "class", children: [
+            "extends", "implements", "body"
+        ]),
+        .init(.decl, "field", children: [
+            "type"
+        ]),
+        .init(.decl, "function", children: [
+            "params", "result", "body"
+        ]),
         .init(.decl, "import"),
-        .init(.decl, "interface"),
-        .init(.decl, "method"),
-        .init(.decl, "namespace"),
-        .init(.decl, "sourceFile", "TSSourceFile"),
-        .init(.decl, "type"),
-        .init(.decl, "var"),
-        .init(.expr, "array"),
-        .init(.expr, "as"),
-        .init(.expr, "assign"),
-        .init(.expr, "await"),
+        .init(.decl, "interface", children: [
+            "extends", "body"
+        ]),
+        .init(.decl, "method", children: [
+            "params", "result", "body"
+        ]),
+        .init(.decl, "namespace", children: [
+            "body"
+        ]),
+        .init(.decl, "sourceFile", typeName: "TSSourceFile", children: [
+            "elements"
+        ]),
+        .init(.decl, "type", children: [
+            "type"
+        ]),
+        .init(.decl, "var", children: [
+            "type", "initializer"
+        ]),
+        .init(.expr, "array", children: [
+            "elements"
+        ]),
+        .init(.expr, "as", children: [
+            "expr", "type"
+        ]),
+        .init(.expr, "assign", children: [
+            "lhs", "rhs"
+        ]),
+        .init(.expr, "await", children: [
+            "expr"
+        ]),
         .init(.expr, "booleanLiteral"),
-        .init(.expr, "call"),
-        .init(.expr, "closure"),
+        .init(.expr, "call", children: [
+            "callee", "args"
+        ]),
+        .init(.expr, "closure", children: [
+            "params", "result", "body"
+        ]),
         .init(.expr, "custom"),
         .init(.expr, "ident"),
-        .init(.expr, "infixOperator"),
-        .init(.expr, "member"),
-        .init(.expr, "new"),
+        .init(.expr, "infixOperator", children: [
+            "lhs", "rhs"
+        ]),
+        .init(.expr, "member", children: [
+            "base"
+        ]),
+        .init(.expr, "new", children: [
+            "callee", "args"
+        ]),
         .init(.expr, "nullLiteral"),
         .init(.expr, "numberLiteral"),
-        .init(.expr, "object"),
-        .init(.expr, "paren"),
-        .init(.expr, "postfixOperator"),
-        .init(.expr, "prefixOperator"),
+        .init(.expr, "object", children: [
+            "fields"
+        ]),
+        .init(.expr, "paren", children: [
+            "expr"
+        ]),
+        .init(.expr, "postfixOperator", children: [
+            "expr"
+        ]),
+        .init(.expr, "prefixOperator", children: [
+            "expr"
+        ]),
         .init(.expr, "stringLiteral"),
         .init(.expr, "subscript"),
-        .init(.expr, "templateLiteral"),
-        .init(.stmt, "block"),
-        .init(.stmt, "case"),
-        .init(.stmt, "catch"),
-        .init(.stmt, "default"),
-        .init(.stmt, "finally"),
-        .init(.stmt, "forIn"),
-        .init(.stmt, "if"),
-        .init(.stmt, "return"),
-        .init(.stmt, "switch"),
-        .init(.stmt, "throw"),
-        .init(.stmt, "try"),
-        .init(.type, "array"),
+        .init(.expr, "templateLiteral", children: [
+            "substitutions"
+        ]),
+        .init(.stmt, "block", children: [
+            "elements"
+        ]),
+        .init(.stmt, "case", children: [
+            "expr", "elements"
+        ]),
+        .init(.stmt, "catch", children: [
+            "body"
+        ]),
+        .init(.stmt, "default", children: [
+            "elements"
+        ]),
+        .init(.stmt, "finally", children: [
+            "body"
+        ]),
+        .init(.stmt, "forIn", children: [
+            "expr", "body"
+        ]),
+        .init(.stmt, "if", children: [
+            "condition", "then", "else"
+        ]),
+        .init(.stmt, "return", children: [
+            "expr"
+        ]),
+        .init(.stmt, "switch", children: [
+            "expr", "cases"
+        ]),
+        .init(.stmt, "throw", children: [
+            "expr"
+        ]),
+        .init(.stmt, "try", children: [
+            "body"
+        ]),
+        .init(.type, "array", children: [
+            "element"
+        ]),
         .init(.type, "custom"),
-        .init(.type, "dictionary"),
-        .init(.type, "function"),
-        .init(.type, "ident"),
-        .init(.type, "intersection"),
-        .init(.type, "member"),
-        .init(.type, "object"),
+        .init(.type, "dictionary", children: [
+            "value"
+        ]),
+        .init(.type, "function", children: [
+            "params", "result"
+        ]),
+        .init(.type, "ident", children: [
+            "genericArgs"
+        ]),
+        .init(.type, "intersection", children: [
+            "elements"
+        ]),
+        .init(.type, "member", children: [
+            "base", "name"
+        ]),
+        .init(.type, "object", children: [
+            "fields"
+        ]),
         .init(.type, "stringLiteral"),
-        .init(.type, "union"),
+        .init(.type, "union", children: [
+            "elements"
+        ]),
     ]
 
     var decls: [Node] { nodes.filter { $0.kind == .decl } }

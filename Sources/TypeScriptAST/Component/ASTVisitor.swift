@@ -19,17 +19,17 @@ open class ASTVisitor {
         }
     }
 
-    private func walk(param: TSFunctionType.Param) {
+    private func walk(_ param: TSFunctionType.Param) {
         walk(param.type)
     }
 
-    private func walk(params: [TSFunctionType.Param]) {
+    private func walk(_ params: [TSFunctionType.Param]) {
         for param in params {
-            walk(param: param)
+            walk(param)
         }
     }
 
-    private func walk(field: TSObjectExpr.Field) {
+    private func walk(_ field: TSObjectExpr.Field) {
         switch field {
         case .named(_, let value):
             walk(value)
@@ -45,31 +45,31 @@ open class ASTVisitor {
         }
     }
 
-    private func walk(fields: [TSObjectExpr.Field]) {
+    private func walk(_ fields: [TSObjectExpr.Field]) {
         for field in fields {
-            walk(field: field)
+            walk(field)
         }
     }
 
-    private func walk(field: TSObjectType.Field) {
+    private func walk(_ field: TSObjectType.Field) {
         walk(field.type)
     }
 
-    private func walk(fields: [TSObjectType.Field]) {
+    private func walk(_ fields: [TSObjectType.Field]) {
         for field in fields {
-            walk(field: field)
+            walk(field)
         }
     }
 
     // @codegen(visit)
-    open func visit(class: TSClassDecl) -> Bool { defaultVisitResult }
-    open func visitPost(class: TSClassDecl) {}
+    open func visit(`class`: TSClassDecl) -> Bool { defaultVisitResult }
+    open func visitPost(`class`: TSClassDecl) {}
     open func visit(field: TSFieldDecl) -> Bool { defaultVisitResult }
     open func visitPost(field: TSFieldDecl) {}
     open func visit(function: TSFunctionDecl) -> Bool { defaultVisitResult }
     open func visitPost(function: TSFunctionDecl) {}
-    open func visit(import: TSImportDecl) -> Bool { defaultVisitResult }
-    open func visitPost(import: TSImportDecl) {}
+    open func visit(`import`: TSImportDecl) -> Bool { defaultVisitResult }
+    open func visitPost(`import`: TSImportDecl) {}
     open func visit(interface: TSInterfaceDecl) -> Bool { defaultVisitResult }
     open func visitPost(interface: TSInterfaceDecl) {}
     open func visit(method: TSMethodDecl) -> Bool { defaultVisitResult }
@@ -84,12 +84,12 @@ open class ASTVisitor {
     open func visitPost(`var`: TSVarDecl) {}
     open func visit(array: TSArrayExpr) -> Bool { defaultVisitResult }
     open func visitPost(array: TSArrayExpr) {}
-    open func visit(as: TSAsExpr) -> Bool { defaultVisitResult }
-    open func visitPost(as: TSAsExpr) {}
+    open func visit(`as`: TSAsExpr) -> Bool { defaultVisitResult }
+    open func visitPost(`as`: TSAsExpr) {}
     open func visit(assign: TSAssignExpr) -> Bool { defaultVisitResult }
     open func visitPost(assign: TSAssignExpr) {}
-    open func visit(await: TSAwaitExpr) -> Bool { defaultVisitResult }
-    open func visitPost(await: TSAwaitExpr) {}
+    open func visit(`await`: TSAwaitExpr) -> Bool { defaultVisitResult }
+    open func visitPost(`await`: TSAwaitExpr) {}
     open func visit(booleanLiteral: TSBooleanLiteralExpr) -> Bool { defaultVisitResult }
     open func visitPost(booleanLiteral: TSBooleanLiteralExpr) {}
     open func visit(call: TSCallExpr) -> Bool { defaultVisitResult }
@@ -120,32 +120,32 @@ open class ASTVisitor {
     open func visitPost(prefixOperator: TSPrefixOperatorExpr) {}
     open func visit(stringLiteral: TSStringLiteralExpr) -> Bool { defaultVisitResult }
     open func visitPost(stringLiteral: TSStringLiteralExpr) {}
-    open func visit(subscript: TSSubscriptExpr) -> Bool { defaultVisitResult }
-    open func visitPost(subscript: TSSubscriptExpr) {}
+    open func visit(`subscript`: TSSubscriptExpr) -> Bool { defaultVisitResult }
+    open func visitPost(`subscript`: TSSubscriptExpr) {}
     open func visit(templateLiteral: TSTemplateLiteralExpr) -> Bool { defaultVisitResult }
     open func visitPost(templateLiteral: TSTemplateLiteralExpr) {}
     open func visit(block: TSBlockStmt) -> Bool { defaultVisitResult }
     open func visitPost(block: TSBlockStmt) {}
-    open func visit(case: TSCaseStmt) -> Bool { defaultVisitResult }
-    open func visitPost(case: TSCaseStmt) {}
-    open func visit(catch: TSCatchStmt) -> Bool { defaultVisitResult }
-    open func visitPost(catch: TSCatchStmt) {}
-    open func visit(default: TSDefaultStmt) -> Bool { defaultVisitResult }
-    open func visitPost(default: TSDefaultStmt) {}
+    open func visit(`case`: TSCaseStmt) -> Bool { defaultVisitResult }
+    open func visitPost(`case`: TSCaseStmt) {}
+    open func visit(`catch`: TSCatchStmt) -> Bool { defaultVisitResult }
+    open func visitPost(`catch`: TSCatchStmt) {}
+    open func visit(`default`: TSDefaultStmt) -> Bool { defaultVisitResult }
+    open func visitPost(`default`: TSDefaultStmt) {}
     open func visit(finally: TSFinallyStmt) -> Bool { defaultVisitResult }
     open func visitPost(finally: TSFinallyStmt) {}
     open func visit(forIn: TSForInStmt) -> Bool { defaultVisitResult }
     open func visitPost(forIn: TSForInStmt) {}
-    open func visit(if: TSIfStmt) -> Bool { defaultVisitResult }
-    open func visitPost(if: TSIfStmt) {}
-    open func visit(return: TSReturnStmt) -> Bool { defaultVisitResult }
-    open func visitPost(return: TSReturnStmt) {}
-    open func visit(switch: TSSwitchStmt) -> Bool { defaultVisitResult }
-    open func visitPost(switch: TSSwitchStmt) {}
-    open func visit(throw: TSThrowStmt) -> Bool { defaultVisitResult }
-    open func visitPost(throw: TSThrowStmt) {}
-    open func visit(try: TSTryStmt) -> Bool { defaultVisitResult }
-    open func visitPost(try: TSTryStmt) {}
+    open func visit(`if`: TSIfStmt) -> Bool { defaultVisitResult }
+    open func visitPost(`if`: TSIfStmt) {}
+    open func visit(`return`: TSReturnStmt) -> Bool { defaultVisitResult }
+    open func visitPost(`return`: TSReturnStmt) {}
+    open func visit(`switch`: TSSwitchStmt) -> Bool { defaultVisitResult }
+    open func visitPost(`switch`: TSSwitchStmt) {}
+    open func visit(`throw`: TSThrowStmt) -> Bool { defaultVisitResult }
+    open func visitPost(`throw`: TSThrowStmt) {}
+    open func visit(`try`: TSTryStmt) -> Bool { defaultVisitResult }
+    open func visitPost(`try`: TSTryStmt) {}
     open func visit(array: TSArrayType) -> Bool { defaultVisitResult }
     open func visitPost(array: TSArrayType) {}
     open func visit(custom: TSCustomType) -> Bool { defaultVisitResult }
@@ -227,8 +227,9 @@ open class ASTVisitor {
         }
     }
     // @end
-
-    private func visitImpl(class: TSClassDecl) {
+    
+    // @codegen(visitImpl)
+    private func visitImpl(`class`: TSClassDecl) {
         guard visit(class: `class`) else { return }
         walk(`class`.extends)
         walk(`class`.implements)
@@ -244,13 +245,13 @@ open class ASTVisitor {
 
     private func visitImpl(function: TSFunctionDecl) {
         guard visit(function: function) else { return }
-        walk(params: function.params)
+        walk(function.params)
         walk(function.result)
         walk(function.body)
         visitPost(function: function)
     }
 
-    private func visitImpl(import: TSImportDecl) {
+    private func visitImpl(`import`: TSImportDecl) {
         guard visit(import: `import`) else { return }
         visitPost(import: `import`)
     }
@@ -264,7 +265,7 @@ open class ASTVisitor {
 
     private func visitImpl(method: TSMethodDecl) {
         guard visit(method: method) else { return }
-        walk(params: method.params)
+        walk(method.params)
         walk(method.result)
         walk(method.body)
         visitPost(method: method)
@@ -301,7 +302,7 @@ open class ASTVisitor {
         visitPost(array: array)
     }
 
-    private func visitImpl(as: TSAsExpr) {
+    private func visitImpl(`as`: TSAsExpr) {
         guard visit(as: `as`) else { return }
         walk(`as`.expr)
         walk(`as`.type)
@@ -315,10 +316,15 @@ open class ASTVisitor {
         visitPost(assign: assign)
     }
 
-    private func visitImpl(await: TSAwaitExpr) {
+    private func visitImpl(`await`: TSAwaitExpr) {
         guard visit(await: `await`) else { return }
         walk(`await`.expr)
         visitPost(await: `await`)
+    }
+
+    private func visitImpl(booleanLiteral: TSBooleanLiteralExpr) {
+        guard visit(booleanLiteral: booleanLiteral) else { return }
+        visitPost(booleanLiteral: booleanLiteral)
     }
 
     private func visitImpl(call: TSCallExpr) {
@@ -330,7 +336,7 @@ open class ASTVisitor {
 
     private func visitImpl(closure: TSClosureExpr) {
         guard visit(closure: closure) else { return }
-        walk(params: closure.params)
+        walk(closure.params)
         walk(closure.result)
         walk(closure.body)
         visitPost(closure: closure)
@@ -353,6 +359,12 @@ open class ASTVisitor {
         visitPost(infixOperator: infixOperator)
     }
 
+    private func visitImpl(member: TSMemberExpr) {
+        guard visit(member: member) else { return }
+        walk(member.base)
+        visitPost(member: member)
+    }
+
     private func visitImpl(new: TSNewExpr) {
         guard visit(new: new) else { return }
         walk(new.callee)
@@ -360,20 +372,9 @@ open class ASTVisitor {
         visitPost(new: new)
     }
 
-    private func visitImpl(member: TSMemberExpr) {
-        guard visit(member: member) else { return }
-        walk(member.base)
-        visitPost(member: member)
-    }
-
     private func visitImpl(nullLiteral: TSNullLiteralExpr) {
         guard visit(nullLiteral: nullLiteral) else { return }
         visitPost(nullLiteral: nullLiteral)
-    }
-
-    private func visitImpl(booleanLiteral: TSBooleanLiteralExpr) {
-        guard visit(booleanLiteral: booleanLiteral) else { return }
-        visitPost(booleanLiteral: booleanLiteral)
     }
 
     private func visitImpl(numberLiteral: TSNumberLiteralExpr) {
@@ -383,7 +384,7 @@ open class ASTVisitor {
 
     private func visitImpl(object: TSObjectExpr) {
         guard visit(object: object) else { return }
-        walk(fields: object.fields)
+        walk(object.fields)
         visitPost(object: object)
     }
 
@@ -410,17 +411,15 @@ open class ASTVisitor {
         visitPost(stringLiteral: stringLiteral)
     }
 
+    private func visitImpl(`subscript`: TSSubscriptExpr) {
+        guard visit(subscript: `subscript`) else { return }
+        visitPost(subscript: `subscript`)
+    }
+
     private func visitImpl(templateLiteral: TSTemplateLiteralExpr) {
         guard visit(templateLiteral: templateLiteral) else { return }
         walk(templateLiteral.substitutions)
         visitPost(templateLiteral: templateLiteral)
-    }
-
-    private func visitImpl(subscript: TSSubscriptExpr) {
-        guard visit(subscript: `subscript`) else { return }
-        walk(`subscript`.base)
-        walk(`subscript`.key)
-        visitPost(subscript: `subscript`)
     }
 
     private func visitImpl(block: TSBlockStmt) {
@@ -429,20 +428,20 @@ open class ASTVisitor {
         visitPost(block: block)
     }
 
-    private func visitImpl(case: TSCaseStmt) {
+    private func visitImpl(`case`: TSCaseStmt) {
         guard visit(case: `case`) else { return }
         walk(`case`.expr)
         walk(`case`.elements)
         visitPost(case: `case`)
     }
 
-    private func visitImpl(catch: TSCatchStmt) {
+    private func visitImpl(`catch`: TSCatchStmt) {
         guard visit(catch: `catch`) else { return }
         walk(`catch`.body)
         visitPost(catch: `catch`)
     }
 
-    private func visitImpl(default: TSDefaultStmt) {
+    private func visitImpl(`default`: TSDefaultStmt) {
         guard visit(default: `default`) else { return }
         walk(`default`.elements)
         visitPost(default: `default`)
@@ -461,7 +460,7 @@ open class ASTVisitor {
         visitPost(forIn: forIn)
     }
 
-    private func visitImpl(if: TSIfStmt) {
+    private func visitImpl(`if`: TSIfStmt) {
         guard visit(if: `if`) else { return }
         walk(`if`.condition)
         walk(`if`.then)
@@ -469,26 +468,26 @@ open class ASTVisitor {
         visitPost(if: `if`)
     }
 
-    private func visitImpl(return: TSReturnStmt) {
+    private func visitImpl(`return`: TSReturnStmt) {
         guard visit(return: `return`) else { return }
         walk(`return`.expr)
         visitPost(return: `return`)
     }
 
-    private func visitImpl(switch: TSSwitchStmt) {
+    private func visitImpl(`switch`: TSSwitchStmt) {
         guard visit(switch: `switch`) else { return }
         walk(`switch`.expr)
         walk(`switch`.cases)
         visitPost(switch: `switch`)
     }
 
-    private func visitImpl(throw: TSThrowStmt) {
+    private func visitImpl(`throw`: TSThrowStmt) {
         guard visit(throw: `throw`) else { return }
         walk(`throw`.expr)
         visitPost(throw: `throw`)
     }
 
-    private func visitImpl(try: TSTryStmt) {
+    private func visitImpl(`try`: TSTryStmt) {
         guard visit(try: `try`) else { return }
         walk(`try`.body)
         visitPost(try: `try`)
@@ -513,7 +512,7 @@ open class ASTVisitor {
 
     private func visitImpl(function: TSFunctionType) {
         guard visit(function: function) else { return }
-        walk(params: function.params)
+        walk(function.params)
         walk(function.result)
         visitPost(function: function)
     }
@@ -539,7 +538,7 @@ open class ASTVisitor {
 
     private func visitImpl(object: TSObjectType) {
         guard visit(object: object) else { return }
-        walk(fields: object.fields)
+        walk(object.fields)
         visitPost(object: object)
     }
 
@@ -553,4 +552,5 @@ open class ASTVisitor {
         walk(union.elements)
         visitPost(union: union)
     }
+    // @end
 }

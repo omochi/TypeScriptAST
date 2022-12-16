@@ -18,8 +18,29 @@ final class Writer {
     let file: URL
 
     static let keywords = [
+        "as",
+        "await",
+        "case",
+        "catch",
+        "class",
+        "default",
+        "if",
+        "import",
+        "return",
+        "subscript",
+        "switch",
+        "throw",
+        "try",
         "var"
     ]
+
+    func ident(_ string: String) -> String {
+        if Self.keywords.contains(string) {
+            return escape(string)
+        } else {
+            return string
+        }
+    }
 
     func paramLabel(_ string: String) -> String {
         if Self.keywords.contains(string) {

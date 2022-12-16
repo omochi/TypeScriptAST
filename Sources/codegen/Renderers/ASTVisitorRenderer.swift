@@ -9,12 +9,13 @@ struct ASTVisitorRenderer: Renderer {
 
     func render() throws {
         try writer.withTemplate { (t) in
-            t["visit"] = visits()
+            t["visit"] = visit()
             t["dispatch"] = dispatch()
+            t["visitImpl"] = visitImpl()
         }
     }
 
-    func visits() -> String {
+    func visit() -> String {
         let lines: [String] = definitions.nodes.map { (node) in
             """
 open func visit(\(writer.paramLabel(node.stem)): \(node.typeName)) -> Bool { defaultVisitResult }
@@ -42,6 +43,38 @@ private func dispatch(_ node: any ASTNode) {
         lines.append("""
     default: break
     }
+}
+"""
+        )
+
+        return lines.joined(separator: "\n")
+    }
+
+    func visitImpl() -> String {
+        let lines = definitions.nodes.map { (node) in
+            visitImpl(node: node)
+        }
+
+        return lines.joined(separator: "\n\n")
+    }
+
+    private func visitImpl(node: Definitions.Node) -> String {
+        var lines: [String] = []
+
+        lines.append("""
+private func visitImpl(\(writer.paramLabel(node.stem)): \(node.typeName)) {
+    guard visit(\(node.stem): \(writer.ident(node.stem))) else { return }
+"""
+        )
+
+        lines += node.children.map { (child) in
+            return """
+    walk(\(writer.ident(node.stem)).\(child))
+"""
+        }
+
+        lines.append("""
+    visitPost(\(node.stem): \(writer.ident(node.stem)))
 }
 """
         )
