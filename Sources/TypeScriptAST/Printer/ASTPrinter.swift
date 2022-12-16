@@ -804,7 +804,8 @@ public final class ASTPrinter: ASTVisitor {
     public override func visit(member: TSMemberType) -> Bool {
         walk(member.base)
         printer.write(".")
-        walk(member.name)
+        printer.write(member.name)
+        write(genericArgs: member.genericArgs)
         return false
     }
 

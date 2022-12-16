@@ -3,6 +3,7 @@ public protocol TSDecl: ASTNode {}
 internal protocol _TSDecl: _ASTNode & TSDecl {}
 
 extension TSDecl {
+    // @codegen(as)
     public var asClass: TSClassDecl? { self as? TSClassDecl }
     public var asField: TSFieldDecl? { self as? TSFieldDecl }
     public var asFunction: TSFunctionDecl? { self as? TSFunctionDecl }
@@ -13,4 +14,5 @@ extension TSDecl {
     public var asSourceFile: TSSourceFile? { self as? TSSourceFile }
     public var asType: TSTypeDecl? { self as? TSTypeDecl }
     public var asVar: TSVarDecl? { self as? TSVarDecl }
+    // @end
 }

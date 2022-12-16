@@ -144,7 +144,7 @@ final class PrintTypeTests: TestCaseBase {
         assertPrint(
             TSMemberType(
                 base: TSIdentType("A"),
-                name: TSIdentType("B")
+                name: "B"
             ),
             "A.B"
         )
@@ -153,9 +153,10 @@ final class PrintTypeTests: TestCaseBase {
             TSMemberType(
                 base: TSMemberType(
                     base: TSIdentType("A"),
-                    name: TSIdentType("B")
+                    name: "B"
                 ),
-                name: TSIdentType("C", genericArgs: [TSIdentType("T")])
+                name: "C",
+                genericArgs: [TSIdentType("T")]
             ),
             "A.B.C<T>"
         )
