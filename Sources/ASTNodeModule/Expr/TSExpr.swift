@@ -9,6 +9,7 @@ extension TSExpr {
     public var asArray: TSArrayExpr? { self as? TSArrayExpr }
     public var asAs: TSAsExpr? { self as? TSAsExpr }
     public var asAssign: TSAssignExpr? { self as? TSAssignExpr }
+    public var asAwait: TSAwaitExpr? { self as? TSAwaitExpr }
     public var asBooleanLiteral: TSBooleanLiteralExpr? { self as? TSBooleanLiteralExpr }
     public var asCall: TSCallExpr? { self as? TSCallExpr }
     public var asClosure: TSClosureExpr? { self as? TSClosureExpr }

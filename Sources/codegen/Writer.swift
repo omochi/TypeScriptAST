@@ -17,6 +17,22 @@ final class Writer {
     let formatter: SwiftFormatter
     let file: URL
 
+    static let keywords = [
+        "var"
+    ]
+
+    func paramLabel(_ string: String) -> String {
+        if Self.keywords.contains(string) {
+            return escape(string)
+        } else {
+            return string
+        }
+    }
+
+    func escape(_ string: String) -> String {
+        return "`" + string + "`"
+    }
+
     func withTemplate(_ body: (inout Template) throws -> Void) throws {
         var t = try readAsTemplate()
         try body(&t)
@@ -28,12 +44,18 @@ final class Writer {
     }
 
     func write(template: Template) throws {
+        let source = template.description
         var formatted = ""
-        try formatter.format(
-            source: template.description,
-            assumingFileURL: file,
-            to: &formatted
-        )
+        do {
+            try formatter.format(
+                source: source,
+                assumingFileURL: file,
+                to: &formatted
+            )
+        } catch {
+            print(source)
+            throw error
+        }
         let data = formatted.data(using: .utf8)!
         let old = try Data(contentsOf: file)
         guard old != data else { return }

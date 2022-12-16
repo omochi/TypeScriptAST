@@ -11,7 +11,7 @@ extension TSDecl {
     public var asInterface: TSInterfaceDecl? { self as? TSInterfaceDecl }
     public var asMethod: TSMethodDecl? { self as? TSMethodDecl }
     public var asNamespace: TSNamespaceDecl? { self as? TSNamespaceDecl }
-    public var asSource: TSSourceFile? { self as? TSSourceFile }
+    public var asSourceFile: TSSourceFile? { self as? TSSourceFile }
     public var asType: TSTypeDecl? { self as? TSTypeDecl }
     public var asVar: TSVarDecl? { self as? TSVarDecl }
     // @end

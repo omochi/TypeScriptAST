@@ -14,7 +14,10 @@ struct Codegen {
         self.formatterConfiguration = Self.makeFormatterCondiguration()
         self.rendererTypes = [
             DeclRenderer.self,
-            ExprRenderer.self
+            ExprRenderer.self,
+            StmtRenderer.self,
+            TypeRenderer.self,
+            ASTVisitorRenderer.self
         ]
     }
 
