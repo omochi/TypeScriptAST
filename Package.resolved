@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "codetemplate",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/omochi/CodeTemplate",
+      "state" : {
+        "revision" : "ea0204258737532994f6b37c8058bdd9050b5548",
+        "version" : "1.0.1"
+      }
+    }
+  ],
+  "version" : 2
+}

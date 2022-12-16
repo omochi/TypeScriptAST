@@ -11,8 +11,15 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/omochi/CodeTemplate", from: "1.0.1")
     ],
     targets: [
+        .executableTarget(
+            name: "codegen",
+            dependencies: [
+                .product(name: "CodeTemplate", package: "CodeTemplate")
+            ]
+        ),
         .target(
             name: "ASTNodeModule"
         ),
