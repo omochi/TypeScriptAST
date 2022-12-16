@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/omochi/CodeTemplate",
       "state" : {
-        "revision" : "ea0204258737532994f6b37c8058bdd9050b5548",
-        "version" : "1.0.1"
+        "revision" : "45cadb9129eb712b9fbf808fcb2d3e8575a07b13",
+        "version" : "1.0.2"
       }
     }
   ],
