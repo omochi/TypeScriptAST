@@ -21,6 +21,16 @@ let package = Package(
                 .product(name: "CodeTemplate", package: "CodeTemplate")
             ]
         ),
+        .plugin(
+            name: "CodegenPlugin",
+            capability: .command(
+                intent: .custom(verb: "codegen", description: "codegen"),
+                permissions: [.writeToPackageDirectory(reason: "codegen")]
+            ),
+            dependencies: [
+                .target(name: "codegen")
+            ]
+        ),
         .target(
             name: "ASTNodeModule"
         ),
