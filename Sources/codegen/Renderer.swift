@@ -1,7 +1,17 @@
 import Foundation
 
 protocol Renderer {
-    init?(definitions: Definitions, file: URL)
+    static func isTarget(file: URL) -> Bool
+
+    init(writer: Writer)
+
+    var writer: Writer { get }
 
     func render() throws
+}
+
+extension Renderer {
+    var definitions: Definitions {
+        writer.definitions
+    }
 }

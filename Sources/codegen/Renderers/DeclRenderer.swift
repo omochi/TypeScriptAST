@@ -2,19 +2,16 @@ import Foundation
 import CodeTemplate
 
 struct DeclRenderer: Renderer {
-    init?(definitions: Definitions, file: URL) {
-        guard file.lastPathComponent == "TSDecl.swift" else { return nil }
-        self.definitions = definitions
-        self.file = file
+    static func isTarget(file: URL) -> Bool {
+        file.lastPathComponent == "TSDecl.swift"
     }
 
-    var definitions: Definitions
-    var file: URL
+    var writer: Writer
 
     func render() throws {
-        var template = try Template(file: file)
-        template["as"] = asCasts()
-        try template.description.write(to: file, atomically: true, encoding: .utf8)
+        try writer.withTemplate { (t) in
+            t["as"] = asCasts()
+        }
     }
 
     func asCasts() -> String {

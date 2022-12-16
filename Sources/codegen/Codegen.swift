@@ -1,5 +1,7 @@
 import Foundation
 import CodeTemplate
+import SwiftFormat
+import SwiftFormatConfiguration
 
 @main
 struct Codegen {
@@ -7,10 +9,24 @@ struct Codegen {
         try Codegen().run()
     }
 
-    var definitions: Definitions = .init()
-    var rendererTypes: [any Renderer.Type] = [
-        DeclRenderer.self
-    ]
+    init() {
+        self.definitions = Definitions()
+        self.formatterConfiguration = Self.makeFormatterCondiguration()
+        self.rendererTypes = [
+            DeclRenderer.self
+        ]
+    }
+
+    var definitions: Definitions
+    var formatterConfiguration: SwiftFormatConfiguration.Configuration
+    var rendererTypes: [any Renderer.Type]
+
+    static func makeFormatterCondiguration() -> SwiftFormatConfiguration.Configuration {
+        var c = SwiftFormatConfiguration.Configuration()
+        c.lineLength = 10000
+        c.indentation = .spaces(4)
+        return c
+    }
 
     func run() throws {
         var args = CommandLine.arguments
@@ -35,9 +51,13 @@ struct Codegen {
 
     func render(file: URL) throws {
         for rendererType in rendererTypes {
-            if let renderer = rendererType.init(definitions: definitions, file: file) {
-                print("process: \(file.relativePath)")
-                try renderer.render()
+            if rendererType.isTarget(file: file) {
+                let writer = Writer(
+                    definitions: definitions,
+                    formatter: SwiftFormatter(configuration: formatterConfiguration),
+                    file: file
+                )
+                try rendererType.init(writer: writer).render()
             }
         }
     }

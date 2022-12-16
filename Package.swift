@@ -12,13 +12,15 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/omochi/CodeTemplate", from: "1.0.2")
+        .package(url: "https://github.com/omochi/CodeTemplate", from: "1.0.2"),
+        .package(url: "https://github.com/apple/swift-format", exact: "0.50700.1")
     ],
     targets: [
         .executableTarget(
             name: "codegen",
             dependencies: [
-                .product(name: "CodeTemplate", package: "CodeTemplate")
+                .product(name: "CodeTemplate", package: "CodeTemplate"),
+                .product(name: "SwiftFormat", package: "swift-format")
             ]
         ),
         .plugin(
