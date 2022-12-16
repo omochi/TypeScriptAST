@@ -9,6 +9,7 @@ let package = Package(
             name: "TypeScriptAST",
             targets: ["TypeScriptAST"]
         ),
+        .executable(name: "codegen", targets: ["codegen"])
     ],
     dependencies: [
         .package(url: "https://github.com/omochi/CodeTemplate", from: "1.0.1")
