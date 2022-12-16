@@ -13,7 +13,8 @@ struct Codegen {
         self.definitions = Definitions()
         self.formatterConfiguration = Self.makeFormatterCondiguration()
         self.rendererTypes = [
-            DeclRenderer.self
+            DeclRenderer.self,
+            ExprRenderer.self
         ]
     }
 

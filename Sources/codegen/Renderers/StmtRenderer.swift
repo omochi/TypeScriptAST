@@ -1,8 +1,8 @@
 import Foundation
 
-struct DeclRenderer: Renderer {
+struct StmtRenderer: Renderer {
     static func isTarget(file: URL) -> Bool {
-        file.lastPathComponent == "TSDecl.swift"
+        file.lastPathComponent == "TSStmt.swift"
     }
 
     var writer: Writer
@@ -14,9 +14,9 @@ struct DeclRenderer: Renderer {
     }
 
     func asCasts() -> String {
-        let lines: [String] = definitions.decls.map { (decl) in
+        let lines: [String] = definitions.stmts.map { (stmt) in
             """
-public var as\(decl.stem.pascal): \(decl.typeName)? { self as? \(decl.typeName) }
+public var as\(stmt.stem.pascal): \(stmt.typeName)? { self as? \(stmt.typeName) }
 """
         }
         return lines.joined(separator: "\n")
