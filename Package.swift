@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "TypeScriptAST",
+    platforms: [.macOS(.v12)],
     products: [
         .library(
             name: "TypeScriptAST",
