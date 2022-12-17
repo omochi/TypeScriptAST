@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/omochi/CodegenKit",
       "state" : {
-        "revision" : "b6955ba59eee37f0922751ce3375bf695bf7aae6",
-        "version" : "1.1.0"
+        "revision" : "b4d72f1908ea73d53cd20ebc24b1687793109f2e",
+        "version" : "1.1.3"
       }
     },
     {

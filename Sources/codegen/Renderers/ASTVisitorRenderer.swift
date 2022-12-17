@@ -18,8 +18,8 @@ struct ASTVisitorRenderer: Renderer {
     func visit() -> String {
         let lines: [String] = defs.nodes.map { (node) in
             """
-open func visit(\(writer.paramLabel(node.stem)): \(node.typeName)) -> Bool { defaultVisitResult }
-open func visitPost(\(writer.paramLabel(node.stem)): \(node.typeName)) {}
+open func visit(\(writer.ident(node.stem)): \(node.typeName)) -> Bool { defaultVisitResult }
+open func visitPost(\(writer.ident(node.stem)): \(node.typeName)) {}
 """
         }
         return lines.joined(separator: "\n")
@@ -62,7 +62,7 @@ private func dispatch(_ node: any ASTNode) {
         var lines: [String] = []
 
         lines.append("""
-private func visitImpl(\(writer.paramLabel(node.stem)): \(node.typeName)) {
+private func visitImpl(\(writer.ident(node.stem)): \(node.typeName)) {
     guard visit(\(node.stem): \(writer.ident(node.stem))) else { return }
 """
         )
