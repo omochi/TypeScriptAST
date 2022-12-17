@@ -1,36 +1,36 @@
-struct Definitions {
-    struct Node {
-        enum Kind: String {
-            case decl
-            case expr
-            case stmt
-            case type
-        }
-
-        init(
-            _ kind: Kind,
-            _ stem: String,
-            typeName: String? = nil,
-            children: [String] = []
-        ) {
-            self.kind = kind
-            self.stem = stem
-            self.typeName = typeName ?? Self.defaultTypeName(
-                kind: kind, stem: stem
-            )
-            self.children = children
-        }
-
-        var kind: Kind
-        var stem: String
-        var typeName: String
-        var children: [String]
-
-        static func defaultTypeName(kind: Kind, stem: String) -> String {
-            return "TS" + stem.pascal + kind.rawValue.pascal
-        }
+struct Node {
+    enum Kind: String, CaseIterable {
+        case decl
+        case expr
+        case stmt
+        case type
     }
 
+    init(
+        _ kind: Kind,
+        _ stem: String,
+        typeName: String? = nil,
+        children: [String] = []
+    ) {
+        self.kind = kind
+        self.stem = stem
+        self.typeName = typeName ?? Self.defaultTypeName(
+            kind: kind, stem: stem
+        )
+        self.children = children
+    }
+
+    var kind: Kind
+    var stem: String
+    var typeName: String
+    var children: [String]
+
+    static func defaultTypeName(kind: Kind, stem: String) -> String {
+        return "TS" + stem.pascal + kind.rawValue.pascal
+    }
+}
+
+struct Definitions {
     var nodes: [Node] = [
         .init(.decl, "class", children: [
             "extends", "implements", "body"

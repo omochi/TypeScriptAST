@@ -1,12 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "codetemplate",
+      "identity" : "codegenkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/omochi/CodeTemplate",
+      "location" : "https://github.com/omochi/CodegenKit",
       "state" : {
-        "revision" : "45cadb9129eb712b9fbf808fcb2d3e8575a07b13",
-        "version" : "1.0.2"
+        "revision" : "b6955ba59eee37f0922751ce3375bf695bf7aae6",
+        "version" : "1.1.0"
       }
     },
     {

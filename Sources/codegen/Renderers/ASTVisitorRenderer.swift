@@ -1,22 +1,22 @@
 import Foundation
+import CodegenKit
 
 struct ASTVisitorRenderer: Renderer {
-    static func isTarget(file: URL) -> Bool {
+    var defs: Definitions
+    var writer = SwiftWriter()
+
+    func isTarget(file: URL) -> Bool {
         file.lastPathComponent == "ASTVisitor.swift"
     }
 
-    var writer: Writer
-
-    func render() throws {
-        try writer.withTemplate { (t) in
-            t["visit"] = visit()
-            t["dispatch"] = dispatch()
-            t["visitImpl"] = visitImpl()
-        }
+    func render(template: inout CodeTemplate, file: URL, on runner: CodegenRunner) throws {
+        template["visit"] = visit()
+        template["dispatch"] = dispatch()
+        template["visitImpl"] = visitImpl()
     }
 
     func visit() -> String {
-        let lines: [String] = definitions.nodes.map { (node) in
+        let lines: [String] = defs.nodes.map { (node) in
             """
 open func visit(\(writer.paramLabel(node.stem)): \(node.typeName)) -> Bool { defaultVisitResult }
 open func visitPost(\(writer.paramLabel(node.stem)): \(node.typeName)) {}
@@ -34,7 +34,7 @@ private func dispatch(_ node: any ASTNode) {
 """
         )
 
-        lines += definitions.nodes.map { (node) in
+        lines += defs.nodes.map { (node) in
             return """
         case let x as \(node.typeName): visitImpl(\(node.stem): x)
 """
@@ -51,14 +51,14 @@ private func dispatch(_ node: any ASTNode) {
     }
 
     func visitImpl() -> String {
-        let lines = definitions.nodes.map { (node) in
+        let lines = defs.nodes.map { (node) in
             visitImpl(node: node)
         }
 
         return lines.joined(separator: "\n\n")
     }
 
-    private func visitImpl(node: Definitions.Node) -> String {
+    private func visitImpl(node: Node) -> String {
         var lines: [String] = []
 
         lines.append("""
@@ -81,4 +81,5 @@ private func visitImpl(\(writer.paramLabel(node.stem)): \(node.typeName)) {
 
         return lines.joined(separator: "\n")
     }
+
 }

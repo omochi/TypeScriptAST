@@ -45,7 +45,10 @@ struct EasyProcess {
 
         outPipe.fileHandleForReading.readabilityHandler = { (h) in
             queue.sync {
-                outSink(h.availableData)
+                let data = h.availableData
+                if !data.isEmpty {
+                    outSink(data)
+                }
             }
         }
 
@@ -54,7 +57,10 @@ struct EasyProcess {
 
         errPipe.fileHandleForReading.readabilityHandler = { (h) in
             queue.sync {
-                errorSink(h.availableData)
+                let data = h.availableData
+                if !data.isEmpty {
+                    errorSink(data)
+                }
             }
         }
 
@@ -66,11 +72,15 @@ struct EasyProcess {
         errPipe.fileHandleForReading.readabilityHandler = nil
 
         try queue.sync {
-            if let d = try outPipe.fileHandleForReading.readToEnd() {
-                outSink(d)
+            if let data = try outPipe.fileHandleForReading.readToEnd(),
+               !data.isEmpty
+            {
+                outSink(data)
             }
-            if let d = try errPipe.fileHandleForReading.readToEnd() {
-                errorSink(d)
+            if let data = try errPipe.fileHandleForReading.readToEnd(),
+               !data.isEmpty
+            {
+                errorSink(data)
             }
         }
 
