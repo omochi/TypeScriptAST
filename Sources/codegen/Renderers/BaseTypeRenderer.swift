@@ -2,23 +2,26 @@ import Foundation
 import CodegenKit
 
 struct BaseTypeRenderer: Renderer {
+    struct File {
+        var name: String
+        var kind: Node.Kind
+    }
+
     var defs: Definitions
 
-    var fileNames = [
-        "TSDecl.swift",
-        "TSExpr.swift",
-        "TSStmt.swift",
-        "TSType.swift"
+    var files: [File] = [
+        .init(name: "TSDecl.swift", kind: .decl),
+        .init(name: "TSExpr.swift", kind: .expr),
+        .init(name: "TSStmt.swift", kind: .stmt),
+        .init(name: "TSType.swift", kind: .type)
     ]
 
     func isTarget(file: URL) -> Bool {
-        fileNames.contains(file.lastPathComponent)
+        files.contains { $0.name == file.lastPathComponent }
     }
 
     func render(template: inout CodeTemplate, file: URL, on runner: CodegenRunner) throws {
-        guard let kind = Node.Kind.allCases.first(where: {
-            file.lastPathComponent.lowercased().contains($0.rawValue)
-        }) else { return }
+        let kind = files.first { $0.name == file.lastPathComponent }!.kind
 
         template["as"] = asCasts(kind: kind)
     }
