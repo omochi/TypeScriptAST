@@ -201,4 +201,14 @@ private final class Impl: ASTVisitor {
         }
         return true
     }
+
+    override func visit(function: TSFunctionType) -> Bool {
+        push()
+        addNames(function.genericParams)
+        return true
+    }
+
+    override func visitPost(function: TSFunctionType) {
+        pop()
+    }
 }

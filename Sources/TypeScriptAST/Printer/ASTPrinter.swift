@@ -762,6 +762,7 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public override func visit(function: TSFunctionType) -> Bool {
+        write(genericParams: function.genericParams)
         write(params: function.params)
         printer.write(" => ")
         walk(function.result)
