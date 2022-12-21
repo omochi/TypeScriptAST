@@ -16,9 +16,11 @@ public final class TSFunctionType: _TSType {
     }
 
     public init(
+        genericParams: [String] = [],
         params: [Param],
         result: any TSType
     ) {
+        self.genericParams = genericParams
         self.params = params
         self.result = result
     }
@@ -28,6 +30,7 @@ public final class TSFunctionType: _TSType {
         parent = newValue
     }
 
+    public var genericParams: [String]
     public var params: [Param] {
         get { _params }
         set {

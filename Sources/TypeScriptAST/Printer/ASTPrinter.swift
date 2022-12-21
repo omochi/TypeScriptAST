@@ -449,6 +449,15 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public override func visit(closure: TSClosureExpr) -> Bool {
+        switch closure.genericParams.count {
+        case 1:
+            nest(bracket: "<") {
+                printer.write(closure.genericParams[0])
+                printer.write(",")
+            }
+        default:
+            write(genericParams: closure.genericParams)
+        }
         write(params: closure.params, paren: closure.hasParen)
         if let result = closure.result {
             printer.write(": ")
@@ -762,6 +771,7 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public override func visit(function: TSFunctionType) -> Bool {
+        write(genericParams: function.genericParams)
         write(params: function.params)
         printer.write(" => ")
         walk(function.result)

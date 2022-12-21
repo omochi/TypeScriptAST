@@ -219,6 +219,8 @@ final class PrintTypeTests: TestCaseBase {
             ) => void
             """
         )
+
+        assertPrint(TSFunctionType(genericParams: ["T"], params: [], result: TSIdentType("T")), "<T>() => T")
     }
 
     func testCustom() throws {
