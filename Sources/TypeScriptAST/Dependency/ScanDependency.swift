@@ -160,6 +160,7 @@ private final class Impl: ASTVisitor {
 
     override func visit(closure: TSClosureExpr) -> Bool {
         push()
+        addNames(closure.genericParams)
         addNames(closure.params.map { $0.name })
         return true
     }

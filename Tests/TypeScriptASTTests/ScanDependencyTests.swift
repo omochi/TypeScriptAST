@@ -409,4 +409,30 @@ final class ScanDependencyTests: TestCaseBase {
 
         XCTAssertEqual(Set(s.scanDependency()), ["A"])
     }
+
+    func testClosureExpr() {
+        let s = TSSourceFile([
+            TSVarDecl(
+                kind: .const,
+                name: "f",
+                initializer: TSClosureExpr(
+                    genericParams: ["T"],
+                    params: [.init(name: "tu", type: TSIntersectionType([
+                        TSIdentType("T"),
+                        TSIdentType("U"),
+                    ]))],
+                    body: TSIdentExpr("tu")
+                )
+            )
+        ])
+
+        assertPrint(
+            s, """
+            const f = <T,>(tu: T & U) => tu;
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.scanDependency()), ["U"])
+    }
 }

@@ -1,10 +1,12 @@
 public final class TSClosureExpr: _TSExpr {
     public init(
+        genericParams: [String] = [],
         hasParen: Bool = true,
         params: [TSFunctionType.Param],
         result: (any TSType)? = nil,
         body: any TSStmt
     ) {
+        self.genericParams = genericParams
         self.hasParen = hasParen
         self.params = params
         self.result = result
@@ -16,6 +18,7 @@ public final class TSClosureExpr: _TSExpr {
         parent = newValue
     }
 
+    public var genericParams: [String]
     public var hasParen: Bool
     public var params: [TSFunctionType.Param] {
         get { _params }
