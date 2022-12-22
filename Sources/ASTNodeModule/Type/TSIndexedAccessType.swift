@@ -1,10 +1,4 @@
 public final class TSIndexedAccessType: _TSType {
-    internal init(parent: (ASTNode)?, base: TSType, index: TSType) {
-        self.parent = parent
-        self.base = base
-        self.index = index
-    }
-    
     public init(
         _ base: any TSType,
         index: any TSType
