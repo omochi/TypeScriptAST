@@ -2,6 +2,7 @@ public final class TSObjectType: _TSType {
     public enum Field {
         case field(TSFieldDecl)
         case method(TSMethodDecl)
+        case index(TSIndexDecl)
     }
 
     public init(_ fields: [Field]) {
@@ -22,6 +23,8 @@ public final class TSObjectType: _TSType {
                     decl.setParent(nil)
                 case .method(let decl):
                     decl.setParent(nil)
+                case .index(let decl):
+                    decl.setParent(nil)
                 }
             }
             _fields = newValue
@@ -30,6 +33,8 @@ public final class TSObjectType: _TSType {
                 case .field(let decl):
                     decl.setParent(self)
                 case .method(let decl):
+                    decl.setParent(self)
+                case .index(let decl):
                     decl.setParent(self)
                 }
             }

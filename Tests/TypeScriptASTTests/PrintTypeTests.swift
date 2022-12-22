@@ -191,6 +191,7 @@ final class PrintTypeTests: TestCaseBase {
                 .field(.init(name: "b", isOptional: true, type: TSIdentType("B"))),
                 .method(.init(name: "c", params: [], result: TSIdentType("C"))),
                 .method(.init(name: "d", isOptional: true, genericParams: ["T"], params: [], result: TSIdentType("D"))),
+                .index(.init(name: "e", kind: .number, type: TSIdentType("E"))),
             ]),
             """
             {
@@ -198,6 +199,7 @@ final class PrintTypeTests: TestCaseBase {
                 b?: B;
                 c(): C;
                 d?<T>(): D;
+                [e: number]: E;
             }
             """
         )

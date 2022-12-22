@@ -57,6 +57,8 @@ open class ASTVisitor {
             walk(decl)
         case .method(let decl):
             walk(decl)
+        case .index(let decl):
+            walk(decl)
         }
     }
 
@@ -75,6 +77,8 @@ open class ASTVisitor {
     open func visitPost(function: TSFunctionDecl) {}
     open func visit(`import`: TSImportDecl) -> Bool { defaultVisitResult }
     open func visitPost(`import`: TSImportDecl) {}
+    open func visit(index: TSIndexDecl) -> Bool { defaultVisitResult }
+    open func visitPost(index: TSIndexDecl) {}
     open func visit(interface: TSInterfaceDecl) -> Bool { defaultVisitResult }
     open func visitPost(interface: TSInterfaceDecl) {}
     open func visit(method: TSMethodDecl) -> Bool { defaultVisitResult }
@@ -188,6 +192,7 @@ open class ASTVisitor {
         case let x as TSFieldDecl: visitImpl(field: x)
         case let x as TSFunctionDecl: visitImpl(function: x)
         case let x as TSImportDecl: visitImpl(import: x)
+        case let x as TSIndexDecl: visitImpl(index: x)
         case let x as TSInterfaceDecl: visitImpl(interface: x)
         case let x as TSMethodDecl: visitImpl(method: x)
         case let x as TSNamespaceDecl: visitImpl(namespace: x)
@@ -271,6 +276,12 @@ open class ASTVisitor {
     private func visitImpl(`import`: TSImportDecl) {
         guard visit(import: `import`) else { return }
         visitPost(import: `import`)
+    }
+
+    private func visitImpl(index: TSIndexDecl) {
+        guard visit(index: index) else { return }
+        walk(index.type)
+        visitPost(index: index)
     }
 
     private func visitImpl(interface: TSInterfaceDecl) {
