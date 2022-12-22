@@ -52,7 +52,12 @@ open class ASTVisitor {
     }
 
     private func walk(_ field: TSObjectType.Field) {
-        walk(field.type)
+        switch field {
+        case .field(let decl):
+            walk(decl)
+        case .method(let decl):
+            walk(decl)
+        }
     }
 
     private func walk(_ fields: [TSObjectType.Field]) {

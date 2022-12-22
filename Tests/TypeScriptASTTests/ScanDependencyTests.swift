@@ -44,9 +44,9 @@ final class ScanDependencyTests: TestCaseBase {
     func testUseType() throws {
         let s = TSSourceFile([
             TSTypeDecl(name: "S", genericParams: ["T"], type: TSObjectType([
-                .init(name: "a", type: TSIdentType.string),
-                .init(name: "b", type: TSIdentType("T")),
-                .init(name: "c", type: TSIdentType("X"))
+                .field(.init(name: "a", type: TSIdentType.string)),
+                .field(.init(name: "b", type: TSIdentType("T"))),
+                .field(.init(name: "c", type: TSIdentType("X"))),
             ])),
             TSFunctionDecl(
                 name: "f", genericParams: ["T", "U"],
@@ -175,14 +175,14 @@ final class ScanDependencyTests: TestCaseBase {
             TSTypeDecl(
                 name: "S", genericParams: ["T", "U"],
                 type: TSObjectType([
-                    .init(name: "a", isOptional: true, type: TSIdentType("A")),
-                    .init(name: "b", type: TSIdentType("number")),
-                    .init(name: "c", type: TSArrayType(TSIdentType("C"))),
-                    .init(name: "d", type: TSIdentType("T")),
-                    .init(name: "e", type: TSIdentType("X", genericArgs: [TSIdentType("E")])),
-                    .init(name: "f", type: TSIdentType("X", genericArgs: [TSIdentType("U")])),
-                    .init(name: "g", type: TSIdentType("Y", genericArgs: [TSIdentType("G")])),
-                    .init(name: "h", type: TSIdentType("Y", genericArgs: [TSIdentType("U")])),
+                    .field(.init(name: "a", isOptional: true, type: TSIdentType("A"))),
+                    .field(.init(name: "b", type: TSIdentType("number"))),
+                    .field(.init(name: "c", type: TSArrayType(TSIdentType("C")))),
+                    .field(.init(name: "d", type: TSIdentType("T"))),
+                    .field(.init(name: "e", type: TSIdentType("X", genericArgs: [TSIdentType("E")]))),
+                    .field(.init(name: "f", type: TSIdentType("X", genericArgs: [TSIdentType("U")]))),
+                    .method(.init(name: "g", params: [.init(name: "y", type: TSIdentType("Y", genericArgs: [TSIdentType("G")]))], result: TSIdentType.number)),
+                    .method(.init(name: "h", params: [], result: TSIdentType("Y", genericArgs: [TSIdentType("U")]))),
                 ])
             )
         ])
@@ -198,8 +198,8 @@ final class ScanDependencyTests: TestCaseBase {
                 d: T;
                 e: X<E>;
                 f: X<U>;
-                g: Y<G>;
-                h: Y<U>;
+                g(y: Y<G>): number;
+                h(): Y<U>;
             };
 
             """
@@ -390,11 +390,11 @@ final class ScanDependencyTests: TestCaseBase {
     func testFunctionType() {
         let s = TSSourceFile([
             TSTypeDecl(name: "t", type: TSObjectType([
-                .init(name: "f", type: TSFunctionType(
+                .field(.init(name: "f", type: TSFunctionType(
                     genericParams: ["T"],
                     params: [.init(name: "a", type: TSIdentType("A"))],
                     result: TSIdentType("T")
-                ))
+                ))),
             ])),
         ])
 

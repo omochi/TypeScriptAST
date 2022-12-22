@@ -356,6 +356,9 @@ public final class ASTPrinter: ASTVisitor {
             printer.write(escape(method.name))
             printer.write("\"")
         }
+        if method.isOptional {
+            printer.write("?")
+        }
         write(genericParams: method.genericParams)
         write(params: method.params)
         if let result = method.result {
@@ -829,14 +832,12 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     private func write(field: TSObjectType.Field) {
-        printer.write(field.name)
-        if field.isOptional {
-            printer.write("?: ")
-        } else {
-            printer.write(": ")
+        switch field {
+        case .field(let decl):
+            walk(decl)
+        case .method(let decl):
+            walk(decl)
         }
-        walk(field.type)
-        printer.write(";")
     }
 
     public override func visit(stringLiteral: TSStringLiteralType) -> Bool {
