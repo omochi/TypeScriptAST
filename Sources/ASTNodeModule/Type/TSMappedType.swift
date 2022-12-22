@@ -8,7 +8,7 @@ public final class TSMappedType: _TSType {
         readonly: ModifierOperation? = nil,
         _ name: String,
         in constraint: any TSType,
-        nameType: (any TSType)? = nil,
+        as nameType: (any TSType)? = nil,
         optional: ModifierOperation? = nil,
         value: any TSType
     ) {

@@ -227,4 +227,14 @@ private final class Impl: ASTVisitor {
     override func visitPost(function: TSFunctionType) {
         pop()
     }
+
+    override func visit(mapped: TSMappedType) -> Bool {
+        push()
+        addNames([mapped.name])
+        return true
+    }
+
+    override func visitPost(mapped: TSMappedType) {
+        pop()
+    }
 }

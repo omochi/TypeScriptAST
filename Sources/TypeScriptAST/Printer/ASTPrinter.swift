@@ -852,9 +852,9 @@ public final class ASTPrinter: ASTVisitor {
             printer.push(newline: true)
             if let readonly = mapped.readonly {
                 if readonly == .remove {
-                    printer.write(space: " ", "-")
+                    printer.write("-")
                 }
-                printer.write(space: " ", "readonly")
+                printer.write("readonly")
             }
             printer.write(space: " ", "[")
             printer.write(mapped.name)

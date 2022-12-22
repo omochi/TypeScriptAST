@@ -483,4 +483,30 @@ final class ScanDependencyTests: TestCaseBase {
 
         XCTAssertEqual(Set(s.scanDependency()), ["I"])
     }
+
+    func testMappedType() {
+        let s = TSSourceFile([
+            TSTypeDecl(
+                name: "E",
+                genericParams: ["T"],
+                type: TSMappedType(
+                    "P",
+                    in: TSKeyofType(TSIdentType("T")),
+                    as: TSIdentType("Exclude", genericArgs: [TSIdentType("P"), TSStringLiteralType("kind")]),
+                    value: TSIndexedAccessType(TSIdentType("T"), index: TSIdentType("P"))
+                )
+            ),
+        ])
+
+        assertPrint(
+            s, """
+            type E<T> = {
+                [P in keyof T as Exclude<P, "kind">]: T[P];
+            };
+            
+            """
+        )
+
+        XCTAssertEqual(Set(s.scanDependency()), ["Exclude"])
+    }
 }

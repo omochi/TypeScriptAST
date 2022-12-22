@@ -582,6 +582,7 @@ open class ASTVisitor {
     private func visitImpl(mapped: TSMappedType) {
         guard visit(mapped: mapped) else { return }
         walk(mapped.constraint)
+        walk(mapped.nameType)
         walk(mapped.value)
         visitPost(mapped: mapped)
     }

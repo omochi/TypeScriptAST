@@ -169,7 +169,7 @@ struct Definitions {
             "type"
         ]),
         .init(.type, "mapped", children: [
-            "constraint", "value"
+            "constraint", "nameType", "value"
         ]),
         .init(.type, "member", children: [
             "base", "genericArgs"

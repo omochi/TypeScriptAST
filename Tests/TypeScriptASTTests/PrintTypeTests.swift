@@ -346,6 +346,35 @@ final class PrintTypeTests: TestCaseBase {
             }
             """
         )
+
+        assertPrint(
+            TSMappedType(
+                readonly: .remove,
+                "P",
+                in: TSKeyofType(TSIdentType("T")),
+                optional: .remove,
+                value: TSIndexedAccessType(TSIdentType("T"), index: TSIdentType("P"))
+            ),
+            """
+            {
+                -readonly [P in keyof T]-?: T[P];
+            }
+            """
+        )
+
+        assertPrint(
+            TSMappedType(
+                "P",
+                in: TSKeyofType(TSIdentType("T")),
+                as: TSIdentType("K"),
+                value: TSIndexedAccessType(TSIdentType("T"), index: TSIdentType("P"))
+            ),
+            """
+            {
+                [P in keyof T as K]: T[P];
+            }
+            """
+        )
     }
 
     func testKeyof() throws {
