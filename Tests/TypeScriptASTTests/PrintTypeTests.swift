@@ -347,4 +347,11 @@ final class PrintTypeTests: TestCaseBase {
             """
         )
     }
+
+    func testKeyof() throws {
+        assertPrint(
+            TSKeyofType(TSIdentType("T")),
+            "keyof T"
+        )
+    }
 }

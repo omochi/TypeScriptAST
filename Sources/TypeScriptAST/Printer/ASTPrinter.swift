@@ -841,6 +841,12 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(keyof: TSKeyofType) -> Bool {
+        printer.write("keyof ")
+        walk(keyof.type)
+        return false
+    }
+
     public override func visit(mapped: TSMappedType) -> Bool {
         nest(bracket: "{") {
             printer.push(newline: true)
