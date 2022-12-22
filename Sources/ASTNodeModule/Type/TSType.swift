@@ -15,6 +15,7 @@ extension TSType {
     public var asIndexedAccess: TSIndexedAccessType? { self as? TSIndexedAccessType }
     public var asInfer: TSInferType? { self as? TSInferType }
     public var asIntersection: TSIntersectionType? { self as? TSIntersectionType }
+    public var asMapped: TSMappedType? { self as? TSMappedType }
     public var asMember: TSMemberType? { self as? TSMemberType }
     public var asNumberLiteral: TSNumberLiteralType? { self as? TSNumberLiteralType }
     public var asObject: TSObjectType? { self as? TSObjectType }

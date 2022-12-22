@@ -165,6 +165,9 @@ struct Definitions {
         .init(.type, "intersection", children: [
             "elements"
         ]),
+        .init(.type, "mapped", children: [
+            "constraint", "value"
+        ]),
         .init(.type, "member", children: [
             "base", "genericArgs"
         ]),

@@ -841,6 +841,38 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(mapped: TSMappedType) -> Bool {
+        nest(bracket: "{") {
+            printer.push(newline: true)
+            if let readonly = mapped.readonly {
+                if readonly == .remove {
+                    printer.write(space: " ", "-")
+                }
+                printer.write(space: " ", "readonly")
+            }
+            printer.write(space: " ", "[")
+            printer.write(mapped.name)
+            printer.write(" in ")
+            walk(mapped.constraint)
+            if let name = mapped.nameType {
+                printer.write(space: " ", "as ")
+                walk(name)
+            }
+            printer.write("]")
+            if let optional = mapped.optional {
+                if optional == .remove {
+                    printer.write("-")
+                }
+                printer.write("?")
+            }
+            printer.write(": ")
+            walk(mapped.value)
+            printer.write(";")
+            printer.pop()
+        }
+        return false
+    }
+
     public override func visit(member: TSMemberType) -> Bool {
         walk(member.base)
         printer.write(".")

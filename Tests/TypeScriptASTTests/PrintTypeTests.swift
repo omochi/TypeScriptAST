@@ -336,4 +336,15 @@ final class PrintTypeTests: TestCaseBase {
             """
         )
     }
+
+    func testMapped() throws {
+        assertPrint(
+            TSMappedType("P", in: TSIdentType("T"), value: TSIdentType.number),
+            """
+            {
+                [P in T]: number;
+            }
+            """
+        )
+    }
 }
