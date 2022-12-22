@@ -308,4 +308,18 @@ final class PrintTypeTests: TestCaseBase {
             """
         )
     }
+
+    func testInfer() throws {
+        let s = TSConditionalType(
+            TSIdentType("T"),
+            extends: TSArrayType(TSInferType(name: "I")),
+            true: TSIdentType("I"),
+            false: TSIdentType("T")
+        )
+        assertPrint(
+            s, """
+            T extends (infer I)[] ? I : T
+            """
+        )
+    }
 }

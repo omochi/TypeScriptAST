@@ -158,6 +158,7 @@ struct Definitions {
         .init(.type, "ident", children: [
             "genericArgs"
         ]),
+        .init(.type, "infer"),
         .init(.type, "intersection", children: [
             "elements"
         ]),

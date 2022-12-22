@@ -435,4 +435,28 @@ final class ScanDependencyTests: TestCaseBase {
 
         XCTAssertEqual(Set(s.scanDependency()), ["U"])
     }
+
+    func testInferType() {
+        let s = TSSourceFile([
+            TSTypeDecl(
+                name: "F",
+                genericParams: ["T"],
+                type: TSConditionalType(
+                    TSIdentType("T"),
+                    extends: TSArrayType(TSInferType(name: "I")),
+                    true: TSIdentType("I"),
+                    false: TSIdentType("T")
+                )
+            )
+        ])
+
+        assertPrint(
+            s, """
+            type F<T> = T extends (infer I)[] ? I : T;
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.scanDependency()), [])
+    }
 }

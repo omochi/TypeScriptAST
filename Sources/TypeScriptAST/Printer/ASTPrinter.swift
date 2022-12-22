@@ -748,6 +748,7 @@ public final class ASTPrinter: ASTVisitor {
             case is TSUnionType: return true
             case is TSIntersectionType: return true
             case is TSConditionalType: return true
+            case is TSInferType: return true
             default: return false
             }
         }()
@@ -813,6 +814,12 @@ public final class ASTPrinter: ASTVisitor {
     public override func visit(ident: TSIdentType) -> Bool {
         printer.write(ident.name)
         write(genericArgs: ident.genericArgs)
+        return false
+    }
+
+    public override func visit(infer: TSInferType) -> Bool {
+        printer.write("infer ")
+        printer.write(infer.name)
         return false
     }
 

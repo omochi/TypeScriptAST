@@ -12,6 +12,7 @@ extension TSType {
     public var asDictionary: TSDictionaryType? { self as? TSDictionaryType }
     public var asFunction: TSFunctionType? { self as? TSFunctionType }
     public var asIdent: TSIdentType? { self as? TSIdentType }
+    public var asInfer: TSInferType? { self as? TSInferType }
     public var asIntersection: TSIntersectionType? { self as? TSIntersectionType }
     public var asMember: TSMemberType? { self as? TSMemberType }
     public var asNumberLiteral: TSNumberLiteralType? { self as? TSNumberLiteralType }
