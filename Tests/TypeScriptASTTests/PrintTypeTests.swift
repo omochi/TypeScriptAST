@@ -137,6 +137,14 @@ final class PrintTypeTests: TestCaseBase {
         )
     }
 
+    func testNumberLiteral() throws {
+        assertPrint(TSNumberLiteralType(0),
+            """
+            0
+            """
+        )
+    }
+
     func testStringLiteral() throws {
         assertPrint(TSStringLiteralType("aaa"),
             """

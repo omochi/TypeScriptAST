@@ -14,6 +14,7 @@ extension TSType {
     public var asIdent: TSIdentType? { self as? TSIdentType }
     public var asIntersection: TSIntersectionType? { self as? TSIntersectionType }
     public var asMember: TSMemberType? { self as? TSMemberType }
+    public var asNumberLiteral: TSNumberLiteralType? { self as? TSNumberLiteralType }
     public var asObject: TSObjectType? { self as? TSObjectType }
     public var asStringLiteral: TSStringLiteralType? { self as? TSStringLiteralType }
     public var asUnion: TSUnionType? { self as? TSUnionType }

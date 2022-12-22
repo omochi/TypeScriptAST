@@ -164,6 +164,7 @@ struct Definitions {
         .init(.type, "member", children: [
             "base", "genericArgs"
         ]),
+        .init(.type, "numberLiteral"),
         .init(.type, "object", children: [
             "fields"
         ]),

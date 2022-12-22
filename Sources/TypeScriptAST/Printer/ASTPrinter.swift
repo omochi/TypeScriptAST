@@ -831,6 +831,11 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(numberLiteral: TSNumberLiteralType) -> Bool {
+        printer.write(numberLiteral.text)
+        return false
+    }
+
     public override func visit(object: TSObjectType) -> Bool {
         nest(bracket: "{") {
             write(array: object.fields, multilineMode: .multiline) {
