@@ -192,12 +192,13 @@ private final class Impl: ASTVisitor {
     }
 
     override func visit(conditional: TSConditionalType) -> Bool {
+        walk(conditional.check)
         push()
-        return true
-    }
-
-    override func visitPost(conditional: TSConditionalType) {
+        walk(conditional.extends)
+        walk(conditional.true)
         pop()
+        walk(conditional.false)
+        return false
     }
 
     override func visit(custom: TSCustomType) -> Bool {
