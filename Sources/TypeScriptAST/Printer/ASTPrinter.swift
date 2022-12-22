@@ -752,6 +752,7 @@ public final class ASTPrinter: ASTVisitor {
             case is TSIntersectionType: return true
             case is TSConditionalType: return true
             case is TSInferType: return true
+            case is TSKeyofType: return true
             default: return false
             }
         }()
