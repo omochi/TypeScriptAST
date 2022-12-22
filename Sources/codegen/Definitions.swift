@@ -145,6 +145,9 @@ struct Definitions {
         .init(.type, "array", children: [
             "element"
         ]),
+        .init(.type, "conditional", children: [
+            "check", "extends", "true", "false"
+        ]),
         .init(.type, "custom"),
         .init(.type, "dictionary", children: [
             "value"

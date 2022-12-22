@@ -148,6 +148,8 @@ open class ASTVisitor {
     open func visitPost(`try`: TSTryStmt) {}
     open func visit(array: TSArrayType) -> Bool { defaultVisitResult }
     open func visitPost(array: TSArrayType) {}
+    open func visit(conditional: TSConditionalType) -> Bool { defaultVisitResult }
+    open func visitPost(conditional: TSConditionalType) {}
     open func visit(custom: TSCustomType) -> Bool { defaultVisitResult }
     open func visitPost(custom: TSCustomType) {}
     open func visit(dictionary: TSDictionaryType) -> Bool { defaultVisitResult }
@@ -214,6 +216,7 @@ open class ASTVisitor {
         case let x as TSThrowStmt: visitImpl(throw: x)
         case let x as TSTryStmt: visitImpl(try: x)
         case let x as TSArrayType: visitImpl(array: x)
+        case let x as TSConditionalType: visitImpl(conditional: x)
         case let x as TSCustomType: visitImpl(custom: x)
         case let x as TSDictionaryType: visitImpl(dictionary: x)
         case let x as TSFunctionType: visitImpl(function: x)
@@ -497,6 +500,15 @@ open class ASTVisitor {
         guard visit(array: array) else { return }
         walk(array.element)
         visitPost(array: array)
+    }
+
+    private func visitImpl(conditional: TSConditionalType) {
+        guard visit(conditional: conditional) else { return }
+        walk(conditional.check)
+        walk(conditional.extends)
+        walk(conditional.true)
+        walk(conditional.false)
+        visitPost(conditional: conditional)
     }
 
     private func visitImpl(custom: TSCustomType) {

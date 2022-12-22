@@ -115,6 +115,11 @@ final class PrintTypeTests: TestCaseBase {
         )
 
         assertPrint(
+            TSArrayType(TSConditionalType(TSIdentType("A"), extends: TSIdentType("B"), true: TSIdentType("C"), false: TSIdentType("D"))),
+            "(A extends B ? C : D)[]"
+        )
+
+        assertPrint(
             TSArrayType(TSUnionType([
                 TSIdentType("A"),
                 TSIdentType("B"),
@@ -282,6 +287,16 @@ final class PrintTypeTests: TestCaseBase {
             string & {
                 S: never;
             }
+            """
+        )
+    }
+
+    func testConditional() throws {
+        let s = TSConditionalType(TSIdentType("A"), extends: TSIdentType("B"), true: TSIdentType("C"), false: TSIdentType("D"))
+
+        assertPrint(
+            s, """
+            A extends B ? C : D
             """
         )
     }

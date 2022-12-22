@@ -747,6 +747,7 @@ public final class ASTPrinter: ASTVisitor {
             switch array.element {
             case is TSUnionType: return true
             case is TSIntersectionType: return true
+            case is TSConditionalType: return true
             default: return false
             }
         }()
@@ -755,6 +756,17 @@ public final class ASTPrinter: ASTVisitor {
             walk(array.element)
         }
         printer.write("[]")
+        return false
+    }
+
+    public override func visit(conditional: TSConditionalType) -> Bool {
+        walk(conditional.check)
+        printer.write(" extends ")
+        walk(conditional.extends)
+        printer.write(" ? ")
+        walk(conditional.true)
+        printer.write(" : ")
+        walk(conditional.false)
         return false
     }
 

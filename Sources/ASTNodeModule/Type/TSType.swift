@@ -7,6 +7,7 @@ internal protocol _TSType: _ASTNode & TSType {}
 extension TSType {
     // @codegen(as)
     public var asArray: TSArrayType? { self as? TSArrayType }
+    public var asConditional: TSConditionalType? { self as? TSConditionalType }
     public var asCustom: TSCustomType? { self as? TSCustomType }
     public var asDictionary: TSDictionaryType? { self as? TSDictionaryType }
     public var asFunction: TSFunctionType? { self as? TSFunctionType }
