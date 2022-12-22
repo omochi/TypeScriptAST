@@ -69,10 +69,10 @@ final class PrintDeclTests: TestCaseBase {
 
         assertPrint(
             TSTypeDecl(name: "S1", type: TSObjectType([
-                .init(name: "a", isOptional: true, type: TSObjectType([
-                    .init(name: "a", type: TSIdentType.number),
-                    .init(name: "b", type: TSIdentType.string)
-                ]))
+                .field(.init(name: "a", isOptional: true, type: TSObjectType([
+                    .field(.init(name: "a", type: TSIdentType.number)),
+                    .field(.init(name: "b", type: TSIdentType.string)),
+                ]))),
             ])),
             """
             type S1 = {
@@ -135,7 +135,7 @@ final class PrintDeclTests: TestCaseBase {
                 name: "A",
                 body: TSBlockStmt([
                     TSTypeDecl(name: "B", type: TSObjectType([
-                        .init(name: "x", type: TSIdentType.string)
+                        .field(.init(name: "x", type: TSIdentType.string)),
                     ]))
                 ])
             ),

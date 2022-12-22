@@ -72,16 +72,16 @@ final class PrintTypeTests: TestCaseBase {
         assertPrint(
             TSUnionType([
                 TSObjectType([
-                    .init(name: "kind", type: TSStringLiteralType("a")),
-                    .init(name: "a", type: TSObjectType([
-                        .init(name: "x", type: TSIdentType.number)
-                    ]))
+                    .field(.init(name: "kind", type: TSStringLiteralType("a"))),
+                    .field(.init(name: "a", type: TSObjectType([
+                        .field(.init(name: "x", type: TSIdentType.number)),
+                    ]))),
                 ]),
                 TSObjectType([
-                    .init(name: "kind", type: TSStringLiteralType("b")),
-                    .init(name: "b", type: TSObjectType([
-                        .init(name: "x", type: TSIdentType.string)
-                    ]))
+                    .field(.init(name: "kind", type: TSStringLiteralType("b"))),
+                    .field(.init(name: "b", type: TSObjectType([
+                        .field(.init(name: "x", type: TSIdentType.string)),
+                    ]))),
                 ])
             ]),
             """
@@ -174,13 +174,17 @@ final class PrintTypeTests: TestCaseBase {
 
         assertPrint(
             TSObjectType([
-                .init(name: "a", type: TSIdentType("A")),
-                .init(name: "b", isOptional: true, type: TSIdentType("B"))
+                .field(.init(name: "a", type: TSIdentType("A"))),
+                .field(.init(name: "b", isOptional: true, type: TSIdentType("B"))),
+                .method(.init(name: "c", params: [], result: TSIdentType("C"))),
+                .method(.init(name: "d", isOptional: true, genericParams: ["T"], params: [], result: TSIdentType("D"))),
             ]),
             """
             {
                 a: A;
                 b?: B;
+                c(): C;
+                d?<T>(): D;
             }
             """
         )
@@ -233,12 +237,12 @@ final class PrintTypeTests: TestCaseBase {
     func testTaggedUnion() throws {
         let e = TSUnionType([
             TSObjectType([
-                .init(name: "kind", type: TSStringLiteralType("a")),
-                .init(name: "a", type: TSObjectType([]))
+                .field(.init(name: "kind", type: TSStringLiteralType("a"))),
+                .field(.init(name: "a", type: TSObjectType([]))),
             ]),
             TSObjectType([
-                .init(name: "kind", type: TSStringLiteralType("b")),
-                .init(name: "b", type: TSObjectType([]))
+                .field(.init(name: "kind", type: TSStringLiteralType("b"))),
+                .field(.init(name: "b", type: TSObjectType([]))),
             ])
         ])
 
@@ -273,7 +277,7 @@ final class PrintTypeTests: TestCaseBase {
         let s = TSIntersectionType([
             TSIdentType.string,
             TSObjectType([
-                .init(name: "S", type: TSIdentType.never)
+                .field(.init(name: "S", type: TSIdentType.never)),
             ])
         ])
 

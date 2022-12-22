@@ -1,18 +1,7 @@
 public final class TSObjectType: _TSType {
-    public struct Field {
-        public init(
-            name: String,
-            isOptional: Bool = false,
-            type: any TSType
-        ) {
-            self.name = name
-            self.isOptional = isOptional
-            self.type = type
-        }
-
-        public var name: String
-        public var isOptional: Bool
-        public var type: any TSType
+    public enum Field {
+        case field(TSFieldDecl)
+        case method(TSMethodDecl)
     }
 
     public init(_ fields: [Field]) {
@@ -28,15 +17,24 @@ public final class TSObjectType: _TSType {
         get { _fields }
         set {
             for field in _fields {
-                field.type.setParent(nil)
+                switch field {
+                case .field(let decl):
+                    decl.setParent(nil)
+                case .method(let decl):
+                    decl.setParent(nil)
+                }
             }
             _fields = newValue
             for field in newValue {
-                field.type.setParent(self)
+                switch field {
+                case .field(let decl):
+                    decl.setParent(self)
+                case .method(let decl):
+                    decl.setParent(self)
+                }
             }
         }
     }
 
     private var _fields: [Field] = []
 }
-

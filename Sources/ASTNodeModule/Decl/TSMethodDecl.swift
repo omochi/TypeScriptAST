@@ -2,6 +2,7 @@ public final class TSMethodDecl: _TSDecl {
     public init(
         modifiers: [TSDeclModifier] = [],
         name: String,
+        isOptional: Bool = false,
         genericParams: [String] = [],
         params: [TSFunctionType.Param],
         result: (any TSType)? = nil,
@@ -9,6 +10,7 @@ public final class TSMethodDecl: _TSDecl {
     ) {
         self.modifiers = modifiers
         self.name = name
+        self.isOptional = isOptional
         self.genericParams = genericParams
         self.params = params
         self.result = result
@@ -22,6 +24,7 @@ public final class TSMethodDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
+    public var isOptional: Bool
     public var genericParams: [String]
     public var params: [TSFunctionType.Param] {
         get { _params }
