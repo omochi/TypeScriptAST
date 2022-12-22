@@ -817,6 +817,14 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(indexedAccess: TSIndexedAccessType) -> Bool {
+        walk(indexedAccess.base)
+        printer.write("[")
+        walk(indexedAccess.index)
+        printer.write("]")
+        return false
+    }
+
     public override func visit(infer: TSInferType) -> Bool {
         printer.write("infer ")
         printer.write(infer.name)

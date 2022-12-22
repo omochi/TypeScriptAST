@@ -322,4 +322,14 @@ final class PrintTypeTests: TestCaseBase {
             """
         )
     }
+
+    func testIndexedAccess() throws {
+        let s = TSIndexedAccessType(TSIdentType("A"), index: TSStringLiteralType("b"))
+
+        assertPrint(
+            s, """
+            A["b"]
+            """
+        )
+    }
 }
