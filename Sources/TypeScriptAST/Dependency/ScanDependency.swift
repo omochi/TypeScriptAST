@@ -191,9 +191,14 @@ private final class Impl: ASTVisitor {
         return true
     }
 
-    override func visit(ident: TSIdentType) -> Bool {
-        use(ident.name)
-        return true
+    override func visit(conditional: TSConditionalType) -> Bool {
+        walk(conditional.check)
+        push()
+        walk(conditional.extends)
+        walk(conditional.true)
+        pop()
+        walk(conditional.false)
+        return false
     }
 
     override func visit(custom: TSCustomType) -> Bool {
@@ -206,6 +211,16 @@ private final class Impl: ASTVisitor {
     override func visit(function: TSFunctionType) -> Bool {
         push()
         addNames(function.genericParams)
+        return true
+    }
+
+    override func visit(ident: TSIdentType) -> Bool {
+        use(ident.name)
+        return true
+    }
+
+    override func visit(infer: TSInferType) -> Bool {
+        addNames([infer.name])
         return true
     }
 

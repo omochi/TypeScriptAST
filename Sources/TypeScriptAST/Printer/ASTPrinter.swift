@@ -750,6 +750,8 @@ public final class ASTPrinter: ASTVisitor {
             switch array.element {
             case is TSUnionType: return true
             case is TSIntersectionType: return true
+            case is TSConditionalType: return true
+            case is TSInferType: return true
             default: return false
             }
         }()
@@ -758,6 +760,17 @@ public final class ASTPrinter: ASTVisitor {
             walk(array.element)
         }
         printer.write("[]")
+        return false
+    }
+
+    public override func visit(conditional: TSConditionalType) -> Bool {
+        walk(conditional.check)
+        printer.write(" extends ")
+        walk(conditional.extends)
+        printer.write(" ? ")
+        walk(conditional.true)
+        printer.write(" : ")
+        walk(conditional.false)
         return false
     }
 
@@ -807,6 +820,20 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(indexedAccess: TSIndexedAccessType) -> Bool {
+        walk(indexedAccess.base)
+        printer.write("[")
+        walk(indexedAccess.index)
+        printer.write("]")
+        return false
+    }
+
+    public override func visit(infer: TSInferType) -> Bool {
+        printer.write("infer ")
+        printer.write(infer.name)
+        return false
+    }
+
     public override func visit(intersection: TSIntersectionType) -> Bool {
         write(array: intersection.elements, separator: " &") {
             walk($0)
@@ -819,6 +846,11 @@ public final class ASTPrinter: ASTVisitor {
         printer.write(".")
         printer.write(member.name)
         write(genericArgs: member.genericArgs)
+        return false
+    }
+
+    public override func visit(numberLiteral: TSNumberLiteralType) -> Bool {
+        printer.write(numberLiteral.text)
         return false
     }
 

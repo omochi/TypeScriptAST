@@ -115,6 +115,11 @@ final class PrintTypeTests: TestCaseBase {
         )
 
         assertPrint(
+            TSArrayType(TSConditionalType(TSIdentType("A"), extends: TSIdentType("B"), true: TSIdentType("C"), false: TSIdentType("D"))),
+            "(A extends B ? C : D)[]"
+        )
+
+        assertPrint(
             TSArrayType(TSUnionType([
                 TSIdentType("A"),
                 TSIdentType("B"),
@@ -128,6 +133,14 @@ final class PrintTypeTests: TestCaseBase {
                 C |
                 D
             )[]
+            """
+        )
+    }
+
+    func testNumberLiteral() throws {
+        assertPrint(TSNumberLiteralType(0),
+            """
+            0
             """
         )
     }
@@ -286,6 +299,40 @@ final class PrintTypeTests: TestCaseBase {
             string & {
                 S: never;
             }
+            """
+        )
+    }
+
+    func testConditional() throws {
+        let s = TSConditionalType(TSIdentType("A"), extends: TSIdentType("B"), true: TSIdentType("C"), false: TSIdentType("D"))
+
+        assertPrint(
+            s, """
+            A extends B ? C : D
+            """
+        )
+    }
+
+    func testInfer() throws {
+        let s = TSConditionalType(
+            TSIdentType("T"),
+            extends: TSArrayType(TSInferType(name: "I")),
+            true: TSIdentType("I"),
+            false: TSIdentType("T")
+        )
+        assertPrint(
+            s, """
+            T extends (infer I)[] ? I : T
+            """
+        )
+    }
+
+    func testIndexedAccess() throws {
+        let s = TSIndexedAccessType(TSIdentType("A"), index: TSStringLiteralType("b"))
+
+        assertPrint(
+            s, """
+            A["b"]
             """
         )
     }

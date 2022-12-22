@@ -153,6 +153,8 @@ open class ASTVisitor {
     open func visitPost(`try`: TSTryStmt) {}
     open func visit(array: TSArrayType) -> Bool { defaultVisitResult }
     open func visitPost(array: TSArrayType) {}
+    open func visit(conditional: TSConditionalType) -> Bool { defaultVisitResult }
+    open func visitPost(conditional: TSConditionalType) {}
     open func visit(custom: TSCustomType) -> Bool { defaultVisitResult }
     open func visitPost(custom: TSCustomType) {}
     open func visit(dictionary: TSDictionaryType) -> Bool { defaultVisitResult }
@@ -161,10 +163,16 @@ open class ASTVisitor {
     open func visitPost(function: TSFunctionType) {}
     open func visit(ident: TSIdentType) -> Bool { defaultVisitResult }
     open func visitPost(ident: TSIdentType) {}
+    open func visit(indexedAccess: TSIndexedAccessType) -> Bool { defaultVisitResult }
+    open func visitPost(indexedAccess: TSIndexedAccessType) {}
+    open func visit(infer: TSInferType) -> Bool { defaultVisitResult }
+    open func visitPost(infer: TSInferType) {}
     open func visit(intersection: TSIntersectionType) -> Bool { defaultVisitResult }
     open func visitPost(intersection: TSIntersectionType) {}
     open func visit(member: TSMemberType) -> Bool { defaultVisitResult }
     open func visitPost(member: TSMemberType) {}
+    open func visit(numberLiteral: TSNumberLiteralType) -> Bool { defaultVisitResult }
+    open func visitPost(numberLiteral: TSNumberLiteralType) {}
     open func visit(object: TSObjectType) -> Bool { defaultVisitResult }
     open func visitPost(object: TSObjectType) {}
     open func visit(stringLiteral: TSStringLiteralType) -> Bool { defaultVisitResult }
@@ -219,12 +227,16 @@ open class ASTVisitor {
         case let x as TSThrowStmt: visitImpl(throw: x)
         case let x as TSTryStmt: visitImpl(try: x)
         case let x as TSArrayType: visitImpl(array: x)
+        case let x as TSConditionalType: visitImpl(conditional: x)
         case let x as TSCustomType: visitImpl(custom: x)
         case let x as TSDictionaryType: visitImpl(dictionary: x)
         case let x as TSFunctionType: visitImpl(function: x)
         case let x as TSIdentType: visitImpl(ident: x)
+        case let x as TSIndexedAccessType: visitImpl(indexedAccess: x)
+        case let x as TSInferType: visitImpl(infer: x)
         case let x as TSIntersectionType: visitImpl(intersection: x)
         case let x as TSMemberType: visitImpl(member: x)
+        case let x as TSNumberLiteralType: visitImpl(numberLiteral: x)
         case let x as TSObjectType: visitImpl(object: x)
         case let x as TSStringLiteralType: visitImpl(stringLiteral: x)
         case let x as TSUnionType: visitImpl(union: x)
@@ -504,6 +516,15 @@ open class ASTVisitor {
         visitPost(array: array)
     }
 
+    private func visitImpl(conditional: TSConditionalType) {
+        guard visit(conditional: conditional) else { return }
+        walk(conditional.check)
+        walk(conditional.extends)
+        walk(conditional.true)
+        walk(conditional.false)
+        visitPost(conditional: conditional)
+    }
+
     private func visitImpl(custom: TSCustomType) {
         guard visit(custom: custom) else { return }
         visitPost(custom: custom)
@@ -528,6 +549,18 @@ open class ASTVisitor {
         visitPost(ident: ident)
     }
 
+    private func visitImpl(indexedAccess: TSIndexedAccessType) {
+        guard visit(indexedAccess: indexedAccess) else { return }
+        walk(indexedAccess.base)
+        walk(indexedAccess.index)
+        visitPost(indexedAccess: indexedAccess)
+    }
+
+    private func visitImpl(infer: TSInferType) {
+        guard visit(infer: infer) else { return }
+        visitPost(infer: infer)
+    }
+
     private func visitImpl(intersection: TSIntersectionType) {
         guard visit(intersection: intersection) else { return }
         walk(intersection.elements)
@@ -539,6 +572,11 @@ open class ASTVisitor {
         walk(member.base)
         walk(member.genericArgs)
         visitPost(member: member)
+    }
+
+    private func visitImpl(numberLiteral: TSNumberLiteralType) {
+        guard visit(numberLiteral: numberLiteral) else { return }
+        visitPost(numberLiteral: numberLiteral)
     }
 
     private func visitImpl(object: TSObjectType) {

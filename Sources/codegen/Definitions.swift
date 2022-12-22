@@ -145,6 +145,9 @@ struct Definitions {
         .init(.type, "array", children: [
             "element"
         ]),
+        .init(.type, "conditional", children: [
+            "check", "extends", "true", "false"
+        ]),
         .init(.type, "custom"),
         .init(.type, "dictionary", children: [
             "value"
@@ -155,12 +158,17 @@ struct Definitions {
         .init(.type, "ident", children: [
             "genericArgs"
         ]),
+        .init(.type, "indexedAccess", children: [
+            "base", "index"
+        ]),
+        .init(.type, "infer"),
         .init(.type, "intersection", children: [
             "elements"
         ]),
         .init(.type, "member", children: [
             "base", "genericArgs"
         ]),
+        .init(.type, "numberLiteral"),
         .init(.type, "object", children: [
             "fields"
         ]),
