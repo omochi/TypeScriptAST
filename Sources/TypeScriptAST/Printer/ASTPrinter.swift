@@ -794,13 +794,6 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
-    public override func visit(dictionary: TSDictionaryType) -> Bool {
-        printer.write("{ [key: string]: ")
-        walk(dictionary.value)
-        printer.write("; }")
-        return false
-    }
-
     public override func visit(function: TSFunctionType) -> Bool {
         write(genericParams: function.genericParams)
         write(params: function.params)

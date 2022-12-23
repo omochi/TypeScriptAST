@@ -161,8 +161,6 @@ open class ASTVisitor {
     open func visitPost(conditional: TSConditionalType) {}
     open func visit(custom: TSCustomType) -> Bool { defaultVisitResult }
     open func visitPost(custom: TSCustomType) {}
-    open func visit(dictionary: TSDictionaryType) -> Bool { defaultVisitResult }
-    open func visitPost(dictionary: TSDictionaryType) {}
     open func visit(function: TSFunctionType) -> Bool { defaultVisitResult }
     open func visitPost(function: TSFunctionType) {}
     open func visit(ident: TSIdentType) -> Bool { defaultVisitResult }
@@ -234,7 +232,6 @@ open class ASTVisitor {
         case let x as TSArrayType: visitImpl(array: x)
         case let x as TSConditionalType: visitImpl(conditional: x)
         case let x as TSCustomType: visitImpl(custom: x)
-        case let x as TSDictionaryType: visitImpl(dictionary: x)
         case let x as TSFunctionType: visitImpl(function: x)
         case let x as TSIdentType: visitImpl(ident: x)
         case let x as TSIndexedAccessType: visitImpl(indexedAccess: x)
@@ -539,12 +536,6 @@ open class ASTVisitor {
     private func visitImpl(custom: TSCustomType) {
         guard visit(custom: custom) else { return }
         visitPost(custom: custom)
-    }
-
-    private func visitImpl(dictionary: TSDictionaryType) {
-        guard visit(dictionary: dictionary) else { return }
-        walk(dictionary.value)
-        visitPost(dictionary: dictionary)
     }
 
     private func visitImpl(function: TSFunctionType) {

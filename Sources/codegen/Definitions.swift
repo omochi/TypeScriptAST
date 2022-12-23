@@ -152,9 +152,6 @@ struct Definitions {
             "check", "extends", "true", "false"
         ]),
         .init(.type, "custom"),
-        .init(.type, "dictionary", children: [
-            "value"
-        ]),
         .init(.type, "function", children: [
             "params", "result"
         ]),
