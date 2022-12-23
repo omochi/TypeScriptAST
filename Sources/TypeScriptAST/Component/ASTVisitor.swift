@@ -57,6 +57,8 @@ open class ASTVisitor {
             walk(decl)
         case .method(let decl):
             walk(decl)
+        case .index(let decl):
+            walk(decl)
         }
     }
 
@@ -75,6 +77,8 @@ open class ASTVisitor {
     open func visitPost(function: TSFunctionDecl) {}
     open func visit(`import`: TSImportDecl) -> Bool { defaultVisitResult }
     open func visitPost(`import`: TSImportDecl) {}
+    open func visit(index: TSIndexDecl) -> Bool { defaultVisitResult }
+    open func visitPost(index: TSIndexDecl) {}
     open func visit(interface: TSInterfaceDecl) -> Bool { defaultVisitResult }
     open func visitPost(interface: TSInterfaceDecl) {}
     open func visit(method: TSMethodDecl) -> Bool { defaultVisitResult }
@@ -157,8 +161,6 @@ open class ASTVisitor {
     open func visitPost(conditional: TSConditionalType) {}
     open func visit(custom: TSCustomType) -> Bool { defaultVisitResult }
     open func visitPost(custom: TSCustomType) {}
-    open func visit(dictionary: TSDictionaryType) -> Bool { defaultVisitResult }
-    open func visitPost(dictionary: TSDictionaryType) {}
     open func visit(function: TSFunctionType) -> Bool { defaultVisitResult }
     open func visitPost(function: TSFunctionType) {}
     open func visit(ident: TSIdentType) -> Bool { defaultVisitResult }
@@ -192,6 +194,7 @@ open class ASTVisitor {
         case let x as TSFieldDecl: visitImpl(field: x)
         case let x as TSFunctionDecl: visitImpl(function: x)
         case let x as TSImportDecl: visitImpl(import: x)
+        case let x as TSIndexDecl: visitImpl(index: x)
         case let x as TSInterfaceDecl: visitImpl(interface: x)
         case let x as TSMethodDecl: visitImpl(method: x)
         case let x as TSNamespaceDecl: visitImpl(namespace: x)
@@ -233,7 +236,6 @@ open class ASTVisitor {
         case let x as TSArrayType: visitImpl(array: x)
         case let x as TSConditionalType: visitImpl(conditional: x)
         case let x as TSCustomType: visitImpl(custom: x)
-        case let x as TSDictionaryType: visitImpl(dictionary: x)
         case let x as TSFunctionType: visitImpl(function: x)
         case let x as TSIdentType: visitImpl(ident: x)
         case let x as TSIndexedAccessType: visitImpl(indexedAccess: x)
@@ -277,6 +279,13 @@ open class ASTVisitor {
     private func visitImpl(`import`: TSImportDecl) {
         guard visit(import: `import`) else { return }
         visitPost(import: `import`)
+    }
+
+    private func visitImpl(index: TSIndexDecl) {
+        guard visit(index: index) else { return }
+        walk(index.index)
+        walk(index.value)
+        visitPost(index: index)
     }
 
     private func visitImpl(interface: TSInterfaceDecl) {
@@ -534,12 +543,6 @@ open class ASTVisitor {
     private func visitImpl(custom: TSCustomType) {
         guard visit(custom: custom) else { return }
         visitPost(custom: custom)
-    }
-
-    private func visitImpl(dictionary: TSDictionaryType) {
-        guard visit(dictionary: dictionary) else { return }
-        walk(dictionary.value)
-        visitPost(dictionary: dictionary)
     }
 
     private func visitImpl(function: TSFunctionType) {

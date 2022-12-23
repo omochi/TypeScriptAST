@@ -276,6 +276,7 @@ final class PrintDeclTests: TestCaseBase {
                 body: TSBlockStmt([
                     TSFieldDecl(name: "x", type: TSIdentType.number),
                     TSFieldDecl(name: "y", type: TSIdentType.number),
+                    TSIndexDecl(modifiers: [.readonly], name: "i", index: TSIdentType.number, value: TSIdentType.number),
                     TSMethodDecl(name: "f", params: []),
                     TSMethodDecl(name: "g", genericParams: ["U"], params: [
                         .init(name: "a", type: TSIdentType.string)
@@ -286,6 +287,8 @@ final class PrintDeclTests: TestCaseBase {
             export interface I<T> extends J<T>, K {
                 x: number;
                 y: number;
+            
+                readonly [i: number]: number;
 
                 f();
                 g<U>(a: string): string;

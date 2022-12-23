@@ -9,7 +9,6 @@ extension TSType {
     public var asArray: TSArrayType? { self as? TSArrayType }
     public var asConditional: TSConditionalType? { self as? TSConditionalType }
     public var asCustom: TSCustomType? { self as? TSCustomType }
-    public var asDictionary: TSDictionaryType? { self as? TSDictionaryType }
     public var asFunction: TSFunctionType? { self as? TSFunctionType }
     public var asIdent: TSIdentType? { self as? TSIdentType }
     public var asIndexedAccess: TSIndexedAccessType? { self as? TSIndexedAccessType }

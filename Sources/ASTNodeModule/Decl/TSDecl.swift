@@ -8,6 +8,7 @@ extension TSDecl {
     public var asField: TSFieldDecl? { self as? TSFieldDecl }
     public var asFunction: TSFunctionDecl? { self as? TSFunctionDecl }
     public var asImport: TSImportDecl? { self as? TSImportDecl }
+    public var asIndex: TSIndexDecl? { self as? TSIndexDecl }
     public var asInterface: TSInterfaceDecl? { self as? TSInterfaceDecl }
     public var asMethod: TSMethodDecl? { self as? TSMethodDecl }
     public var asNamespace: TSNamespaceDecl? { self as? TSNamespaceDecl }

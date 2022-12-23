@@ -143,6 +143,8 @@ public final class ASTPrinter: ASTVisitor {
             return false
         case is TSImportDecl:
             return false
+        case is TSIndexDecl:
+            return false
         case is TSInterfaceDecl:
             return true
         case is TSFunctionDecl,
@@ -343,6 +345,19 @@ public final class ASTPrinter: ASTVisitor {
             }
         }
         printer.write(" from \"\(`import`.from)\";")
+        return false
+    }
+
+    public override func visit(index: TSIndexDecl) -> Bool {
+        write(modifiers: index.modifiers)
+        printer.write(space: " ", "[")
+        printer.write(index.name)
+        printer.write(": ")
+        walk(index.index)
+        printer.write("]")
+        printer.write(": ")
+        walk(index.value)
+        printer.write(";")
         return false
     }
 
@@ -780,13 +795,6 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
-    public override func visit(dictionary: TSDictionaryType) -> Bool {
-        printer.write("{ [key: string]: ")
-        walk(dictionary.value)
-        printer.write("; }")
-        return false
-    }
-
     public override func visit(function: TSFunctionType) -> Bool {
         write(genericParams: function.genericParams)
         write(params: function.params)
@@ -907,6 +915,8 @@ public final class ASTPrinter: ASTVisitor {
         case .field(let decl):
             walk(decl)
         case .method(let decl):
+            walk(decl)
+        case .index(let decl):
             walk(decl)
         }
     }

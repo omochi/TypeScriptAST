@@ -42,6 +42,9 @@ struct Definitions {
             "params", "result", "body"
         ]),
         .init(.decl, "import"),
+        .init(.decl, "index", children: [
+            "index", "value"
+        ]),
         .init(.decl, "interface", children: [
             "extends", "body"
         ]),
@@ -149,9 +152,6 @@ struct Definitions {
             "check", "extends", "true", "false"
         ]),
         .init(.type, "custom"),
-        .init(.type, "dictionary", children: [
-            "value"
-        ]),
         .init(.type, "function", children: [
             "params", "result"
         ]),
