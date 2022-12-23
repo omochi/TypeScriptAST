@@ -1,20 +1,14 @@
 public final class TSIndexDecl: _TSDecl {
-    public enum IndexKind: String {
-        case number
-        case string
-        case symbol
-    }
-
     public init(
         modifiers: [TSDeclModifier] = [],
         name: String,
-        kind: IndexKind,
-        type: any TSType
+        index: any TSType,
+        value: any TSType
     ) {
         self.modifiers = modifiers
         self.name = name
-        self.kind = kind
-        self.type = type
+        self.index = index
+        self.value = value
     }
 
     public private(set) unowned var parent: (any ASTNode)?
@@ -24,6 +18,6 @@ public final class TSIndexDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
-    public var kind: IndexKind
-    @AnyTSTypeStorage public var type: any TSType
+    @AnyTSTypeStorage public var index: any TSType
+    @AnyTSTypeStorage public var value: any TSType
 }

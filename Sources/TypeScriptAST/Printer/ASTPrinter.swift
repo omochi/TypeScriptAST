@@ -353,10 +353,10 @@ public final class ASTPrinter: ASTVisitor {
         printer.write(space: " ", "[")
         printer.write(index.name)
         printer.write(": ")
-        printer.write(index.kind.rawValue)
+        walk(index.index)
         printer.write("]")
         printer.write(": ")
-        walk(index.type)
+        walk(index.value)
         printer.write(";")
         return false
     }

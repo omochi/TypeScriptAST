@@ -276,7 +276,7 @@ final class PrintDeclTests: TestCaseBase {
                 body: TSBlockStmt([
                     TSFieldDecl(name: "x", type: TSIdentType.number),
                     TSFieldDecl(name: "y", type: TSIdentType.number),
-                    TSIndexDecl(modifiers: [.readonly], name: "i", kind: .number, type: TSIdentType.number),
+                    TSIndexDecl(modifiers: [.readonly], name: "i", index: TSIdentType.number, value: TSIdentType.number),
                     TSMethodDecl(name: "f", params: []),
                     TSMethodDecl(name: "g", genericParams: ["U"], params: [
                         .init(name: "a", type: TSIdentType.string)

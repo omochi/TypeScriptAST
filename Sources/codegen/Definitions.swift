@@ -43,7 +43,7 @@ struct Definitions {
         ]),
         .init(.decl, "import"),
         .init(.decl, "index", children: [
-            "type"
+            "index", "value"
         ]),
         .init(.decl, "interface", children: [
             "extends", "body"

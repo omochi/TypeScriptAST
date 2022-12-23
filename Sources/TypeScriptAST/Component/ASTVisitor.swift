@@ -277,7 +277,8 @@ open class ASTVisitor {
 
     private func visitImpl(index: TSIndexDecl) {
         guard visit(index: index) else { return }
-        walk(index.type)
+        walk(index.index)
+        walk(index.value)
         visitPost(index: index)
     }
 
