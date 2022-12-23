@@ -59,7 +59,7 @@ final class PrintDeclTests: TestCaseBase {
         assertPrint(
             TSTypeDecl(
                 name: "A",
-                genericParams: ["T"],
+                genericParams: [.init("T")],
                 type: TSIdentType("B", genericArgs: [TSIdentType("T")])
             ),
             """
@@ -200,7 +200,7 @@ final class PrintDeclTests: TestCaseBase {
             TSFunctionDecl(
                 modifiers: [.export],
                 name: "f",
-                genericParams: ["A", "B", "C", "D"],
+                genericParams: [.init("A"), .init("B"), .init("C"), .init("D")],
                 params: [
                     .init(name: "a", type: TSIdentType.number),
                     .init(name: "b", type: TSIdentType.string),
@@ -246,12 +246,12 @@ final class PrintDeclTests: TestCaseBase {
         assertPrint(
             TSInterfaceDecl(
                 name: "I",
-                genericParams: ["T"],
+                genericParams: [.init("T")],
                 extends: [TSIdentType("J")],
                 body: TSBlockStmt([
                     TSMethodDecl(
                         name: "a",
-                        genericParams: ["U"],
+                        genericParams: [.init("U")],
                         params: [.init(name: "x", type: TSIdentType("T"))],
                         result: TSIdentType("U")
                     )
@@ -268,7 +268,7 @@ final class PrintDeclTests: TestCaseBase {
             TSInterfaceDecl(
                 modifiers: [.export],
                 name: "I",
-                genericParams: ["T"],
+                genericParams: [.init("T")],
                 extends: [
                     TSIdentType("J", genericArgs: [TSIdentType("T")]),
                     TSIdentType("K")
@@ -278,7 +278,7 @@ final class PrintDeclTests: TestCaseBase {
                     TSFieldDecl(name: "y", type: TSIdentType.number),
                     TSIndexDecl(modifiers: [.readonly], name: "i", index: TSIdentType.number, value: TSIdentType.number),
                     TSMethodDecl(name: "f", params: []),
-                    TSMethodDecl(name: "g", genericParams: ["U"], params: [
+                    TSMethodDecl(name: "g", genericParams: [.init("U")], params: [
                         .init(name: "a", type: TSIdentType.string)
                     ], result: TSIdentType.string)
                 ])
@@ -309,7 +309,7 @@ final class PrintDeclTests: TestCaseBase {
             TSClassDecl(
                 modifiers: [.export],
                 name: "A",
-                genericParams: ["T"],
+                genericParams: [.init("T")],
                 extends: TSIdentType("B"),
                 implements: [TSIdentType("I")],
                 body: TSBlockStmt([
@@ -344,7 +344,7 @@ final class PrintDeclTests: TestCaseBase {
         assertPrint(
             TSClassDecl(
                 name: "A",
-                genericParams: ["T"],
+                genericParams: [.init("T")],
                 extends: TSIdentType("B", genericArgs: [TSIdentType("T")]),
                 implements: [TSIdentType("I", genericArgs: [TSIdentType("T")])],
                 body: TSBlockStmt([
@@ -539,6 +539,29 @@ final class PrintDeclTests: TestCaseBase {
                 function f2(): string {}
             }
             
+            """
+        )
+    }
+
+    func testGenericTypeParameter() throws {
+        assertPrint(
+            TSTypeDecl(
+                name: "A",
+                genericParams: [
+                    .init("T"),
+                    .init("U", extends: TSObjectType([])),
+                    .init("V", default: TSIdentType.string),
+                    .init("W", extends: TSIdentType.string, default: TSIdentType.string),
+                ],
+                type: TSIdentType.never
+            ),
+            """
+            type A<
+                T,
+                U extends {},
+                V = string,
+                W extends string = string
+            > = never;
             """
         )
     }

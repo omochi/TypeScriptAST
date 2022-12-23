@@ -1,13 +1,13 @@
 public final class TSClosureExpr: _TSExpr {
     public init(
-        genericParams: [String] = [],
+        genericParams: [TSTypeParameterNode] = [],
         hasParen: Bool = true,
         params: [TSFunctionType.Param],
         result: (any TSType)? = nil,
         body: any TSStmt
     ) {
-        self.genericParams = genericParams
         self.hasParen = hasParen
+        self.genericParams = genericParams
         self.params = params
         self.result = result
         self.body = body
@@ -18,7 +18,7 @@ public final class TSClosureExpr: _TSExpr {
         parent = newValue
     }
 
-    public var genericParams: [String]
+    @ASTNodeArrayStorage public var genericParams: [TSTypeParameterNode]
     public var hasParen: Bool
     public var params: [TSFunctionType.Param] {
         get { _params }

@@ -332,11 +332,11 @@ final class PrintExprTests: TestCaseBase {
         )
 
         assertPrint(
-            TSClosureExpr(genericParams: ["T"], params: [.init(name: "t", type: TSIdentType("T"))], body: TSIdentExpr("t")),
+            TSClosureExpr(genericParams: [.init("T")], params: [.init(name: "t", type: TSIdentType("T"))], body: TSIdentExpr("t")),
             "<T,>(t: T) => t"
         )
         assertPrint(
-            TSClosureExpr(genericParams: ["T", "U"], params: [.init(name: "tu", type: TSIntersectionType([
+            TSClosureExpr(genericParams: [.init("T"), .init("U")], params: [.init(name: "tu", type: TSIntersectionType([
                 TSIdentType("T"),
                 TSIdentType("U"),
             ]))], body: TSIdentExpr("tu")),

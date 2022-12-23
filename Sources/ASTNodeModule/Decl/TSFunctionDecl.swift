@@ -2,7 +2,7 @@ public final class TSFunctionDecl: _TSDecl {
     public init(
         modifiers: [TSDeclModifier] = [],
         name: String,
-        genericParams: [String] = [],
+        genericParams: [TSTypeParameterNode] = [],
         params: [TSFunctionType.Param],
         result: (any TSType)? = nil,
         body: TSBlockStmt
@@ -22,7 +22,7 @@ public final class TSFunctionDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
-    public var genericParams: [String]
+    @ASTNodeArrayStorage public var genericParams: [TSTypeParameterNode]
     public var params: [TSFunctionType.Param] {
         get { _params }
         set {

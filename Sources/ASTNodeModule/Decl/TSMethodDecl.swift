@@ -3,7 +3,7 @@ public final class TSMethodDecl: _TSDecl {
         modifiers: [TSDeclModifier] = [],
         name: String,
         isOptional: Bool = false,
-        genericParams: [String] = [],
+        genericParams: [TSTypeParameterNode] = [],
         params: [TSFunctionType.Param],
         result: (any TSType)? = nil,
         body: TSBlockStmt? = nil
@@ -25,7 +25,7 @@ public final class TSMethodDecl: _TSDecl {
     public var modifiers: [TSDeclModifier]
     public var name: String
     public var isOptional: Bool
-    public var genericParams: [String]
+    @ASTNodeArrayStorage public var genericParams: [TSTypeParameterNode]
     public var params: [TSFunctionType.Param] {
         get { _params }
         set {

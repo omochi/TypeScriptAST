@@ -16,7 +16,7 @@ public final class TSFunctionType: _TSType {
     }
 
     public init(
-        genericParams: [String] = [],
+        genericParams: [TSTypeParameterNode] = [],
         params: [Param],
         result: any TSType
     ) {
@@ -30,7 +30,7 @@ public final class TSFunctionType: _TSType {
         parent = newValue
     }
 
-    public var genericParams: [String]
+    @ASTNodeArrayStorage public var genericParams: [TSTypeParameterNode]
     public var params: [Param] {
         get { _params }
         set {

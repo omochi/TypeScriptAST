@@ -44,6 +44,10 @@ private final class Impl: ASTVisitor {
         dependencies.insert(name)
     }
 
+    private func addNames(_ genericParams: [TSTypeParameterNode]) {
+        addNames(genericParams.map(\.name))
+    }
+
     override func visit(sourceFile: TSSourceFile) -> Bool {
         push()
         addNames(sourceFile.memberDeclaredNames)

@@ -2,7 +2,7 @@ public final class TSTypeDecl: _TSDecl {
     public init(
         modifiers: [TSDeclModifier] = [],
         name: String,
-        genericParams: [String] = [],
+        genericParams: [TSTypeParameterNode] = [],
         type: any TSType
     ) {
         self.modifiers = modifiers
@@ -18,6 +18,6 @@ public final class TSTypeDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
-    public var genericParams: [String]
+    @ASTNodeArrayStorage public var genericParams: [TSTypeParameterNode]
     @AnyTSTypeStorage public var type: any TSType
 }
