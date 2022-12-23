@@ -542,4 +542,27 @@ final class PrintDeclTests: TestCaseBase {
             """
         )
     }
+
+    func testGenericTypeParameter() throws {
+        assertPrint(
+            TSTypeDecl(
+                name: "A",
+                genericParams: [
+                    .init("T"),
+                    .init("U", extends: TSObjectType([])),
+                    .init("V", default: TSIdentType.string),
+                    .init("W", extends: TSIdentType.string, default: TSIdentType.string),
+                ],
+                type: TSIdentType.never
+            ),
+            """
+            type A<
+                T,
+                U extends {},
+                V = string,
+                W extends string = string
+            > = never;
+            """
+        )
+    }
 }

@@ -509,4 +509,26 @@ final class ScanDependencyTests: TestCaseBase {
 
         XCTAssertEqual(Set(s.scanDependency()), ["Exclude"])
     }
+
+    func testGenericTypeParameter() {
+        let s = TSSourceFile([
+            TSTypeDecl(
+                name: "A", genericParams: [
+                    .init("T"),
+                    .init("U", extends: TSUnionType([TSIdentType("T"),  TSIdentType("V"), TSIdentType("B")])),
+                    .init("V", default: TSIdentType("C")),
+                ],
+                type: TSIdentType("T")
+            ),
+        ])
+
+        assertPrint(
+            s, """
+            type A<T, U extends T | V | B, V = C> = T;
+
+            """
+        )
+
+        XCTAssertEqual(Set(s.scanDependency()), ["B", "C"])
+    }
 }

@@ -44,6 +44,18 @@ private final class Impl: ASTVisitor {
         dependencies.insert(name)
     }
 
+    private func use(genericParams: [TSTypeParameterNode]) {
+        addNames(genericParams.map(\.name))
+        for genericParam in genericParams {
+            if let constraint = genericParam.constraint {
+                walk(constraint)
+            }
+            if let `default` = genericParam.default {
+                walk(`default`)
+            }
+        }
+    }
+
     override func visit(sourceFile: TSSourceFile) -> Bool {
         push()
         addNames(sourceFile.memberDeclaredNames)
@@ -66,7 +78,7 @@ private final class Impl: ASTVisitor {
 
     override func visit(class: TSClassDecl) -> Bool {
         push()
-        addNames(`class`.genericParams.map(\.name))
+        use(genericParams: `class`.genericParams)
         return true
     }
 
@@ -76,7 +88,7 @@ private final class Impl: ASTVisitor {
 
     override func visit(interface: TSInterfaceDecl) -> Bool {
         push()
-        addNames(interface.genericParams.map(\.name))
+        use(genericParams: interface.genericParams)
         return true
     }
 
@@ -86,7 +98,7 @@ private final class Impl: ASTVisitor {
 
     override func visit(function: TSFunctionDecl) -> Bool {
         push()
-        addNames(function.genericParams.map(\.name))
+        use(genericParams: function.genericParams)
         addNames(function.params.map { $0.name })
         return true
     }
@@ -97,7 +109,7 @@ private final class Impl: ASTVisitor {
 
     override func visit(method: TSMethodDecl) -> Bool {
         push()
-        addNames(method.genericParams.map(\.name))
+        use(genericParams: method.genericParams)
         addNames(method.params.map { $0.name })
         return true
     }
@@ -108,7 +120,7 @@ private final class Impl: ASTVisitor {
 
     override func visit(type: TSTypeDecl) -> Bool {
         push()
-        addNames(type.genericParams.map(\.name))
+        use(genericParams: type.genericParams)
         return true
     }
 
@@ -160,7 +172,7 @@ private final class Impl: ASTVisitor {
 
     override func visit(closure: TSClosureExpr) -> Bool {
         push()
-        addNames(closure.genericParams.map(\.name))
+        use(genericParams: closure.genericParams)
         addNames(closure.params.map { $0.name })
         return true
     }
@@ -210,7 +222,7 @@ private final class Impl: ASTVisitor {
 
     override func visit(function: TSFunctionType) -> Bool {
         push()
-        addNames(function.genericParams.map(\.name))
+        use(genericParams: function.genericParams)
         return true
     }
 

@@ -271,9 +271,15 @@ public final class ASTPrinter: ASTVisitor {
     // MARK: - node
 
     public override func visit(typeParameter: TSTypeParameterNode) -> Bool {
-        // TODO:
         printer.write(typeParameter.name)
-
+        if let constraint = typeParameter.constraint {
+            printer.write(" extends ")
+            walk(constraint)
+        }
+        if let `default` = typeParameter.default {
+            printer.write(" = ")
+            walk(`default`)
+        }
         return false
     }
 
