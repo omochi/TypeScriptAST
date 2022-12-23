@@ -752,6 +752,7 @@ public final class ASTPrinter: ASTVisitor {
             case is TSIntersectionType: return true
             case is TSConditionalType: return true
             case is TSInferType: return true
+            case is TSKeyofType: return true
             default: return false
             }
         }()
@@ -837,6 +838,44 @@ public final class ASTPrinter: ASTVisitor {
     public override func visit(intersection: TSIntersectionType) -> Bool {
         write(array: intersection.elements, separator: " &") {
             walk($0)
+        }
+        return false
+    }
+
+    public override func visit(keyof: TSKeyofType) -> Bool {
+        printer.write("keyof ")
+        walk(keyof.type)
+        return false
+    }
+
+    public override func visit(mapped: TSMappedType) -> Bool {
+        nest(bracket: "{") {
+            printer.push(newline: true)
+            if let readonly = mapped.readonly {
+                if readonly == .remove {
+                    printer.write("-")
+                }
+                printer.write("readonly")
+            }
+            printer.write(space: " ", "[")
+            printer.write(mapped.name)
+            printer.write(" in ")
+            walk(mapped.constraint)
+            if let name = mapped.nameType {
+                printer.write(space: " ", "as ")
+                walk(name)
+            }
+            printer.write("]")
+            if let optional = mapped.optional {
+                if optional == .remove {
+                    printer.write("-")
+                }
+                printer.write("?")
+            }
+            printer.write(": ")
+            walk(mapped.value)
+            printer.write(";")
+            printer.pop()
         }
         return false
     }
