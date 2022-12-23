@@ -37,23 +37,23 @@ struct Definitions {
             "constraint", "default"
         ]),
         .init(.decl, "class", children: [
-            "extends", "implements", "body"
+            "genericParams", "extends", "implements", "body"
         ]),
         .init(.decl, "field", children: [
             "type"
         ]),
         .init(.decl, "function", children: [
-            "params", "result", "body"
+            "genericParams", "params", "result", "body"
         ]),
         .init(.decl, "import"),
         .init(.decl, "index", children: [
             "index", "value"
         ]),
         .init(.decl, "interface", children: [
-            "extends", "body"
+            "genericParams", "extends", "body"
         ]),
         .init(.decl, "method", children: [
-            "params", "result", "body"
+            "genericParams", "params", "result", "body"
         ]),
         .init(.decl, "namespace", children: [
             "body"
@@ -62,7 +62,7 @@ struct Definitions {
             "elements"
         ]),
         .init(.decl, "type", children: [
-            "type"
+            "genericParams", "type"
         ]),
         .init(.decl, "var", children: [
             "type", "initializer"
@@ -84,7 +84,7 @@ struct Definitions {
             "callee", "args"
         ]),
         .init(.expr, "closure", children: [
-            "params", "result", "body"
+            "genericParams", "params", "result", "body"
         ]),
         .init(.expr, "custom"),
         .init(.expr, "ident"),
@@ -157,7 +157,7 @@ struct Definitions {
         ]),
         .init(.type, "custom"),
         .init(.type, "function", children: [
-            "params", "result"
+            "genericParams", "params", "result"
         ]),
         .init(.type, "ident", children: [
             "genericArgs"

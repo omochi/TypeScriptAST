@@ -266,6 +266,7 @@ open class ASTVisitor {
 
     private func visitImpl(`class`: TSClassDecl) {
         guard visit(class: `class`) else { return }
+        walk(`class`.genericParams)
         walk(`class`.extends)
         walk(`class`.implements)
         walk(`class`.body)
@@ -280,6 +281,7 @@ open class ASTVisitor {
 
     private func visitImpl(function: TSFunctionDecl) {
         guard visit(function: function) else { return }
+        walk(function.genericParams)
         walk(function.params)
         walk(function.result)
         walk(function.body)
@@ -300,6 +302,7 @@ open class ASTVisitor {
 
     private func visitImpl(interface: TSInterfaceDecl) {
         guard visit(interface: interface) else { return }
+        walk(interface.genericParams)
         walk(interface.extends)
         walk(interface.body)
         visitPost(interface: interface)
@@ -307,6 +310,7 @@ open class ASTVisitor {
 
     private func visitImpl(method: TSMethodDecl) {
         guard visit(method: method) else { return }
+        walk(method.genericParams)
         walk(method.params)
         walk(method.result)
         walk(method.body)
@@ -327,6 +331,7 @@ open class ASTVisitor {
 
     private func visitImpl(type: TSTypeDecl) {
         guard visit(type: type) else { return }
+        walk(type.genericParams)
         walk(type.type)
         visitPost(type: type)
     }
@@ -378,6 +383,7 @@ open class ASTVisitor {
 
     private func visitImpl(closure: TSClosureExpr) {
         guard visit(closure: closure) else { return }
+        walk(closure.genericParams)
         walk(closure.params)
         walk(closure.result)
         walk(closure.body)
@@ -557,6 +563,7 @@ open class ASTVisitor {
 
     private func visitImpl(function: TSFunctionType) {
         guard visit(function: function) else { return }
+        walk(function.genericParams)
         walk(function.params)
         walk(function.result)
         visitPost(function: function)
