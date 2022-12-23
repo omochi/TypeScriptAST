@@ -20,7 +20,7 @@ public final class TSInterfaceDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
-    public var genericParams: [TSTypeParameterNode]
+    @ASTNodeArrayStorage public var genericParams: [TSTypeParameterNode]
     @ASTNodeArrayStorage public var extends: [TSIdentType]
     @ASTNodeStorage public var body: TSBlockStmt
 }

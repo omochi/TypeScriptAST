@@ -25,7 +25,7 @@ public final class TSMethodDecl: _TSDecl {
     public var modifiers: [TSDeclModifier]
     public var name: String
     public var isOptional: Bool
-    public var genericParams: [TSTypeParameterNode]
+    @ASTNodeArrayStorage public var genericParams: [TSTypeParameterNode]
     public var params: [TSFunctionType.Param] {
         get { _params }
         set {

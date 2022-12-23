@@ -22,7 +22,7 @@ public final class TSClassDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
-    public var genericParams: [TSTypeParameterNode]
+    @ASTNodeArrayStorage public var genericParams: [TSTypeParameterNode]
     @ASTNodeOptionalStorage public var extends: TSIdentType?
     @ASTNodeArrayStorage public var implements: [TSIdentType]
     @ASTNodeStorage public var body: TSBlockStmt

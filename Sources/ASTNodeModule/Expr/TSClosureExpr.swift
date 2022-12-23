@@ -6,8 +6,8 @@ public final class TSClosureExpr: _TSExpr {
         result: (any TSType)? = nil,
         body: any TSStmt
     ) {
-        self.genericParams = genericParams
         self.hasParen = hasParen
+        self.genericParams = genericParams
         self.params = params
         self.result = result
         self.body = body
@@ -18,7 +18,7 @@ public final class TSClosureExpr: _TSExpr {
         parent = newValue
     }
 
-    public var genericParams: [TSTypeParameterNode]
+    @ASTNodeArrayStorage public var genericParams: [TSTypeParameterNode]
     public var hasParen: Bool
     public var params: [TSFunctionType.Param] {
         get { _params }

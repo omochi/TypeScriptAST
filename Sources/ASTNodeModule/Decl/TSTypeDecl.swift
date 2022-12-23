@@ -18,6 +18,6 @@ public final class TSTypeDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
-    public var genericParams: [TSTypeParameterNode]
+    @ASTNodeArrayStorage public var genericParams: [TSTypeParameterNode]
     @AnyTSTypeStorage public var type: any TSType
 }
