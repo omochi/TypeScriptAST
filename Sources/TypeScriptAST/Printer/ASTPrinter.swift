@@ -349,7 +349,8 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public override func visit(index: TSIndexDecl) -> Bool {
-        printer.write("[")
+        write(modifiers: index.modifiers)
+        printer.write(space: " ", "[")
         printer.write(index.name)
         printer.write(": ")
         printer.write(index.kind.rawValue)

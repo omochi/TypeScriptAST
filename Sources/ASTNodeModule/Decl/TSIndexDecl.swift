@@ -6,10 +6,12 @@ public final class TSIndexDecl: _TSDecl {
     }
 
     public init(
+        modifiers: [TSDeclModifier] = [],
         name: String,
         kind: IndexKind,
         type: any TSType
     ) {
+        self.modifiers = modifiers
         self.name = name
         self.kind = kind
         self.type = type
@@ -20,6 +22,7 @@ public final class TSIndexDecl: _TSDecl {
         parent = newValue
     }
 
+    public var modifiers: [TSDeclModifier]
     public var name: String
     public var kind: IndexKind
     @AnyTSTypeStorage public var type: any TSType
