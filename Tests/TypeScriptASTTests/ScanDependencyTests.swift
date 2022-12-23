@@ -43,13 +43,13 @@ final class ScanDependencyTests: TestCaseBase {
 
     func testUseType() throws {
         let s = TSSourceFile([
-            TSTypeDecl(name: "S", genericParams: ["T"], type: TSObjectType([
+            TSTypeDecl(name: "S", genericParams: [.init("T")], type: TSObjectType([
                 .field(.init(name: "a", type: TSIdentType.string)),
                 .field(.init(name: "b", type: TSIdentType("T"))),
                 .field(.init(name: "c", type: TSIdentType("X"))),
             ])),
             TSFunctionDecl(
-                name: "f", genericParams: ["T", "U"],
+                name: "f", genericParams: [.init("T"), .init("U")],
                 params: [
                     .init(name: "t", type: TSIdentType("T")),
                     .init(name: "u", type: TSIdentType("U")),
@@ -99,7 +99,7 @@ final class ScanDependencyTests: TestCaseBase {
                 TSMethodDecl(name: "f", params: [], result: TSIdentType.void)
             ])),
             TSClassDecl(
-                name: "K", genericParams: ["T"], extends: TSIdentType("M"),
+                name: "K", genericParams: [.init("T")], extends: TSIdentType("M"),
                 implements: [TSIdentType("I"), TSIdentType("J")],
                 body: TSBlockStmt([
                     TSFieldDecl(name: "t", isOptional: true, type: TSIdentType("T")),
@@ -169,11 +169,11 @@ final class ScanDependencyTests: TestCaseBase {
     func testStruct() throws {
         let s = TSSourceFile([
             TSTypeDecl(
-                name: "X", genericParams: ["T"],
+                name: "X", genericParams: [.init("T")],
                 type: TSObjectType([])
             ),
             TSTypeDecl(
-                name: "S", genericParams: ["T", "U"],
+                name: "S", genericParams: [.init("T"), .init("U")],
                 type: TSObjectType([
                     .field(.init(name: "a", isOptional: true, type: TSIdentType("A"))),
                     .field(.init(name: "b", type: TSIdentType("number"))),
@@ -212,10 +212,10 @@ final class ScanDependencyTests: TestCaseBase {
     func testInterface() throws {
         let s = TSSourceFile([
             TSInterfaceDecl(
-                name: "I", genericParams: ["T"], extends: [TSIdentType("J")],
+                name: "I", genericParams: [.init("T")], extends: [TSIdentType("J")],
                 body: TSBlockStmt([
                     TSMethodDecl(
-                        name: "foo", genericParams: ["U"],
+                        name: "foo", genericParams: [.init("U")],
                         params: [
                             .init(name: "a", type: TSIdentType("A")),
                             .init(name: "t", type: TSIdentType("T")),
@@ -243,11 +243,11 @@ final class ScanDependencyTests: TestCaseBase {
     func testClass() throws {
         let s = TSSourceFile([
             TSClassDecl(
-                name: "C", genericParams: ["T"],
+                name: "C", genericParams: [.init("T")],
                 extends: TSIdentType("D"), implements: [TSIdentType("I")],
                 body: TSBlockStmt([
                     TSMethodDecl(
-                        name: "foo", genericParams: ["U"],
+                        name: "foo", genericParams: [.init("U")],
                         params: [
                             .init(name: "a", type: TSIdentType("A")),
                             .init(name: "t", type: TSIdentType("T")),
@@ -391,7 +391,7 @@ final class ScanDependencyTests: TestCaseBase {
         let s = TSSourceFile([
             TSTypeDecl(name: "t", type: TSObjectType([
                 .field(.init(name: "f", type: TSFunctionType(
-                    genericParams: ["T"],
+                    genericParams: [.init("T")],
                     params: [.init(name: "a", type: TSIdentType("A"))],
                     result: TSIdentType("T")
                 ))),
@@ -416,7 +416,7 @@ final class ScanDependencyTests: TestCaseBase {
                 kind: .const,
                 name: "f",
                 initializer: TSClosureExpr(
-                    genericParams: ["T"],
+                    genericParams: [.init("T")],
                     params: [.init(name: "tu", type: TSIntersectionType([
                         TSIdentType("T"),
                         TSIdentType("U"),
@@ -440,7 +440,7 @@ final class ScanDependencyTests: TestCaseBase {
         let s = TSSourceFile([
             TSTypeDecl(
                 name: "F",
-                genericParams: ["T"],
+                genericParams: [.init("T")],
                 type: TSConditionalType(
                     TSIdentType("T"),
                     extends: TSArrayType(TSInferType(name: "I")),
@@ -464,7 +464,7 @@ final class ScanDependencyTests: TestCaseBase {
         let s = TSSourceFile([
             TSTypeDecl(
                 name: "F",
-                genericParams: ["T"],
+                genericParams: [.init("T")],
                 type: TSConditionalType(
                     TSIdentType("T"),
                     extends: TSArrayType(TSInferType(name: "I")),
@@ -488,7 +488,7 @@ final class ScanDependencyTests: TestCaseBase {
         let s = TSSourceFile([
             TSTypeDecl(
                 name: "E",
-                genericParams: ["T"],
+                genericParams: [.init("T")],
                 type: TSMappedType(
                     "P",
                     in: TSKeyofType(TSIdentType("T")),

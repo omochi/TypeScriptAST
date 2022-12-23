@@ -259,13 +259,22 @@ public final class ASTPrinter: ASTVisitor {
         }
     }
 
-    private func write(genericParams: [String]) {
+    private func write(genericParams: [TSTypeParameterNode]) {
         if genericParams.isEmpty { return }
         nest(bracket: "<") {
             write(array: genericParams, separator: ",") {
-                printer.write($0)
+                walk($0)
             }
         }
+    }
+
+    // MARK: - node
+
+    public override func visit(typeParameter: TSTypeParameterNode) -> Bool {
+        // TODO:
+        printer.write(typeParameter.name)
+
+        return false
     }
 
     // MARK: - decl
@@ -470,7 +479,7 @@ public final class ASTPrinter: ASTVisitor {
         switch closure.genericParams.count {
         case 1:
             nest(bracket: "<") {
-                printer.write(closure.genericParams[0])
+                walk(closure.genericParams[0])
                 printer.write(",")
             }
         default:

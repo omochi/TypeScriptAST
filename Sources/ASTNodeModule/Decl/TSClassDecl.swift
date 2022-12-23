@@ -2,7 +2,7 @@ public final class TSClassDecl: _TSDecl {
     public init(
         modifiers: [TSDeclModifier] = [],
         name: String,
-        genericParams: [String] = [],
+        genericParams: [TSTypeParameterNode] = [],
         extends: TSIdentType? = nil,
         implements: [TSIdentType] = [],
         body: TSBlockStmt
@@ -22,7 +22,7 @@ public final class TSClassDecl: _TSDecl {
 
     public var modifiers: [TSDeclModifier]
     public var name: String
-    public var genericParams: [String]
+    public var genericParams: [TSTypeParameterNode]
     @ASTNodeOptionalStorage public var extends: TSIdentType?
     @ASTNodeArrayStorage public var implements: [TSIdentType]
     @ASTNodeStorage public var body: TSBlockStmt

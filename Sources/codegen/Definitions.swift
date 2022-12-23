@@ -1,5 +1,6 @@
 struct Node {
     enum Kind: String, CaseIterable {
+        case node
         case decl
         case expr
         case stmt
@@ -32,6 +33,9 @@ struct Node {
 
 struct Definitions {
     var nodes: [Node] = [
+        .init(.node, "typeParameter", children: [
+            "constraint", "default"
+        ]),
         .init(.decl, "class", children: [
             "extends", "implements", "body"
         ]),

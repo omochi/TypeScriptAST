@@ -69,6 +69,8 @@ open class ASTVisitor {
     }
 
     // @codegen(visit)
+    open func visit(typeParameter: TSTypeParameterNode) -> Bool { defaultVisitResult }
+    open func visitPost(typeParameter: TSTypeParameterNode) {}
     open func visit(`class`: TSClassDecl) -> Bool { defaultVisitResult }
     open func visitPost(`class`: TSClassDecl) {}
     open func visit(field: TSFieldDecl) -> Bool { defaultVisitResult }
@@ -190,6 +192,7 @@ open class ASTVisitor {
     // @codegen(dispatch)
     private func dispatch(_ node: any ASTNode) {
         switch node {
+        case let x as TSTypeParameterNode: visitImpl(typeParameter: x)
         case let x as TSClassDecl: visitImpl(class: x)
         case let x as TSFieldDecl: visitImpl(field: x)
         case let x as TSFunctionDecl: visitImpl(function: x)
@@ -254,6 +257,13 @@ open class ASTVisitor {
     // @end
 
     // @codegen(visitImpl)
+    private func visitImpl(typeParameter: TSTypeParameterNode) {
+        guard visit(typeParameter: typeParameter) else { return }
+        walk(typeParameter.constraint)
+        walk(typeParameter.default)
+        visitPost(typeParameter: typeParameter)
+    }
+
     private func visitImpl(`class`: TSClassDecl) {
         guard visit(class: `class`) else { return }
         walk(`class`.extends)

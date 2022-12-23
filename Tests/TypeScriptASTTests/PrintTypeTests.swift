@@ -183,7 +183,7 @@ final class PrintTypeTests: TestCaseBase {
                 .field(.init(name: "a", type: TSIdentType("A"))),
                 .field(.init(name: "b", isOptional: true, type: TSIdentType("B"))),
                 .method(.init(name: "c", params: [], result: TSIdentType("C"))),
-                .method(.init(name: "d", isOptional: true, genericParams: ["T"], params: [], result: TSIdentType("D"))),
+                .method(.init(name: "d", isOptional: true, genericParams: [.init("T")], params: [], result: TSIdentType("D"))),
                 .index(.init(name: "e", index: TSIdentType.number, value: TSIdentType("E"))),
             ]),
             """
@@ -232,7 +232,7 @@ final class PrintTypeTests: TestCaseBase {
             """
         )
 
-        assertPrint(TSFunctionType(genericParams: ["T"], params: [], result: TSIdentType("T")), "<T>() => T")
+        assertPrint(TSFunctionType(genericParams: [.init("T")], params: [], result: TSIdentType("T")), "<T>() => T")
     }
 
     func testCustom() throws {

@@ -1,6 +1,6 @@
 public final class TSClosureExpr: _TSExpr {
     public init(
-        genericParams: [String] = [],
+        genericParams: [TSTypeParameterNode] = [],
         hasParen: Bool = true,
         params: [TSFunctionType.Param],
         result: (any TSType)? = nil,
@@ -18,7 +18,7 @@ public final class TSClosureExpr: _TSExpr {
         parent = newValue
     }
 
-    public var genericParams: [String]
+    public var genericParams: [TSTypeParameterNode]
     public var hasParen: Bool
     public var params: [TSFunctionType.Param] {
         get { _params }
