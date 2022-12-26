@@ -378,4 +378,30 @@ final class PrintTypeTests: TestCaseBase {
             "keyof T"
         )
     }
+
+    func testTuple() throws {
+        assertPrint(
+            TSTupleType([]), "[]"
+        )
+
+        assertPrint(
+            TSTupleType([TSIdentType.string, TSIdentType.number]),
+            "[string, number]"
+        )
+
+        assertPrint(
+            TSTupleType([
+                TSIdentType.string, TSIdentType.number,
+                TSIdentType.string, TSIdentType.number
+            ]),
+            """
+            [
+                string,
+                number,
+                string,
+                number
+            ]
+            """
+        )
+    }
 }

@@ -183,6 +183,9 @@ struct Definitions {
             "fields"
         ]),
         .init(.type, "stringLiteral"),
+        .init(.type, "tuple", children: [
+            "elements"
+        ]),
         .init(.type, "union", children: [
             "elements"
         ]),

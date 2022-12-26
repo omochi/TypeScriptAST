@@ -20,6 +20,7 @@ extension TSType {
     public var asNumberLiteral: TSNumberLiteralType? { self as? TSNumberLiteralType }
     public var asObject: TSObjectType? { self as? TSObjectType }
     public var asStringLiteral: TSStringLiteralType? { self as? TSStringLiteralType }
+    public var asTuple: TSTupleType? { self as? TSTupleType }
     public var asUnion: TSUnionType? { self as? TSUnionType }
     // @end
 }
