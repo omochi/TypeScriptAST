@@ -185,6 +185,8 @@ open class ASTVisitor {
     open func visitPost(object: TSObjectType) {}
     open func visit(stringLiteral: TSStringLiteralType) -> Bool { defaultVisitResult }
     open func visitPost(stringLiteral: TSStringLiteralType) {}
+    open func visit(tuple: TSTupleType) -> Bool { defaultVisitResult }
+    open func visitPost(tuple: TSTupleType) {}
     open func visit(union: TSUnionType) -> Bool { defaultVisitResult }
     open func visitPost(union: TSUnionType) {}
     // @end
@@ -250,6 +252,7 @@ open class ASTVisitor {
         case let x as TSNumberLiteralType: visitImpl(numberLiteral: x)
         case let x as TSObjectType: visitImpl(object: x)
         case let x as TSStringLiteralType: visitImpl(stringLiteral: x)
+        case let x as TSTupleType: visitImpl(tuple: x)
         case let x as TSUnionType: visitImpl(union: x)
         default: break
         }
@@ -628,6 +631,12 @@ open class ASTVisitor {
     private func visitImpl(stringLiteral: TSStringLiteralType) {
         guard visit(stringLiteral: stringLiteral) else { return }
         visitPost(stringLiteral: stringLiteral)
+    }
+
+    private func visitImpl(tuple: TSTupleType) {
+        guard visit(tuple: tuple) else { return }
+        walk(tuple.elements)
+        visitPost(tuple: tuple)
     }
 
     private func visitImpl(union: TSUnionType) {

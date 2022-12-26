@@ -943,6 +943,15 @@ public final class ASTPrinter: ASTVisitor {
         return false
     }
 
+    public override func visit(tuple: TSTupleType) -> Bool {
+        nest(bracket: "[") {
+            write(array: tuple.elements, separator: ",") {
+                walk($0)
+            }
+        }
+        return false
+    }
+
     public override func visit(union: TSUnionType) -> Bool {
         write(array: union.elements, separator: " |") {
             walk($0)
