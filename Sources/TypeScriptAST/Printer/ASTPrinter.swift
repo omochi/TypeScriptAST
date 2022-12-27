@@ -827,6 +827,9 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     private func write(param: TSFunctionType.Param) {
+        if param.spread {
+            printer.write("...")
+        }
         printer.write(param.name)
         if let type = param.type {
             if param.isOptional {
