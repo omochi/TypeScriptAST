@@ -859,8 +859,21 @@ public final class ASTPrinter: ASTVisitor {
     }
 
     public override func visit(intersection: TSIntersectionType) -> Bool {
-        write(array: intersection.elements, separator: " &") {
-            walk($0)
+        func needsParen(_ type: any TSType) -> Bool {
+            switch type {
+            case is TSUnionType: return true
+            case is TSIntersectionType: return true
+            case is TSConditionalType: return true
+            case is TSInferType: return true
+            case is TSKeyofType: return true
+            default: return false
+            }
+        }
+
+        write(array: intersection.elements, separator: " &") { (type) in
+            nest(bracket: needsParen(type) ? "(" : nil) {
+                walk(type)
+            }
         }
         return false
     }

@@ -282,18 +282,25 @@ final class PrintTypeTests: TestCaseBase {
     }
 
     func testIntersection() throws {
-        let s = TSIntersectionType([
-            TSIdentType.string,
-            TSObjectType([
-                .field(.init(name: "S", type: TSIdentType.never)),
-            ])
-        ])
-
         assertPrint(
-            s, """
+            TSIntersectionType([
+                TSIdentType.string,
+                TSObjectType([
+                    .field(.init(name: "S", type: TSIdentType.never)),
+                ])
+            ]), """
             string & {
                 S: never;
             }
+            """
+        )
+
+        assertPrint(
+            TSIntersectionType([
+                TSUnionType([TSIdentType("A"), TSIdentType("B")]),
+                TSIdentType("C")
+            ]), """
+            (A | B) & C
             """
         )
     }
