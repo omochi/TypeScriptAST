@@ -181,7 +181,7 @@ final class PrintDeclTests: TestCaseBase {
                 name: "f",
                 params: [
                     .init(name: "a", type: TSIdentType.number),
-                    .init(name: "b", type: TSIdentType.string)
+                    .init(spread: true, name: "b", type: TSArrayType(TSIdentType.string))
                 ],
                 body: TSBlockStmt([
                     TSReturnStmt(
@@ -190,7 +190,7 @@ final class PrintDeclTests: TestCaseBase {
                 ])
             ),
             """
-            export function f(a: number, b: string) {
+            export function f(a: number, ...b: string[]) {
                 return 0;
             }
             """

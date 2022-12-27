@@ -1,15 +1,18 @@
 public final class TSFunctionType: _TSType {
     public struct Param {
         public init(
+            spread: Bool = false,
             name: String,
             isOptional: Bool = false,
             type: (any TSType)? = nil
         ) {
+            self.spread = spread
             self.name = name
             self.isOptional = isOptional
             self.type = type
         }
 
+        public var spread: Bool
         public var name: String
         public var isOptional: Bool
         public var type: (any TSType)?
