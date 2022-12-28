@@ -42,13 +42,15 @@ public final class PrettyPrinter {
         isStartOfLine = true
     }
 
-    public func push(newline: Bool = true) {
+    public func push() {
         writeNewline()
         depth += 1
     }
 
-    public func pop(newline: Bool = true) {
-        writeNewline()
+    public func pop() {
+        if !isStartOfLine {
+            writeNewline()
+        }
         depth -= 1
     }
 

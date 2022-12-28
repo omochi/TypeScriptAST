@@ -798,10 +798,14 @@ public final class ASTPrinter: ASTVisitor {
         walk(conditional.check)
         printer.write(" extends ")
         walk(conditional.extends)
-        printer.write(" ? ")
-        walk(conditional.true)
-        printer.write(" : ")
-        walk(conditional.false)
+
+        printer.nest {
+            printer.write("? ")
+            walk(conditional.true)
+            printer.writeNewline()
+            printer.write(": ")
+            walk(conditional.false)
+        }
         return false
     }
 
@@ -889,7 +893,7 @@ public final class ASTPrinter: ASTVisitor {
 
     public override func visit(mapped: TSMappedType) -> Bool {
         nest(bracket: "{") {
-            printer.push(newline: true)
+            printer.push()
             if let readonly = mapped.readonly {
                 if readonly == .remove {
                     printer.write("-")
