@@ -116,7 +116,12 @@ final class PrintTypeTests: TestCaseBase {
 
         assertPrint(
             TSArrayType(TSConditionalType(TSIdentType("A"), extends: TSIdentType("B"), true: TSIdentType("C"), false: TSIdentType("D"))),
-            "(A extends B ? C : D)[]"
+            """
+            (A extends B
+                ? C
+                : D
+            )[]
+            """
         )
 
         assertPrint(
@@ -306,25 +311,51 @@ final class PrintTypeTests: TestCaseBase {
     }
 
     func testConditional() throws {
-        let s = TSConditionalType(TSIdentType("A"), extends: TSIdentType("B"), true: TSIdentType("C"), false: TSIdentType("D"))
+        assertPrint(
+            TSConditionalType(
+                TSIdentType("A"), extends: TSIdentType("B"),
+                true: TSIdentType("C"), false: TSIdentType("D")
+            ), """
+            A extends B
+                ? C
+                : D
+
+            """
+        )
 
         assertPrint(
-            s, """
-            A extends B ? C : D
+            TSConditionalType(
+                TSIdentType("T"), extends: TSIdentType("A"),
+                true: TSIdentType("AT"),
+                false: TSConditionalType(
+                    TSIdentType("T"), extends: TSIdentType("B"),
+                    true: TSIdentType("BT"),
+                    false: TSIdentType("C")
+                )
+            ), """
+            T extends A
+                ? AT
+                : T extends B
+                    ? BT
+                    : C
+
+            
             """
         )
     }
 
     func testInfer() throws {
-        let s = TSConditionalType(
-            TSIdentType("T"),
-            extends: TSArrayType(TSInferType(name: "I")),
-            true: TSIdentType("I"),
-            false: TSIdentType("T")
-        )
         assertPrint(
-            s, """
-            T extends (infer I)[] ? I : T
+            TSConditionalType(
+                TSIdentType("T"),
+                extends: TSArrayType(TSInferType(name: "I")),
+                true: TSIdentType("I"),
+                false: TSIdentType("T")
+            ), """
+            T extends (infer I)[]
+                ? I
+                : T
+            
             """
         )
     }

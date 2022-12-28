@@ -798,10 +798,14 @@ public final class ASTPrinter: ASTVisitor {
         walk(conditional.check)
         printer.write(" extends ")
         walk(conditional.extends)
-        printer.write(" ? ")
-        walk(conditional.true)
-        printer.write(" : ")
-        walk(conditional.false)
+
+        printer.nest {
+            printer.write("? ")
+            walk(conditional.true)
+            printer.writeNewline()
+            printer.write(": ")
+            walk(conditional.false)
+        }
         return false
     }
 
