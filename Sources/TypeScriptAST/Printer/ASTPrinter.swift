@@ -893,7 +893,7 @@ public final class ASTPrinter: ASTVisitor {
 
     public override func visit(mapped: TSMappedType) -> Bool {
         nest(bracket: "{") {
-            printer.push(newline: true)
+            printer.push()
             if let readonly = mapped.readonly {
                 if readonly == .remove {
                     printer.write("-")

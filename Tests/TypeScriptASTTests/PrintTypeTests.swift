@@ -339,7 +339,6 @@ final class PrintTypeTests: TestCaseBase {
                     ? BT
                     : C
 
-            
             """
         )
     }
