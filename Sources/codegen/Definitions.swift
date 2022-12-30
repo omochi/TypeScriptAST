@@ -39,6 +39,7 @@ struct Definitions {
         .init(.decl, "class", children: [
             "genericParams", "extends", "implements", "body"
         ]),
+        .init(.decl, "custom"),
         .init(.decl, "field", children: [
             "type"
         ]),

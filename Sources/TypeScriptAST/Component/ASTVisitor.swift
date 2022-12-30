@@ -73,6 +73,8 @@ open class ASTVisitor {
     open func visitPost(typeParameter: TSTypeParameterNode) {}
     open func visit(`class`: TSClassDecl) -> Bool { defaultVisitResult }
     open func visitPost(`class`: TSClassDecl) {}
+    open func visit(custom: TSCustomDecl) -> Bool { defaultVisitResult }
+    open func visitPost(custom: TSCustomDecl) {}
     open func visit(field: TSFieldDecl) -> Bool { defaultVisitResult }
     open func visitPost(field: TSFieldDecl) {}
     open func visit(function: TSFunctionDecl) -> Bool { defaultVisitResult }
@@ -196,6 +198,7 @@ open class ASTVisitor {
         switch node {
         case let x as TSTypeParameterNode: visitImpl(typeParameter: x)
         case let x as TSClassDecl: visitImpl(class: x)
+        case let x as TSCustomDecl: visitImpl(custom: x)
         case let x as TSFieldDecl: visitImpl(field: x)
         case let x as TSFunctionDecl: visitImpl(function: x)
         case let x as TSImportDecl: visitImpl(import: x)
@@ -274,6 +277,11 @@ open class ASTVisitor {
         walk(`class`.implements)
         walk(`class`.body)
         visitPost(class: `class`)
+    }
+
+    private func visitImpl(custom: TSCustomDecl) {
+        guard visit(custom: custom) else { return }
+        visitPost(custom: custom)
     }
 
     private func visitImpl(field: TSFieldDecl) {
