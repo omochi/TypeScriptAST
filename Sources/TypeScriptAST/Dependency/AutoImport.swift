@@ -1,3 +1,5 @@
+import Foundation
+
 extension TSSourceFile {
     public var imports: [TSImportDecl] {
         elements.compactMap { $0.asDecl?.asImport }
@@ -12,6 +14,7 @@ extension TSSourceFile {
 
     public func buildAutoImportDecls(
         symbolTable: SymbolTable,
+        fileExtension: ImportFileExtension,
         defaultFile: String? = nil
     ) throws -> [TSImportDecl] {
         var symbolTable = symbolTable
@@ -49,6 +52,8 @@ extension TSSourceFile {
             let symbols = Set(fileToSymbols.symbols(for: file)).sorted()
             if symbols.isEmpty { continue }
 
+            let file = modifyTSExtension(file: file, extension: fileExtension)
+
             imports.append(
                 TSImportDecl(names: symbols, from: file)
             )
@@ -56,6 +61,24 @@ extension TSSourceFile {
 
         return imports
     }
+}
+
+private func modifyTSExtension(file: String, extension: ImportFileExtension) -> String {
+    let dir = (file as NSString).deletingLastPathComponent
+
+    var base = (file as NSString).lastPathComponent
+    let stem = (base as NSString).deletingPathExtension
+
+    guard (base as NSString).pathExtension == "ts" else {
+        return file
+    }
+
+    switch `extension` {
+    case .none: base = stem
+    case .js: base = stem + ".js"
+    }
+
+    return (dir as NSString).appendingPathComponent(base)
 }
 
 private struct FileToSymbols {
