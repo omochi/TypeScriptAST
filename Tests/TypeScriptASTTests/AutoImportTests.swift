@@ -34,10 +34,10 @@ final class AutoImportTests: TestCaseBase {
         )
 
         var symbols = SymbolTable()
-        symbols.add(source: s, file: "./s.ts")
-        symbols.add(source: m, file: "./m.ts")
+        symbols.add(source: s, file: "s.ts")
 
         let imports = try m.buildAutoImportDecls(
+            from: "m.ts",
             symbolTable: symbols,
             fileExtension: .js
         )
@@ -89,10 +89,10 @@ final class AutoImportTests: TestCaseBase {
         )
 
         var symbols = SymbolTable()
-        symbols.add(source: s, file: "./s.ts")
-        symbols.add(source: m, file: "./m.ts")
+        symbols.add(source: s, file: "s.ts")
 
         let imports = try m.buildAutoImportDecls(
+            from: "m.ts",
             symbolTable: symbols,
             fileExtension: .none
         )
@@ -101,6 +101,93 @@ final class AutoImportTests: TestCaseBase {
         assertPrint(
             m, """
             import { S } from "./s";
+
+            export type M = S;
+
+            """
+        )
+    }
+
+    func testRelativeSibling() throws {
+        let s = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "S", type: TSObjectType([]))
+        ])
+
+        let m = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "M", type: TSIdentType("S"))
+        ])
+
+        var symbols = SymbolTable()
+        symbols.add(source: s, file: "s/s.ts")
+
+        let imports = try m.buildAutoImportDecls(
+            from: "s/m.ts",
+            symbolTable: symbols,
+            fileExtension: .none
+        )
+        m.replaceImportDecls(imports)
+
+        assertPrint(
+            m, """
+            import { S } from "./s";
+
+            export type M = S;
+
+            """
+        )
+    }
+
+    func testRelativeSubdir() throws {
+        let s = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "S", type: TSObjectType([]))
+        ])
+
+        let m = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "M", type: TSIdentType("S"))
+        ])
+
+        var symbols = SymbolTable()
+        symbols.add(source: s, file: "s/s/s.ts")
+
+        let imports = try m.buildAutoImportDecls(
+            from: "s/m.ts",
+            symbolTable: symbols,
+            fileExtension: .none
+        )
+        m.replaceImportDecls(imports)
+
+        assertPrint(
+            m, """
+            import { S } from "./s/s";
+
+            export type M = S;
+
+            """
+        )
+    }
+
+    func testRelativeDoubleDot() throws {
+        let s = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "S", type: TSObjectType([]))
+        ])
+
+        let m = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "M", type: TSIdentType("S"))
+        ])
+
+        var symbols = SymbolTable()
+        symbols.add(source: s, file: "s/s.ts")
+
+        let imports = try m.buildAutoImportDecls(
+            from: "m/m.ts",
+            symbolTable: symbols,
+            fileExtension: .none
+        )
+        m.replaceImportDecls(imports)
+
+        assertPrint(
+            m, """
+            import { S } from "../s/s";
 
             export type M = S;
 
@@ -124,6 +211,7 @@ final class AutoImportTests: TestCaseBase {
         )
 
         let imports = try s.buildAutoImportDecls(
+            from: "s.ts",
             symbolTable: SymbolTable(),
             fileExtension: .js,
             defaultFile: ".."

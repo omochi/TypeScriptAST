@@ -1,4 +1,5 @@
 import Foundation
+import SwiftyRelativePath
 
 extension TSSourceFile {
     public var imports: [TSImportDecl] {
@@ -13,36 +14,44 @@ extension TSSourceFile {
     }
 
     public func buildAutoImportDecls(
+        from: String,
         symbolTable: SymbolTable,
         fileExtension: ImportFileExtension,
         defaultFile: String? = nil
     ) throws -> [TSImportDecl] {
-        var symbolTable = symbolTable
-
         var fileToSymbols = FileToSymbols()
 
+        var originalSymbols: Set<String> = []
         for `import` in self.imports {
             for symbol in `import`.names {
                 fileToSymbols.add(file: `import`.from, symbol: symbol)
-                symbolTable.add(symbol: symbol, file: .file(`import`.from))
+                originalSymbols.insert(symbol)
             }
         }
 
         let symbols = self.scanDependency()
         for symbol in symbols {
+            if originalSymbols.contains(symbol) {
+                continue
+            }
+
             if let file = symbolTable.find(symbol) {
                 switch file {
                 case .standardLibrary: break
                 case .file(let file):
-                    fileToSymbols.add(file: file, symbol: symbol)
+                    fileToSymbols.add(
+                        file: resolveImportPath(from: from, file: file, extension: fileExtension),
+                        symbol: symbol
+                    )
                 }
+                continue
+            }
+
+            if let defaultFile {
+                fileToSymbols.add(file: defaultFile, symbol: symbol)
+                continue
             } else {
-                if let defaultFile {
-                    fileToSymbols.add(file: defaultFile, symbol: symbol)
-                    continue
-                } else {
-                    throw MessageError("unknown symbol: \(symbol)")
-                }
+                throw MessageError("unknown symbol: \(symbol)")
             }
         }
 
@@ -52,8 +61,6 @@ extension TSSourceFile {
             let symbols = Set(fileToSymbols.symbols(for: file)).sorted()
             if symbols.isEmpty { continue }
 
-            let file = modifyTSExtension(file: file, extension: fileExtension)
-
             imports.append(
                 TSImportDecl(names: symbols, from: file)
             )
@@ -61,6 +68,24 @@ extension TSSourceFile {
 
         return imports
     }
+}
+
+private func resolveImportPath(
+    from: String, file: String, extension: ImportFileExtension
+) -> String {
+    let from = URL(
+        fileURLWithPath: from, relativeTo: URL(fileURLWithPath: "/")
+    ).absoluteURL
+    let file = URL(
+        fileURLWithPath: modifyTSExtension(file: file, extension: `extension`),
+        relativeTo: URL(fileURLWithPath: "/")
+    ).absoluteURL
+
+    var path = file.relativePath(from: from.deletingLastPathComponent())!
+    if !path.hasPrefix(".") {
+        path = "./" + path
+    }
+    return path
 }
 
 private func modifyTSExtension(file: String, extension: ImportFileExtension) -> String {
