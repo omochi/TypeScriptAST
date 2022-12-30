@@ -2,9 +2,11 @@ import XCTest
 import TypeScriptAST
 
 final class AutoImportTests: TestCaseBase {
-    func testAutoImport() throws {
+    func testAutoImportJsExt() throws {
         let s = TSSourceFile([
-            TSTypeDecl(modifiers: [.export], name: "S", type: TSIdentType("Record", genericArgs: [TSIdentType("string"), TSIdentType("number")]))
+            TSTypeDecl(
+                modifiers: [.export], name: "S",
+                type: TSIdentType("Record", genericArgs: [TSIdentType("string"), TSIdentType("number")]))
         ])
         assertPrint(
             s, """
@@ -32,8 +34,13 @@ final class AutoImportTests: TestCaseBase {
         )
 
         var symbols = SymbolTable()
-        symbols.add(source: s, file: "./s.js")
-        let imports = try m.buildAutoImportDecls(symbolTable: symbols)
+        symbols.add(source: s, file: "./s.ts")
+        symbols.add(source: m, file: "./m.ts")
+
+        let imports = try m.buildAutoImportDecls(
+            symbolTable: symbols,
+            fileExtension: .js
+        )
         XCTAssertEqual(imports.count, 2)
         assertPrint(
             try XCTUnwrap(imports[safe: 0]),
@@ -60,6 +67,47 @@ final class AutoImportTests: TestCaseBase {
         )
     }
 
+    func testAutoImportNoneExt() throws {
+        let s = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "S", type: TSObjectType([]))
+        ])
+        assertPrint(
+            s, """
+            export type S = {};
+
+            """
+        )
+
+        let m = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "M", type: TSIdentType("S"))
+        ])
+        assertPrint(
+            m, """
+            export type M = S;
+
+            """
+        )
+
+        var symbols = SymbolTable()
+        symbols.add(source: s, file: "./s.ts")
+        symbols.add(source: m, file: "./m.ts")
+
+        let imports = try m.buildAutoImportDecls(
+            symbolTable: symbols,
+            fileExtension: .none
+        )
+        m.replaceImportDecls(imports)
+
+        assertPrint(
+            m, """
+            import { S } from "./s";
+
+            export type M = S;
+
+            """
+        )
+    }
+
     func testDefaultImport() throws {
         let s = TSSourceFile([
             TSVarDecl(
@@ -75,7 +123,11 @@ final class AutoImportTests: TestCaseBase {
             """
         )
 
-        let imports = try s.buildAutoImportDecls(symbolTable: SymbolTable(), defaultFile: "..")
+        let imports = try s.buildAutoImportDecls(
+            symbolTable: SymbolTable(),
+            fileExtension: .js,
+            defaultFile: ".."
+        )
         s.replaceImportDecls(imports)
 
         assertPrint(
