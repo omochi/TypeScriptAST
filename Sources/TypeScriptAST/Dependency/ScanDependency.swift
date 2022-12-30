@@ -78,6 +78,13 @@ private final class Impl: ASTVisitor {
         pop()
     }
 
+    override func visit(custom: TSCustomDecl) -> Bool {
+        for d in custom.dependencies {
+            use(d)
+        }
+        return true
+    }
+
     override func visit(interface: TSInterfaceDecl) -> Bool {
         push()
         addNames(interface.genericParams)

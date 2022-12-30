@@ -5,6 +5,7 @@ internal protocol _TSDecl: _ASTNode & TSDecl {}
 extension TSDecl {
     // @codegen(as)
     public var asClass: TSClassDecl? { self as? TSClassDecl }
+    public var asCustom: TSCustomDecl? { self as? TSCustomDecl }
     public var asField: TSFieldDecl? { self as? TSFieldDecl }
     public var asFunction: TSFunctionDecl? { self as? TSFunctionDecl }
     public var asImport: TSImportDecl? { self as? TSImportDecl }

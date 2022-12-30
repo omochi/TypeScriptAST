@@ -565,4 +565,25 @@ final class PrintDeclTests: TestCaseBase {
             """
         )
     }
+
+    func testCustomDecl() throws {
+        assertPrint(
+            TSSourceFile([
+                TSCustomDecl(
+                    text: """
+                    export * from "../a";
+                    """
+                ),
+                TSCustomDecl(
+                    text: """
+                    export * from "../b";
+                    """
+                )
+            ]),
+        """
+        export * from "../a";
+        export * from "../b";
+
+        """)
+    }
 }

@@ -168,6 +168,8 @@ public final class ASTPrinter: ASTVisitor {
             default:
                 return false
             }
+        case is TSCustomDecl:
+            return false
         default:
             return true
         }
@@ -303,6 +305,11 @@ public final class ASTPrinter: ASTVisitor {
         }
         printer.write(space: " ")
         write(block: `class`.body, scope: .class)
+        return false
+    }
+
+    public override func visit(custom: TSCustomDecl) -> Bool {
+        printer.write(custom.text)
         return false
     }
 
