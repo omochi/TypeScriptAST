@@ -236,7 +236,19 @@ final class PrintExprTests: TestCaseBase {
                 c,
                 d
             )
-            """)
+            """
+        )
+
+        assertPrint(
+            TSCallExpr(
+                callee: TSIdentExpr("f"),
+                genericArgs: [TSIdentType("T"), TSIdentType("U")],
+                args: []
+            ),
+            """
+            f<T, U>()
+            """
+        )
     }
 
     func testNew() throws {

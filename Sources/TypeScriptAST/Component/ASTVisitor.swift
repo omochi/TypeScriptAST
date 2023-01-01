@@ -388,6 +388,7 @@ open class ASTVisitor {
     private func visitImpl(call: TSCallExpr) {
         guard visit(call: call) else { return }
         walk(call.callee)
+        walk(call.genericArgs)
         walk(call.args)
         visitPost(call: call)
     }
