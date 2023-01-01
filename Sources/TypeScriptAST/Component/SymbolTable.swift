@@ -1,7 +1,9 @@
+import Foundation
+
 public struct SymbolTable {
     public enum File {
         case standardLibrary
-        case file(String)
+        case file(URL)
     }
 
     public init(
@@ -61,7 +63,7 @@ public struct SymbolTable {
         table[symbol] = file
     }
 
-    public mutating func add(source: TSSourceFile, file: String) {
+    public mutating func add(source: TSSourceFile, file: URL) {
         for symbol in source.memberDeclaredNames {
             add(symbol: symbol, file: .file(file))
         }

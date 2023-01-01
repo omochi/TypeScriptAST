@@ -1,3 +1,4 @@
+import Foundation
 import XCTest
 import TypeScriptAST
 
@@ -34,10 +35,10 @@ final class AutoImportTests: TestCaseBase {
         )
 
         var symbols = SymbolTable()
-        symbols.add(source: s, file: "s.ts")
+        symbols.add(source: s, file: URL(fileURLWithPath: "s.ts"))
 
         let imports = try m.buildAutoImportDecls(
-            from: "m.ts",
+            from: URL(fileURLWithPath: "m.ts"),
             symbolTable: symbols,
             fileExtension: .js
         )
@@ -89,10 +90,10 @@ final class AutoImportTests: TestCaseBase {
         )
 
         var symbols = SymbolTable()
-        symbols.add(source: s, file: "s.ts")
+        symbols.add(source: s, file: URL(fileURLWithPath: "s.ts"))
 
         let imports = try m.buildAutoImportDecls(
-            from: "m.ts",
+            from: URL(fileURLWithPath: "m.ts"),
             symbolTable: symbols,
             fileExtension: .none
         )
@@ -118,10 +119,10 @@ final class AutoImportTests: TestCaseBase {
         ])
 
         var symbols = SymbolTable()
-        symbols.add(source: s, file: "s/s.ts")
+        symbols.add(source: s, file: URL(fileURLWithPath: "s/s.ts"))
 
         let imports = try m.buildAutoImportDecls(
-            from: "s/m.ts",
+            from: URL(fileURLWithPath: "s/m.ts"),
             symbolTable: symbols,
             fileExtension: .none
         )
@@ -147,10 +148,10 @@ final class AutoImportTests: TestCaseBase {
         ])
 
         var symbols = SymbolTable()
-        symbols.add(source: s, file: "s/s/s.ts")
+        symbols.add(source: s, file: URL(fileURLWithPath: "s/s/s.ts"))
 
         let imports = try m.buildAutoImportDecls(
-            from: "s/m.ts",
+            from: URL(fileURLWithPath: "s/m.ts"),
             symbolTable: symbols,
             fileExtension: .none
         )
@@ -176,10 +177,10 @@ final class AutoImportTests: TestCaseBase {
         ])
 
         var symbols = SymbolTable()
-        symbols.add(source: s, file: "s/s.ts")
+        symbols.add(source: s, file: URL(fileURLWithPath: "s/s.ts"))
 
         let imports = try m.buildAutoImportDecls(
-            from: "m/m.ts",
+            from: URL(fileURLWithPath: "m/m.ts"),
             symbolTable: symbols,
             fileExtension: .none
         )
@@ -211,7 +212,7 @@ final class AutoImportTests: TestCaseBase {
         )
 
         let imports = try s.buildAutoImportDecls(
-            from: "s.ts",
+            from: URL(fileURLWithPath: "s.ts"),
             symbolTable: SymbolTable(),
             fileExtension: .js,
             defaultFile: ".."
