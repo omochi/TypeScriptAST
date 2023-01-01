@@ -1,5 +1,4 @@
 import Foundation
-import SwiftyRelativePath
 
 extension TSSourceFile {
     public var imports: [TSImportDecl] {
@@ -14,7 +13,7 @@ extension TSSourceFile {
     }
 
     public func buildAutoImportDecls(
-        from: String,
+        from: URL,
         symbolTable: SymbolTable,
         fileExtension: ImportFileExtension,
         defaultFile: String? = nil
@@ -39,8 +38,9 @@ extension TSSourceFile {
                 switch file {
                 case .standardLibrary: break
                 case .file(let file):
+                    let path = resolveImportPath(from: from, file: file, extension: fileExtension)
                     fileToSymbols.add(
-                        file: resolveImportPath(from: from, file: file, extension: fileExtension),
+                        file: path.toImportFile(),
                         symbol: symbol
                     )
                 }
@@ -70,28 +70,29 @@ extension TSSourceFile {
     }
 }
 
-private func resolveImportPath(
-    from: String, file: String, extension: ImportFileExtension
-) -> String {
-    let from = URL(
-        fileURLWithPath: from, relativeTo: URL(fileURLWithPath: "/")
-    ).absoluteURL
-    let file = URL(
-        fileURLWithPath: modifyTSExtension(file: file, extension: `extension`),
-        relativeTo: URL(fileURLWithPath: "/")
-    ).absoluteURL
+extension URL {
+    fileprivate func toImportFile() -> String {
+        if self.baseURL == nil { return self.path }
 
-    var path = file.relativePath(from: from.deletingLastPathComponent())!
-    if !path.hasPrefix(".") {
-        path = "./" + path
+        var path = self.relativePath
+        if !path.hasPrefix(".") {
+            path = "./" + path
+        }
+        return path
     }
-    return path
 }
 
-private func modifyTSExtension(file: String, extension: ImportFileExtension) -> String {
-    let dir = (file as NSString).deletingLastPathComponent
+private func resolveImportPath(
+    from: URL, file: URL, extension: ImportFileExtension
+) -> URL {
+    let file = modifyTSExtension(file: file, extension: `extension`)
+    return file.relativePath(from: from.deletingLastPathComponent())
+}
 
-    var base = (file as NSString).lastPathComponent
+private func modifyTSExtension(file: URL, extension: ImportFileExtension) -> URL {
+    let dir = file.deletingLastPathComponent()
+
+    var base = file.lastPathComponent
     let stem = (base as NSString).deletingPathExtension
 
     guard (base as NSString).pathExtension == "ts" else {
@@ -103,7 +104,7 @@ private func modifyTSExtension(file: String, extension: ImportFileExtension) -> 
     case .js: base = stem + ".js"
     }
 
-    return (dir as NSString).appendingPathComponent(base)
+    return dir.appendingPathComponent(base)
 }
 
 private struct FileToSymbols {

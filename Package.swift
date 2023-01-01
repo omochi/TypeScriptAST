@@ -12,8 +12,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/omochi/CodegenKit", from: "1.1.3"),
-        .package(url: "https://github.com/neoneye/SwiftyRelativePath", from: "1.0.0")
+        .package(url: "https://github.com/omochi/CodegenKit", from: "1.1.3")
     ],
     targets: [
         .executableTarget(
@@ -38,8 +37,7 @@ let package = Package(
         .target(
             name: "TypeScriptAST",
             dependencies: [
-                .target(name: "ASTNodeModule"),
-                .product(name: "SwiftyRelativePath", package: "SwiftyRelativePath")
+                .target(name: "ASTNodeModule")
             ]
         ),
         .testTarget(
