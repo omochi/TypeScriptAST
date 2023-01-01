@@ -484,6 +484,7 @@ public final class ASTPrinter: ASTVisitor {
 
     public override func visit(call: TSCallExpr) -> Bool {
         walk(call.callee)
+        write(genericArgs: call.genericArgs)
         write(args: call.args)
         return false
     }

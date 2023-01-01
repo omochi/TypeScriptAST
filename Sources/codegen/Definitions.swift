@@ -82,7 +82,7 @@ struct Definitions {
         ]),
         .init(.expr, "booleanLiteral"),
         .init(.expr, "call", children: [
-            "callee", "args"
+            "callee", "genericArgs", "args"
         ]),
         .init(.expr, "closure", children: [
             "genericParams", "params", "result", "body"
