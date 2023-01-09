@@ -90,21 +90,11 @@ private func resolveImportPath(
 }
 
 private func modifyTSExtension(file: URL, extension: ImportFileExtension) -> URL {
-    let dir = file.deletingLastPathComponent()
-
-    var base = file.lastPathComponent
-    let stem = (base as NSString).deletingPathExtension
-
-    guard (base as NSString).pathExtension == "ts" else {
+    guard file.pathExtension == "ts" else {
         return file
     }
 
-    switch `extension` {
-    case .none: base = stem
-    case .js: base = stem + ".js"
-    }
-
-    return dir.appendingPathComponent(base)
+    return file.replacingPathExtension(`extension`.description)
 }
 
 private struct FileToSymbols {
