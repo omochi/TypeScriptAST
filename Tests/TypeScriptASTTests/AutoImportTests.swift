@@ -228,4 +228,28 @@ final class AutoImportTests: TestCaseBase {
             """
         )
     }
+
+    func testUnknownSymbols() throws {
+        let s = TSSourceFile([
+            TSVarDecl(
+                kind: .const, name: "a", type: TSIdentType("A"),
+                initializer: TSIdentExpr("b")
+            )
+        ])
+
+        assertPrint(
+            s, """
+            const a: A = b;
+
+            """
+        )
+
+        XCTAssertThrowsError(try s.buildAutoImportDecls(
+            from: URL(fileURLWithPath: "s.ts"),
+            symbolTable: SymbolTable(),
+            fileExtension: .js
+        )) { error in
+            XCTAssertEqual("\(error)", "unknown symbols: A, b")
+        }
+    }
 }
