@@ -29,6 +29,7 @@ extension TSSourceFile {
         }
 
         let symbols = self.scanDependency()
+        var unknownSymbols: Set<String> = []
         for symbol in symbols {
             if originalSymbols.contains(symbol) {
                 continue
@@ -51,8 +52,11 @@ extension TSSourceFile {
                 fileToSymbols.add(file: defaultFile, symbol: symbol)
                 continue
             } else {
-                throw MessageError("unknown symbol: \(symbol)")
+                unknownSymbols.insert(symbol)
             }
+        }
+        if !unknownSymbols.isEmpty {
+            throw MessageError("unknown symbols: \(unknownSymbols.sorted().joined(separator: ", "))")
         }
 
         var imports: [TSImportDecl] = []
