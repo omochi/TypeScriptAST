@@ -6,8 +6,7 @@ let package = Package(
     name: "TypeScriptAST",
     platforms: [.macOS(.v12)],
     products: [
-        .library(name: "TypeScriptAST", targets: ["TypeScriptAST"]),
-        .library(name: "TypeScriptASTExtensions", targets: ["TypeScriptASTExtensions"])
+        .library(name: "TypeScriptAST", targets: ["TypeScriptAST"])
     ],
     dependencies: [
         .package(url: "https://github.com/omochi/CodegenKit", from: "1.3.0")
@@ -32,12 +31,10 @@ let package = Package(
         .target(
             name: "ASTNodeModule"
         ),
-        .target(name: "TypeScriptASTExtensions"),
         .target(
             name: "TypeScriptAST",
             dependencies: [
-                .target(name: "ASTNodeModule"),
-                .target(name: "TypeScriptASTExtensions")
+                .target(name: "ASTNodeModule")
             ]
         ),
         .testTarget(

@@ -1,5 +1,4 @@
 import Foundation
-import TypeScriptASTExtensions
 
 extension TSSourceFile {
     public var imports: [TSImportDecl] {
@@ -87,7 +86,7 @@ private func resolveImportPath(
     from: URL, file: URL, extension: ImportFileExtension
 ) -> URL {
     let file = modifyTSExtension(file: file, extension: `extension`)
-    return file.relativePath(from: from.deletingLastPathComponent())
+    return URLs.relativePath(to: file, from: from.deletingLastPathComponent())
 }
 
 private func modifyTSExtension(file: URL, extension: ImportFileExtension) -> URL {
@@ -95,7 +94,7 @@ private func modifyTSExtension(file: URL, extension: ImportFileExtension) -> URL
         return file
     }
 
-    return file.replacingPathExtension(`extension`.description)
+    return URLs.replacingPathExtension(of: file, to: `extension`.description)
 }
 
 private struct FileToSymbols {
