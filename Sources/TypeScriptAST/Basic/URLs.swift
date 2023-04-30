@@ -1,12 +1,12 @@
 import Foundation
 
-extension URL {
+public enum URLs {
     /*
      Modified implementation of
      https://github.com/neoneye/SwiftyRelativePath
      */
-    public func relativePath(from originalFrom: URL) -> URL {
-        let dest = self.absoluteURL.standardized.pathComponents
+    public static func relativePath(to dest: URL, from originalFrom: URL) -> URL {
+        let dest = dest.absoluteURL.standardized.pathComponents
         let from = originalFrom.absoluteURL.standardized.pathComponents
 
         var i = 0
@@ -25,16 +25,16 @@ extension URL {
         )
     }
 
-    public func replacingPathExtension(_ ext: String) -> URL {
-        let dir = deletingLastPathComponent()
-        var base = lastPathComponent
+    public static func replacingPathExtension(of url: URL, to ext: String) -> URL {
+        let dir = url.deletingLastPathComponent()
+        var base = url.lastPathComponent
         let stem = (base as NSString).deletingPathExtension
         base = stem
         if !ext.isEmpty {
             base += "." + ext
         }
         if dir.relativePath == "." {
-            return URL(fileURLWithPath: base, relativeTo: baseURL)
+            return URL(fileURLWithPath: base, relativeTo: url.baseURL)
         } else {
             return dir.appendingPathComponent(base)
         }

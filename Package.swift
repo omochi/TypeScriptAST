@@ -6,13 +6,10 @@ let package = Package(
     name: "TypeScriptAST",
     platforms: [.macOS(.v12)],
     products: [
-        .library(
-            name: "TypeScriptAST",
-            targets: ["TypeScriptAST"]
-        )
+        .library(name: "TypeScriptAST", targets: ["TypeScriptAST"])
     ],
     dependencies: [
-        .package(url: "https://github.com/omochi/CodegenKit", from: "1.1.3")
+        .package(url: "https://github.com/omochi/CodegenKit", from: "1.3.0")
     ],
     targets: [
         .executableTarget(
