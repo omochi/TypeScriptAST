@@ -93,12 +93,23 @@ private func resolveImportPath(
     return URLs.relativePath(to: file, from: from.deletingLastPathComponent())
 }
 
-private func modifyTSExtension(file: URL, extension: ImportFileExtension) -> URL {
-    guard file.pathExtension == "ts" else {
-        return file
+private func modifyTSExtension(file: URL, extension ext: ImportFileExtension) -> URL {
+    func replace(to ext: String) -> URL {
+        return URLs.replacingPathExtension(of: file, to: ext)
     }
 
-    return URLs.replacingPathExtension(of: file, to: `extension`.description)
+    switch file.pathExtension {
+    case "ts":
+        return replace(to: ext.description)
+    case "tsx":
+        switch ext {
+        case .ts: return replace(to: "tsx")
+        case .js: return replace(to: "jsx")
+        case .none: return replace(to: "")
+        }
+    default:
+        return file
+    }
 }
 
 private struct FileToSymbols {
