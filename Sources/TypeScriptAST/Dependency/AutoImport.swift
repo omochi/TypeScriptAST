@@ -1,4 +1,5 @@
 import Foundation
+import TypeScriptASTExtensions
 
 extension TSSourceFile {
     public var imports: [TSImportDecl] {
