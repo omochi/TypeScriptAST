@@ -32,6 +32,8 @@ public struct SymbolTable {
         "Error",
         "Date",
         "Map",
+        "Set",
+        "RegExp",
 
         // TypeScript Utility types
         "Awaited",
