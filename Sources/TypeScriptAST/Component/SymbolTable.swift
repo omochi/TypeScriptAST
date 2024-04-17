@@ -33,6 +33,7 @@ public struct SymbolTable {
         "Date",
         "Map",
         "Set",
+        "RegExp",
 
         // TypeScript Utility types
         "Awaited",
