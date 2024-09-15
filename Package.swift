@@ -9,7 +9,7 @@ let package = Package(
         .library(name: "TypeScriptAST", targets: ["TypeScriptAST"])
     ],
     dependencies: [
-        .package(url: "https://github.com/omochi/CodegenKit", from: "1.3.0")
+        .package(url: "https://github.com/omochi/CodegenKit.git", from: "2.0.0")
     ],
     targets: [
         .executableTarget(
