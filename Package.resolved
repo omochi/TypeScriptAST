@@ -3,7 +3,7 @@
     {
       "identity" : "codegenkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/omochi/CodegenKit",
+      "location" : "https://github.com/omochi/CodegenKit.git",
       "state" : {
         "revision" : "ab5ad508aab30b1572caa6e73ac0206611db0b0d",
         "version" : "2.0.0"
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-cmark.git",
       "state" : {
-        "revision" : "3bc2f3e25df0cecc5dc269f7ccae65d0f386f06a",
-        "version" : "0.4.0"
+        "revision" : "3ccff77b2dc5b96b77db3da0d68d28068593fa53",
+        "version" : "0.5.0"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-markdown.git",
       "state" : {
-        "revision" : "4aae40bf6fff5286e0e1672329d17824ce16e081",
-        "version" : "0.4.0"
+        "revision" : "8f79cb175981458a0a27e76cb42fee8e17b1a993",
+        "version" : "0.5.0"
       }
     },
     {
