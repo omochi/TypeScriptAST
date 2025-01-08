@@ -8,12 +8,14 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "5.10.1"
       - uses: actions/checkout@v4
+
+      - run: sudo $GITHUB_WORKSPACE/ci/install-swift.bash
+        working-directory: /home/runner
+      - run: swift --version
+
       - run: swift package resolve
       - run: swift build
       - run: swift test
