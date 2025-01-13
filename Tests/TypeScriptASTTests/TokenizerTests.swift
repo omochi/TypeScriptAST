@@ -77,13 +77,33 @@ import TypeScriptAST
                 .pipePipe,
                 .pipePipeEqual,
             ])),
+            ("""
+            foo // comment
+            bar
+            """, [.identifier("foo"), .identifier("bar")]),
+            ("""
+            foo /*
+            comment */ bar /**/ baz /* * */ qux
+            """, [
+                .identifier("foo"), .identifier("bar"), .identifier("baz"), .identifier("qux")
+            ]),
+            ("foo /* bar", [.identifier("foo")]),
+            ("foo /* bar *", [.identifier("foo")]),
+            ("""
+            foo // /*
+            bar
+            """, [.identifier("foo"), .identifier("bar")]),
+            ("""
+            foo /*
+            // */ bar
+            """, [.identifier("foo"), .identifier("bar")])
         ]
         return result
     }
 
     @Test(arguments: Self.data) func test(string: String, expected: [Token]) {
         var k  = Tokenizer(string: string)
-        let ts = k.readAll()
-        #expect(ts == expected)
+        let tokens = k.readAll()
+        #expect(tokens == expected)
     }
 }

@@ -45,6 +45,10 @@ public struct Tokenizer {
                 continue
             }
 
+            if readComment() {
+                continue
+            }
+
             if let x = readSymbol() {
                 return .symbol(x)
             }
@@ -61,25 +65,62 @@ public struct Tokenizer {
         return readString(where: isWhitespace) != nil
     }
 
-    private mutating func readKeyword() -> Token? {
-        guard let s = readKeywordString() else { return nil }
-
-        if let k = Keyword(rawValue: s) {
-            return .keyword(k)
+    private mutating func readComment() -> Bool {
+        var p = self.pos
+        switch char(at: p) {
+        case .slash:
+            advance(position: &p)
+            switch char(at: p) {
+            case .slash:
+                advance(position: &p)
+                loop: while true {
+                    switch char(at: p) {
+                    case .lf, .cr, .crLf:
+                        advance(position: &p)
+                        break loop
+                    case nil:
+                        break loop
+                    default:
+                        advance(position: &p)
+                        continue
+                    }
+                }
+                self.pos = p
+                return true
+            case .asterisk:
+                advance(position: &p)
+                loop: while true {
+                    switch char(at: p) {
+                    case .asterisk:
+                        advance(position: &p)
+                        switch char(at: p) {
+                        case .slash:
+                            advance(position: &p)
+                            break loop
+                        case nil:
+                            break loop
+                        default:
+                            continue
+                        }
+                    case nil:
+                        break loop
+                    default:
+                        advance(position: &p)
+                        continue
+                    }
+                }
+                self.pos = p
+                return true
+            default:
+                return false
+            }
+        default:
+            return false
         }
-        return .identifier(s)
-    }
-
-    private mutating func readKeywordString() -> String? {
-        readString(where: isKeyword)
     }
 
     private mutating func readSymbol() -> Symbol? {
-        guard let c = char() else {
-            return nil
-        }
-
-        switch c {
+        switch char() {
         case .exclamation:
             advance()
             switch char() {
@@ -286,6 +327,19 @@ public struct Tokenizer {
         }
     }
 
+    private mutating func readKeyword() -> Token? {
+        guard let s = readKeywordString() else { return nil }
+
+        if let k = Keyword(rawValue: s) {
+            return .keyword(k)
+        }
+        return .identifier(s)
+    }
+
+    private mutating func readKeywordString() -> String? {
+        readString(where: isKeyword)
+    }
+
     private mutating func readString(where predicate: (Character) -> Bool) -> String? {
         let start = pos
         guard let c = char(at: pos), predicate(c) else {
@@ -317,8 +371,12 @@ public struct Tokenizer {
         }
     }
 
+    private func advance(position: inout String.Index) {
+        position = string.index(after: position)
+    }
+
     private mutating func advance() {
-        pos = string.index(after: pos)
+        advance(position: &pos)
     }
 
     private func char(at index: String.Index) -> Character? {
