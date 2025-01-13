@@ -52,8 +52,9 @@ public struct Parser {
         }
         let from = readToken()
         guard from == .keyword(.from) else { return nil }
-        
-        return TSImportDecl(names: names, from: "TODO")
+        let pathToken = readToken()
+        guard case .stringLiteral(let path) = pathToken else { return nil }
+        return TSImportDecl(names: names, from: path)
     }
 
     private mutating func parseExpression() -> (any ASTNode)? {
