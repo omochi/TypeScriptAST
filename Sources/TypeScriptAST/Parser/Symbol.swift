@@ -1,0 +1,25 @@
+public enum Symbol {
+    case exclamation // 21
+    case percent // 25
+    case ampersand // 26
+    case leftParen // 28
+    case rightParen // 29
+    case asterisk // 30
+    case plus // 31
+    case comma // 32
+    case minus // 33
+    case dot // 34
+    case slash // 35
+    case colon // 3a
+    case semicolon // 3b
+    case leftAngleBracket // 3c
+    case equal // 3d
+    case rightAngleBracket // 3e
+    case question // 3f
+    case leftSquareBracket // 5b
+    case backslash // 5c
+    case rightSquareBracket // 5d
+    case leftBrace // 7b
+    case pipe // 7c
+    case rightBrace // 7d
+}

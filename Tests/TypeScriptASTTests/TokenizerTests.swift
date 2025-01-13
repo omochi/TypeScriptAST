@@ -5,7 +5,32 @@ import TypeScriptAST
     static var data: [(String, [Token])] {
         let result: [(String, [Token])] = [
             ("", []),
-            ("import from", [Token.keyword(.import), .keyword(.from)]),
+            ("import from", [.keyword(.import), .keyword(.from)]),
+            ("! % & ( ) * + , - . / : ; < = > ? [ \\ ] { | }", [
+                .symbol(.exclamation),
+                .symbol(.percent),
+                .symbol(.ampersand),
+                .symbol(.leftParen),
+                .symbol(.rightParen),
+                .symbol(.asterisk),
+                .symbol(.plus),
+                .symbol(.comma),
+                .symbol(.minus),
+                .symbol(.dot),
+                .symbol(.slash),
+                .symbol(.colon),
+                .symbol(.semicolon),
+                .symbol(.leftAngleBracket),
+                .symbol(.equal),
+                .symbol(.rightAngleBracket),
+                .symbol(.question),
+                .symbol(.leftSquareBracket),
+                .symbol(.backslash),
+                .symbol(.rightSquareBracket),
+                .symbol(.leftBrace),
+                .symbol(.pipe),
+                .symbol(.rightBrace),
+            ])
         ]
         return result
     }

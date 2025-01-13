@@ -10,6 +10,7 @@ public struct Tokenizer {
     }
 
     public let string: String
+
     public var position: String.Index {
         get { pos }
         set {
@@ -38,51 +39,138 @@ public struct Tokenizer {
 
     private mutating func readNextToken() -> Token? {
         while true {
-            guard let c = char(at: pos) else { return nil }
+            guard let _ = char() else { return nil }
 
-            if isWhitespace(c) {
-                readWhitespace()
+            if readWhitespace() {
                 continue
             }
 
-            if isKeyword(c) {
-                return readKeyword()
+            if let x = readSymbol() {
+                return .symbol(x)
             }
 
-            pos = string.index(after: pos)
+            if let x = readKeyword() {
+                return x
+            }
+
+            advance()
         }
     }
 
-    private mutating func readWhitespace() {
-        _ = readString(where: isWhitespace)
+    private mutating func readWhitespace() -> Bool {
+        return readString(where: isWhitespace) != nil
     }
 
-    private mutating func readKeyword() -> Token {
-        let s = readKeywordString()
+    private mutating func readKeyword() -> Token? {
+        guard let s = readKeywordString() else { return nil }
+
         if let k = Keyword(rawValue: s) {
             return .keyword(k)
         }
         return .identifier(s)
     }
 
-    private mutating func readKeywordString() -> String {
+    private mutating func readKeywordString() -> String? {
         readString(where: isKeyword)
     }
 
-    private mutating func readString(where predicate: (Character) -> Bool) -> String {
-        let start = pos
-        while true {
-            if let c = char(at: pos), predicate(c) {
-                pos = string.index(after: pos)
-                continue
-            }
-            return String(string[start..<pos])
+    private mutating func readSymbol() -> Symbol? {
+        guard let c = char() else {
+            return nil
         }
+
+        switch c {
+        case .exclamation:
+            advance()
+            return .exclamation
+        case .percent:
+            advance()
+            return .percent
+        case .ampersand:
+            advance()
+            return .ampersand
+        case .leftParen:
+            advance()
+            return .leftParen
+        case .rightParen:
+            advance()
+            return .rightParen
+        case .asterisk:
+            advance()
+            return .asterisk
+        case .plus:
+            advance()
+            return .plus
+        case .comma:
+            advance()
+            return .comma
+        case .minus:
+            advance()
+            return .minus
+        case .dot:
+            advance()
+            return .dot
+        case .slash:
+            advance()
+            return .slash
+        case .colon:
+            advance()
+            return .colon
+        case .semicolon:
+            advance()
+            return .semicolon
+        case .leftAngleBracket:
+            advance()
+            return .leftAngleBracket
+        case .equal:
+            advance()
+            return .equal
+        case .rightAngleBracket:
+            advance()
+            return .rightAngleBracket
+        case .question:
+            advance()
+            return .question
+        case .leftSquareBracket:
+            advance()
+            return .leftSquareBracket
+        case .backslash:
+            advance()
+            return .backslash
+        case .rightSquareBracket:
+            advance()
+            return .rightSquareBracket
+        case .leftBrace:
+            advance()
+            return .leftBrace
+        case .pipe:
+            advance()
+            return .pipe
+        case .rightBrace:
+            advance()
+            return .rightBrace
+        default:
+            return nil
+        }
+    }
+
+    private mutating func readString(where predicate: (Character) -> Bool) -> String? {
+        let start = pos
+        guard let c = char(at: pos), predicate(c) else {
+            return nil
+        }
+        advance()
+
+        while let c = char(at: pos), predicate(c) {
+            advance()
+        }
+
+        return String(string[start..<pos])
     }
 
     private func isWhitespace(_ c: Character) -> Bool {
         switch c {
-        case .space, .tab, .lf, .cr, .crlf: return true
+        case .space, .tab, .lf, .cr, .crLf: return true
         default: return false
         }
     }
@@ -97,8 +185,16 @@ public struct Tokenizer {
         }
     }
 
+    private mutating func advance() {
+        pos = string.index(after: pos)
+    }
+
     private func char(at index: String.Index) -> Character? {
         if index == string.endIndex { return nil }
         return string[index]
+    }
+
+    private func char() -> Character? {
+        char(at: pos)
     }
 }
