@@ -49,6 +49,10 @@ public struct Tokenizer {
                 continue
             }
 
+            if let x = readStringLiteral() {
+                return .stringLiteral(x)
+            }
+
             if let x = readSymbol() {
                 return .symbol(x)
             }
@@ -74,24 +78,21 @@ public struct Tokenizer {
             switch char(at: p) {
             case .slash:
                 advance(position: &p)
-                loop: while true {
-                    switch char(at: p) {
+                loop: while let c = char(at: p) {
+                    switch c {
                     case .lf, .cr, .crLf:
                         advance(position: &p)
                         break loop
-                    case nil:
-                        break loop
                     default:
                         advance(position: &p)
-                        continue
                     }
                 }
                 self.pos = p
                 return true
             case .asterisk:
                 advance(position: &p)
-                loop: while true {
-                    switch char(at: p) {
+                loop: while let c = char(at: p) {
+                    switch c {
                     case .asterisk:
                         advance(position: &p)
                         switch char(at: p) {
@@ -103,11 +104,8 @@ public struct Tokenizer {
                         default:
                             continue
                         }
-                    case nil:
-                        break loop
                     default:
                         advance(position: &p)
-                        continue
                     }
                 }
                 self.pos = p
@@ -117,6 +115,43 @@ public struct Tokenizer {
             }
         default:
             return false
+        }
+    }
+
+    private mutating func readStringLiteral() -> String? {
+        switch char() {
+        case .doubleQuote:
+            advance()
+            var content = ""
+            loop: while let c = char() {
+                switch c {
+                case .doubleQuote:
+                    advance()
+                    break loop
+                case .lf, .cr, .crLf:
+                    advance()
+                    break loop
+                case .backslash:
+                    advance()
+                    guard let c = char() else {
+                        content.append("\\")
+                        break loop
+                    }
+                    advance()
+                    switch c {
+                    case .n: content.append("\n")
+                    case .r: content.append("\r")
+                    case .t: content.append("\t")
+                    default: content.append(c)
+                    }
+                default:
+                    advance()
+                    content.append(c)
+                }
+            }
+            return content
+        default:
+            return nil
         }
     }
 

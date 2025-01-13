@@ -6,7 +6,7 @@ import TypeScriptAST
         s.map { .symbol($0) }
     }
 
-    static var data: [(String, [Token])] {
+    static var tokensData: [(String, [Token])] {
         let result: [(String, [Token])] = [
             ("", []),
             ("import from", [.keyword(.import), .keyword(.from)]),
@@ -96,12 +96,21 @@ import TypeScriptAST
             ("""
             foo /*
             // */ bar
-            """, [.identifier("foo"), .identifier("bar")])
+            """, [.identifier("foo"), .identifier("bar")]),
+            ("""
+            "abc"
+            """, [.stringLiteral("abc")]),
+            (#"""
+            "a\"b\nc\\d"
+            """#, [.stringLiteral(#"""
+            a"b
+            c\d
+            """#)])
         ]
         return result
     }
 
-    @Test(arguments: Self.data) func test(string: String, expected: [Token]) {
+    @Test(arguments: Self.tokensData) func tokens(string: String, expected: [Token]) {
         var k = Tokenizer(string: string)
         let tokens = k.readAll()
         #expect(tokens == expected)

@@ -12,7 +12,7 @@ func words(_ string: String) -> [Substring] {
         """]
     }
 
-    @Test(arguments: Self.data) func test(string: String) {
+    @Test(arguments: Self.data) func roundTripWord(string: String) {
         var p = Parser(string: string)
         let ast = p.parse()
         let parsed = words(ast.print())
