@@ -5,6 +5,7 @@ extension Character {
     static let crLf = Character("\r\n")
     static let space = Character(" ")
     static let exclamation = Character("!")
+    static let dollar = Character("$")
     static let percent = Character("%")
     static let ampersand = Character("&")
     static let leftParen = Character("(")

@@ -82,13 +82,46 @@ public struct Tokenizer {
         switch c {
         case .exclamation:
             advance()
-            return .exclamation
+            switch char() {
+            case .equal:
+                advance()
+                switch char() {
+                case .equal:
+                    advance()
+                    return .exclamationEqualEqual
+                default:
+                    return .exclamationEqual
+                }
+            default:
+                return .exclamation
+            }
         case .percent:
             advance()
-            return .percent
+            switch char() {
+            case .equal:
+                advance()
+                return .percentEqual
+            default:
+                return .percent
+            }
         case .ampersand:
             advance()
-            return .ampersand
+            switch char() {
+            case .ampersand:
+                advance()
+                switch char() {
+                case .equal:
+                    advance()
+                    return .ampersandAmpersandEqual
+                default:
+                    return .ampersandAmpersand
+                }
+            case .equal:
+                advance()
+                return .ampersandEqual
+            default:
+                return .ampersand
+            }
         case .leftParen:
             advance()
             return .leftParen
@@ -97,22 +130,52 @@ public struct Tokenizer {
             return .rightParen
         case .asterisk:
             advance()
-            return .asterisk
+            switch char() {
+            case .equal:
+                advance()
+                return .asteriskEqual
+            default:
+                return .asterisk
+            }
         case .plus:
             advance()
-            return .plus
+            switch char() {
+            case .plus:
+                advance()
+                return .plusPlus
+            case .equal:
+                advance()
+                return .plusEqual
+            default:
+                return .plus
+            }
         case .comma:
             advance()
             return .comma
         case .minus:
             advance()
-            return .minus
+            switch char() {
+            case .minus:
+                advance()
+                return .minusMinus
+            case .equal:
+                advance()
+                return .minusEqual
+            default:
+                return .minus
+            }
         case .dot:
             advance()
             return .dot
         case .slash:
             advance()
-            return .slash
+            switch char() {
+            case .equal:
+                advance()
+                return .slashEqual
+            default:
+                return .slash
+            }
         case .colon:
             advance()
             return .colon
@@ -121,16 +184,70 @@ public struct Tokenizer {
             return .semicolon
         case .leftAngleBracket:
             advance()
-            return .leftAngleBracket
+            switch char() {
+            case .leftAngleBracket:
+                advance()
+                switch char() {
+                case .equal:
+                    advance()
+                    return .leftAngleBracketLeftAngleBracketEqual
+                default:
+                    return .leftAngleBracketLeftAngleBracket
+                }
+            default:
+                return .leftAngleBracket
+            }
         case .equal:
             advance()
-            return .equal
+            switch char() {
+            case .equal:
+                advance()
+                switch char() {
+                case .equal:
+                    advance()
+                    return .equalEqualEqual
+                default:
+                    return .equalEqual
+                }
+            case .rightAngleBracket:
+                advance()
+                return .equalRightAngleBracket
+            default:
+                return .equal
+            }
         case .rightAngleBracket:
             advance()
-            return .rightAngleBracket
+            switch char() {
+            case .rightAngleBracket:
+                advance()
+                switch char() {
+                case .equal:
+                    advance()
+                    return .rightAngleBracketRightAngleBracketEqual
+                default:
+                    return .rightAngleBracketRightAngleBracket
+                }
+            default:
+                return .rightAngleBracket
+            }
         case .question:
             advance()
-            return .question
+            switch char() {
+            case .dot:
+                advance()
+                return .questionDot
+            case .question:
+                advance()
+                switch char() {
+                case .equal:
+                    advance()
+                    return .questionQuestionEqual
+                default:
+                    return .questionQuestion
+                }
+            default:
+                return .question
+            }
         case .leftSquareBracket:
             advance()
             return .leftSquareBracket
@@ -145,7 +262,22 @@ public struct Tokenizer {
             return .leftBrace
         case .pipe:
             advance()
-            return .pipe
+            switch char() {
+            case .equal:
+                advance()
+                return .pipeEqual
+            case .pipe:
+                advance()
+                switch char() {
+                case .equal:
+                    advance()
+                    return .pipePipeEqual
+                default:
+                    return .pipePipe
+                }
+            default:
+                return .pipe
+            }
         case .rightBrace:
             advance()
             return .rightBrace
@@ -180,7 +312,7 @@ public struct Tokenizer {
         case .a ... .z,
                 .A ... .Z,
                 ._0 ... ._9,
-                .underscore: return true
+                .underscore, .dollar: return true
         default: return false
         }
     }
