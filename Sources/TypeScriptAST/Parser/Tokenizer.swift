@@ -39,7 +39,7 @@ public struct Tokenizer {
 
     private mutating func readNextToken() -> Token? {
         while true {
-            guard let _ = char() else { return nil }
+            guard let c = char() else { return nil }
 
             if readWhitespace() {
                 continue
@@ -57,6 +57,7 @@ public struct Tokenizer {
                 return x
             }
 
+            print("skip character: \(c)")
             advance()
         }
     }

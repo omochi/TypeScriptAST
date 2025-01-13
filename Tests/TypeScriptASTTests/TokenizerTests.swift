@@ -102,7 +102,7 @@ import TypeScriptAST
     }
 
     @Test(arguments: Self.data) func test(string: String, expected: [Token]) {
-        var k  = Tokenizer(string: string)
+        var k = Tokenizer(string: string)
         let tokens = k.readAll()
         #expect(tokens == expected)
     }
