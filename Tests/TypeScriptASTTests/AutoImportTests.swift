@@ -196,6 +196,71 @@ final class AutoImportTests: TestCaseBase {
         )
     }
 
+    func testAlias() throws {
+        let s = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "S", type: TSObjectType([]))
+        ])
+
+        let m = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "M", type: TSIdentType("S"))
+        ])
+
+        var symbols = SymbolTable()
+        symbols.add(source: s, file: URL(fileURLWithPath: "lib/foo/s.ts"))
+
+        let imports = try m.buildAutoImportDecls(
+            from: URL(fileURLWithPath: "m/m.ts"),
+            symbolTable: symbols,
+            fileExtension: .none,
+            pathAliasTable: PathAliasTable([
+                .init(alias: "@foo", path: URL(fileURLWithPath: "lib/foo"))
+            ])
+        )
+        m.replaceImportDecls(imports)
+
+        assertPrint(
+            m, """
+            import { S } from "@foo/s";
+
+            export type M = S;
+
+            """
+        )
+    }
+
+    func testUnrelatedAlias() throws {
+        let s = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "S", type: TSObjectType([]))
+        ])
+
+        let m = TSSourceFile([
+            TSTypeDecl(modifiers: [.export], name: "M", type: TSIdentType("S"))
+        ])
+
+        var symbols = SymbolTable()
+        symbols.add(source: s, file: URL(fileURLWithPath: "s/s.ts"))
+
+        let imports = try m.buildAutoImportDecls(
+            from: URL(fileURLWithPath: "m/m.ts"),
+            symbolTable: symbols,
+            fileExtension: .none,
+            pathAliasTable: PathAliasTable([
+                .init(alias: "@foo", path: URL(fileURLWithPath: "lib/foo"))
+            ])
+        )
+        m.replaceImportDecls(imports)
+
+        assertPrint(
+            m, """
+            import { S } from "../s/s";
+
+            export type M = S;
+
+            """
+        )
+    }
+
+
     func testDefaultImport() throws {
         let s = TSSourceFile([
             TSVarDecl(
