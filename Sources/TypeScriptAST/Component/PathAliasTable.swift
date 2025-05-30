@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 
 public struct PathAliasTable {
     public init(_ entries: [Entry] = []) {
