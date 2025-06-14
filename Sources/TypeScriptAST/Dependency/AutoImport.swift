@@ -16,7 +16,7 @@ extension TSSourceFile {
         from: URL,
         symbolTable: SymbolTable,
         fileExtension: ImportFileExtension,
-        pathAliasTable: PathAliasTable = .init(),
+        pathPrefixReplacements: PathPrefixReplacements = [],
         defaultFile: String? = nil
     ) throws -> [TSImportDecl] {
         var fileToSymbols = FileToSymbols()
@@ -67,10 +67,10 @@ extension TSSourceFile {
             if symbols.isEmpty { continue }
 
             var file = file
-            let (newPath, updated) = pathAliasTable.mapToAlias(
-                path: from.deletingLastPathComponent().appendingPathComponent(file)
-            )
-            if updated {
+
+            if let newPath = pathPrefixReplacements.replace(
+                path: URL(fileURLWithPath: file, relativeTo: from)
+            ) {
                 file = newPath.relativePath
             }
 

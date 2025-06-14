@@ -212,9 +212,9 @@ final class AutoImportTests: TestCaseBase {
             from: URL(fileURLWithPath: "m/m.ts"),
             symbolTable: symbols,
             fileExtension: .none,
-            pathAliasTable: PathAliasTable([
-                .init(alias: "@foo", path: URL(fileURLWithPath: "lib/foo"))
-            ])
+            pathPrefixReplacements: [
+                .init(path: URL(fileURLWithPath: "lib/foo"), replacement: "@foo")
+            ]
         )
         m.replaceImportDecls(imports)
 
@@ -244,9 +244,9 @@ final class AutoImportTests: TestCaseBase {
             from: URL(fileURLWithPath: "m/m.ts"),
             symbolTable: symbols,
             fileExtension: .none,
-            pathAliasTable: PathAliasTable([
-                .init(alias: "@foo", path: URL(fileURLWithPath: "lib/foo"))
-            ])
+            pathPrefixReplacements: [
+                .init(path: URL(fileURLWithPath: "lib/foo"), replacement: "@foo")
+            ]
         )
         m.replaceImportDecls(imports)
 
