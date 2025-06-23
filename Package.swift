@@ -39,7 +39,10 @@ let package = Package(
         ),
         .testTarget(
             name: "TypeScriptASTTests",
-            dependencies: ["TypeScriptAST"]
+            dependencies: ["TypeScriptAST"],
+            swiftSettings: [
+                .enableUpcomingFeature("BareSlashRegexLiterals")
+            ]
         ),
     ]
 )
