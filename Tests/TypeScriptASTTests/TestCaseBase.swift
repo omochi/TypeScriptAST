@@ -5,7 +5,7 @@ class TestCaseBase: XCTestCase {
     func assertPrint(
         _ node: any ASTNode,
         _ expected: String,
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) {
         XCTAssertEqual(node.print(), expected, file: file, line: line)
